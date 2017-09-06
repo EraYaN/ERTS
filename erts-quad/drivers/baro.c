@@ -9,7 +9,7 @@
  */
 
 #include <math.h>
-#include "in4073.h"
+#include "erts-quad.h"
 
 #define CONVERT_D1_1024 0x44
 #define CONVERT_D1_4096 0x48

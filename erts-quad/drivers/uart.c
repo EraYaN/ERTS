@@ -8,7 +8,7 @@
  *------------------------------------------------------------------
  */
 
-#include "in4073.h"
+#include "erts-quad.h"
 
 bool txd_available = true;
 

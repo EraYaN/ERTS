@@ -10,7 +10,7 @@
  *------------------------------------------------------------------
  */
 
-#include "in4073.h"
+#include "erts-quad.h"
 #include "app_timer.h"
  
 uint32_t global_time;

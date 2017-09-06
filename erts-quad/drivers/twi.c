@@ -10,7 +10,7 @@
  *------------------------------------------------------------------
  */
 
-#include "in4073.h"
+#include "erts-quad.h"
 
 static volatile bool sent = false;
 static volatile bool read = false;

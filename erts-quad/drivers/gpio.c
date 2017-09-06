@@ -8,7 +8,7 @@
  *------------------------------------------------------------------
  */
 
-#include "in4073.h"
+#include "erts-quad.h"
 
 #define MOTOR_0_PIN	21
 #define MOTOR_1_PIN	23

@@ -9,7 +9,7 @@
  *------------------------------------------------------------------
  */
 
-#include "in4073.h"
+#include "erts-quad.h"
 
 //#define BATTERY_VOLTAGE 4 //these are AIN, not ports p0.01 = ain2
 //#define BATTERY_AMPERAGE 2
