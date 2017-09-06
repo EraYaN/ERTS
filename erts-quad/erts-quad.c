@@ -1,5 +1,5 @@
 /*------------------------------------------------------------------
- *  in4073.c -- test QR engines and sensors
+ *  erts-quad.c -- test QR engines and sensors
  *
  *  reads ae[0-3] uart rx queue
  *  (q,w,e,r increment, a,s,d,f decrement)
@@ -13,7 +13,7 @@
  *------------------------------------------------------------------
  */
 
-#include "in4073.h"
+#include "erts-quad.h"
 
 /*------------------------------------------------------------------
  * process_key -- process command keys

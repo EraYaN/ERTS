@@ -1,5 +1,5 @@
 /*------------------------------------------------------------------
- *  in4073.h -- defines, globals, function prototypes
+ *  erts-quad.h -- defines, globals, function prototypes
  *
  *  I. Protonotarios
  *  Embedded Software Lab
@@ -8,8 +8,8 @@
  *------------------------------------------------------------------
  */
 
-#ifndef IN4073_H__
-#define IN4073_H__
+#ifndef ERTS_QUAD_H__
+#define ERTS_QUAD_H__
 
 #include <inttypes.h>
 #include <stdio.h>
@@ -107,4 +107,4 @@ volatile bool radio_active;
 void ble_init(void);
 void ble_send(void);
 
-#endif // IN4073_H__
+#endif // ERTS_QUAD_H__

@@ -11,7 +11,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <string.h>
-#include "in4073.h"
+#include "erts-quad.h"
 
 #define SPI_CS		17
 #define SPI_MISO	18

@@ -10,7 +10,7 @@
  *------------------------------------------------------------------
  */
 
-#include "in4073.h"
+#include "erts-quad.h"
 
 void update_motors(void)
 {					
