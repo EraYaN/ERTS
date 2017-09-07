@@ -57,6 +57,8 @@ nRF5_SDK_14.0.0_3bcc1f7/
 
 # Visual Studio
 .vs
+.tlog
+*.log
 
 # Python
 *.pyc

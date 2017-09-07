@@ -17,8 +17,8 @@
 #define END_SEQUENCE EOF
 #define MAX_PACKET_SIZE 20
 
-//#define USE_CRC16
-#define USE_CRC8
+#define USE_CRC16
+//#define USE_CRC8
 
 typedef uint8_t byte;
 typedef uint16_t startSequence;
@@ -37,8 +37,8 @@ __pragma(pack(push, 1))
 // 4, 5 or 6 bytes bytes
 typedef struct messageHeader {
 	startSequence start; //0xFeFF
-	messageType type;
-	messageID id;
+	messageType type:4;
+	messageID id:4;
 #if defined(USE_CRC8) || defined(USE_CRC16)
 	checksum checksum; //CRC-8 or CRC-16
 #endif	
@@ -67,30 +67,29 @@ byte* get_byte_array(messageHeader_t* header, const byte* data, int data_len, me
 
 	packet[0] = (header->start & 0xFF00) >> 8;
 	packet[1] = header->start & 0x00FF;
-	packet[2] = header->type;
-	packet[3] = header->id;
+	packet[2] = ((header->type & 0xF) << 4) | (header->id & 0xF);
 #if defined(USE_CRC16)
-	packet[4] = 0; //checksum to be updated later
-	packet[5] = 0; //checksum to be updated later	
-	memset(&packet[6], 0, dataSize);
-	memcpy(&packet[6], data, data_len);
-#elif defined(USE_CRC8)
+	packet[3] = 0; //checksum to be updated later
 	packet[4] = 0; //checksum to be updated later	
 	memset(&packet[5], 0, dataSize);
 	memcpy(&packet[5], data, data_len);
-#else
+#elif defined(USE_CRC8)
+	packet[3] = 0; //checksum to be updated later	
 	memset(&packet[4], 0, dataSize);
 	memcpy(&packet[4], data, data_len);
+#else
+	memset(&packet[3], 0, dataSize);
+	memcpy(&packet[3], data, data_len);
 #endif
 
 	packet[MAX_PACKET_SIZE - 1] = footer->end;
 #if defined(USE_CRC16)
 	checksum cs = crc_16(packet, MAX_PACKET_SIZE);
-	packet[4] = (cs & 0xFF00) >> 8;
-	packet[5] = cs & 0x00FF;
+	packet[3] = (cs & 0xFF00) >> 8;
+	packet[4] = cs & 0x00FF;
 #elif defined(USE_CRC8)
 	checksum cs = crc_8(packet, MAX_PACKET_SIZE);
-	packet[4] = cs;
+	packet[3] = cs;
 #endif
 	return packet;
 }
@@ -101,17 +100,17 @@ void get_packet_contents(const byte* packet, messageHeader_t** header, byte** da
 	*footer = malloc(sizeof(messageFooter_t));
 
 	(*header)->start = (packet[0]) << 8 | packet[1];
-	(*header)->type = packet[2];
-	(*header)->id = packet[3];
+	(*header)->type = (packet[2] & 0xF0) >> 4;
+	(*header)->id = packet[2] & 0xF;
 
 #if defined(USE_CRC16)
-	(*header)->checksum = (packet[4]) << 8 | packet[5]; //checksum to be updated later	
-	memcpy(mD, &packet[6], dataSize);
-#elif defined(USE_CRC8)
-	(*header)->checksum = packet[4]; //checksum to be updated later	
+	(*header)->checksum = (packet[3]) << 8 | packet[4]; //checksum to be updated later	
 	memcpy((*data), &packet[5], dataSize);
+#elif defined(USE_CRC8)
+	(*header)->checksum = packet[3]; //checksum to be updated later	
+	memcpy((*data), &packet[3], dataSize);
 #else
-	memcpy((*data), &packet[4], dataSize);
+	memcpy((*data), &packet[3], dataSize);
 #endif
 
 	(*footer)->end = packet[MAX_PACKET_SIZE - 1];
@@ -121,22 +120,22 @@ void get_packet_contents(const byte* packet, messageHeader_t** header, byte** da
 
 #if defined(USE_CRC16)
 bool verify_packet(byte* packet) {
-	checksum packet_cs = (packet[4] << 8) | packet[5];
+	checksum packet_cs = (packet[3] << 8) | packet[4];
+	packet[3] = 0; //checksum to be updated later
 	packet[4] = 0; //checksum to be updated later
-	packet[5] = 0; //checksum to be updated later
 	checksum cs = crc_16(packet, MAX_PACKET_SIZE);
 	bool result = cs == packet_cs;
-	packet[4] = (packet_cs & 0xFF00) >> 8;
-	packet[5] = packet_cs & 0x00FF;
+	packet[3] = (packet_cs & 0xFF00) >> 8;
+	packet[4] = packet_cs & 0x00FF;
 	return result;
 }
 #elif defined(USE_CRC8)
 bool verify_packet(byte* packet) {
-	checksum packet_cs = packet[4];
-	packet[4] = 0; //checksum to be updated later
+	checksum packet_cs = packet[3];
+	packet[3] = 0; //checksum to be updated later
 	checksum cs = crc_8(packet, MAX_PACKET_SIZE);
 	bool result = cs == packet_cs;
-	packet[4] = packet_cs;
+	packet[3] = packet_cs;
 	return result;
 }
 #else
@@ -144,8 +143,6 @@ bool verify_packet(byte* packet) {
 	return true;
 }
 #endif
-
-
 
 byte* flip_random_bit(byte* array, int len, int count) {
 	byte* array_error = malloc(len);
@@ -167,10 +164,9 @@ void print_packet_array(byte* packet) {
 }
 
 void print_packet(messageHeader_t* header, byte* data, messageFooter_t* footer) {
-
 	printf("header->start:    %04X\n", header->start);
-	printf("header->type:       %02X\n", header->type);
-	printf("header->id:         %02X\n", header->id);
+	printf("header->type:        %01X\n", header->type);
+	printf("header->id:          %01X\n", header->id);
 #if defined(USE_CRC16)
 	printf("header->checksum: %04X\n", header->checksum);
 #elif defined(USE_CRC8)
@@ -182,11 +178,7 @@ void print_packet(messageHeader_t* header, byte* data, messageFooter_t* footer) 
 	}
 	printf("\n");
 	printf("footer->end:        %02X\n", footer->end);
-
-
 }
-
-
 
 int main() {
 	printf("Size of messageHeader: %d\n", sizeof(messageHeader_t));
@@ -205,8 +197,8 @@ int main() {
 	messageFooter_t* mF = malloc(sizeof(messageFooter_t));
 
 	mH->start = START_SEQUENCE;
-	mH->type = 0xF0;
-	mH->id = 0x12;
+	mH->type = 0x8;
+	mH->id = 0x3;
 
 	mD[0] = 1;
 	mD[1] = 2;
@@ -266,7 +258,7 @@ int main() {
 	}
 
 
-
+	printf("Done. Press enter to exit...\n");
 	getchar();
 	return 0;
 }
