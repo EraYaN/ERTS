@@ -60,3 +60,51 @@ nRF5_SDK_14.0.0_3bcc1f7/
 
 # Python
 *.pyc
+
+###################
+## MikTeX, pdfLaTeX, XeLaTeX, LaTeXMK
+###################
+*.tex.bak
+*.aux
+*.synctex.gz
+*.gz(busy)
+*.log
+*.bcf
+*.run.xml
+*.bbl
+*.blg
+*blx.bib
+*.mtc*
+*.min*
+*.maf
+*.cld
+*.toc
+*.run.xml
+*.pdf
+*.out
+*.pyg
+!*-rc.pdf
+!**/resources/**/*.pdf
+*.fls
+*.fdb_latexmk
+*.auxlock
+*.md5
+*.dpth
+*.lot
+*.lof
+
+###################
+## Sublime Text
+###################
+
+*.sublime-workspace
+
+###################
+## MATLAB
+###################
+*.asv
+*.mat
+script/**/*.tikz
+script/**/*.tiff
+script/**/*.png
+script/**/*.jpg
