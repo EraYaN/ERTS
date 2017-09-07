@@ -82,8 +82,8 @@ byte* get_byte_array(messageHeader_t* header, const byte* data, int data_len, me
 	memset(&packet[4], 0, dataSize);
 	memcpy(&packet[4], data, data_len);
 #endif
-	
-	packet[MAX_PACKET_SIZE-1] = footer->end;
+
+	packet[MAX_PACKET_SIZE - 1] = footer->end;
 #if defined(USE_CRC16)
 	checksum cs = crc_16(packet, MAX_PACKET_SIZE);
 	packet[4] = (cs & 0xFF00) >> 8;
@@ -94,6 +94,30 @@ byte* get_byte_array(messageHeader_t* header, const byte* data, int data_len, me
 #endif
 	return packet;
 }
+
+void get_packet_contents(const byte* packet, messageHeader_t** header, byte** data, messageFooter_t** footer) {
+	*header = malloc(sizeof(messageHeader_t));
+	*data = malloc(dataSize);
+	*footer = malloc(sizeof(messageFooter_t));
+
+	(*header)->start = (packet[0]) << 8 | packet[1];
+	(*header)->type = packet[2];
+	(*header)->id = packet[3];
+
+#if defined(USE_CRC16)
+	(*header)->checksum = (packet[4]) << 8 | packet[5]; //checksum to be updated later	
+	memcpy(mD, &packet[6], dataSize);
+#elif defined(USE_CRC8)
+	(*header)->checksum = packet[4]; //checksum to be updated later	
+	memcpy((*data), &packet[5], dataSize);
+#else
+	memcpy((*data), &packet[4], dataSize);
+#endif
+
+	(*footer)->end = packet[MAX_PACKET_SIZE - 1];
+
+}
+
 
 #if defined(USE_CRC16)
 bool verify_packet(byte* packet) {
@@ -135,12 +159,31 @@ byte* flip_random_bit(byte* array, int len, int count) {
 	}
 	return array_error;
 }
-
-void print_packet(byte* packet) {
+void print_packet_array(byte* packet) {
 	for (int i = 0; i < MAX_PACKET_SIZE; i++) {
 		printf("%02X ", packet[i]);
 	}
 	printf("\n");
+}
+
+void print_packet(messageHeader_t* header, byte* data, messageFooter_t* footer) {
+
+	printf("header->start:    %04X\n", header->start);
+	printf("header->type:       %02X\n", header->type);
+	printf("header->id:         %02X\n", header->id);
+#if defined(USE_CRC16)
+	printf("header->checksum: %04X\n", header->checksum);
+#elif defined(USE_CRC8)
+	printf("header->checksum:   %02X\n", header->checksum);
+#endif
+	printf("Data: ");
+	for (int i = 0; i < dataSize; i++) {
+		printf("%02X ", data[i]);
+	}
+	printf("\n");
+	printf("footer->end:        %02X\n", footer->end);
+
+
 }
 
 
@@ -154,7 +197,7 @@ int main() {
 		dataSize--;
 		if (dataSize <= 0)
 			printf("Protocol definition error, space for data is zero.\n");
-			exit(-2);
+		exit(-2);
 	}
 	printf("Size of data: %d\n", dataSize);
 	messageHeader_t* mH = malloc(sizeof(messageHeader_t));
@@ -175,12 +218,24 @@ int main() {
 	mD[7] = 8;
 
 	mF->end = END_SEQUENCE;
+	printf("\nOriginal packet.\n");
+	print_packet(mH, mD, mF);
 
 	byte* packet = get_byte_array(mH, mD, 8, mF);
 
-	print_packet(packet);
+	printf("\nEncoded packet.\n");
+	print_packet_array(packet);
 
-	printf("Packet is valid: %s\n", verify_packet(packet) ? "Yes":"No");
+	printf("Packet is valid: %s\n", verify_packet(packet) ? "Yes" : "No");
+
+	messageHeader_t* mH_d = NULL;
+	byte* mD_d = NULL;
+	messageFooter_t* mF_d = NULL;
+
+	get_packet_contents(packet, &mH_d, &mD_d, &mF_d);
+	printf("\nDecoded packet.\n");
+	print_packet(mH_d, mD_d, mF_d);
+
 
 	srand(time(NULL));
 
@@ -207,7 +262,7 @@ int main() {
 			else
 				num_bad++;
 		}
-		printf("%2d-bit flip:\t%6d out of %6d failed\t%6d out of %6d passed\t%4.2f %% confidence.\n", bits, num_bad, iterations, num_good, iterations, (double)num_bad/ iterations*100.f);
+		printf("%2d-bit flip:\t%6d out of %6d failed\t%6d out of %6d passed\t%4.2f %% confidence.\n", bits, num_bad, iterations, num_good, iterations, (double)num_bad / iterations*100.f);
 	}
 
 
