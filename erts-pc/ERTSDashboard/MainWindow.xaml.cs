@@ -12,9 +12,10 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using SharpDX.DirectInput;
 using System.Threading;
 using System.Diagnostics;
+using SharpDX.DirectInput;
+using System.Windows.Interop;
 
 namespace ERTSDashboard
 {
@@ -23,57 +24,38 @@ namespace ERTSDashboard
     /// </summary>
     public partial class MainWindow : Window
     {
+        InputManager inputManager;
+        List<DeviceInstance> devices;
         public MainWindow()
         {
-            InitializeComponent();
+            InitializeComponent();            
+        }
+        
+        private void UseControllerButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (ControllerComboBox.SelectedItem != null)
+            {
+                inputManager.BindDevice((DeviceInstance)ControllerComboBox.SelectedItem, new WindowInteropHelper(this).Handle);
+            }
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            // Initialize DirectInput
-            var directInput = new DirectInput();
+            if (inputManager != null) inputManager.StopThread();
+        }
 
-            // Find a Joystick Guid
-            var joystickGuid = Guid.Empty;
+        private void Window_Initialized(object sender, EventArgs e)
+        {
+            inputManager = new InputManager();
+            devices = inputManager.EnumerateControllers();
+            ControllerComboBox.ItemsSource = devices;
+            inputManager.StartThread();
+        }
 
-            foreach (var deviceInstance in directInput.GetDevices(DeviceType.Gamepad, DeviceEnumerationFlags.AllDevices))
-                joystickGuid = deviceInstance.InstanceGuid;
-
-            // If Gamepad not found, look for a Joystick
-            if (joystickGuid == Guid.Empty)
-                foreach (var deviceInstance in directInput.GetDevices(DeviceType.Joystick, DeviceEnumerationFlags.AllDevices))
-                    joystickGuid = deviceInstance.InstanceGuid;
-
-            // If Joystick not found, throws an error
-            if (joystickGuid == Guid.Empty)
-            {
-                Debug.WriteLine("No joystick/Gamepad found.");
-            }
-
-            // Instantiate the joystick
-            var joystick = new Joystick(directInput, joystickGuid);
-
-            Debug.WriteLine("Found Joystick/Gamepad with GUID: {0}", joystickGuid);
-
-            // Query all suported ForceFeedback effects
-            var allEffects = joystick.GetEffects();
-            foreach (var effectInfo in allEffects)
-                Debug.WriteLine("Effect available {0}", effectInfo.Name);
-
-            // Set BufferSize in order to use buffered data.
-            joystick.Properties.BufferSize = 128;
-
-            // Acquire the joystick
-            joystick.Acquire();
-
-            // Poll events from joystick
-            while (true)
-            {
-                joystick.Poll();
-                var datas = joystick.GetBufferedData();
-                foreach (var state in datas)
-                    Debug.WriteLine(state);
-            }
+        private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            //Stop enter, space and such to do weird things with the buttons on the form. DirectInput only.
+            e.Handled = true;
         }
     }
 }

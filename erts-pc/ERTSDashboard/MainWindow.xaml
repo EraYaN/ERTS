@@ -5,9 +5,19 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ERTSDashboard"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        Title="MainWindow" Height="350" Width="525" Closing="Window_Closing" Initialized="Window_Initialized" PreviewKeyDown="Window_PreviewKeyDown">
+    <Window.Resources>
+        <local:DeviceInstanceToStringConverter x:Key="deviceInstanceToStringConverter" />
+    </Window.Resources>
     <Grid>
-        <Button Content="Button" HorizontalAlignment="Left" Margin="207,114,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click"/>
+        <ComboBox x:Name="ControllerComboBox" Margin="10,10,90,0" VerticalAlignment="Top">
+            <ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Converter={StaticResource deviceInstanceToStringConverter}}"/>
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
+        <Button x:Name="UseControllerButton" Content="Use" Margin="0,10,10,0" VerticalAlignment="Top" Height="22" Click="UseControllerButton_Click" HorizontalAlignment="Right" Width="75"/>
 
     </Grid>
 </Window>
