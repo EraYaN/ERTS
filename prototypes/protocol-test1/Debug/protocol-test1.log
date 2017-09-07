@@ -1,5 +1,5 @@
 ﻿  protocol-test1.c
-f:\users\erwin\documents\github\erts\prototypes\protocol-test1\protocol-test1.c(20): error C2059: syntax error: '{'
-f:\users\erwin\documents\github\erts\prototypes\protocol-test1\protocol-test1.c(33): warning C4091: 'typedef ': ignored on left of 'messageFooter' when no variable is declared
-f:\users\erwin\documents\github\erts\prototypes\protocol-test1\protocol-test1.c(46): error C2027: use of undefined type 'messageHeader'
-  f:\users\erwin\documents\github\erts\prototypes\protocol-test1\protocol-test1.c(20): note: see declaration of 'messageHeader'
+f:\users\erwin\documents\github\erts\prototypes\protocol-test1\protocol-test1.c(56): warning C4013: 'exit' undefined; assuming extern returning int
+f:\users\erwin\documents\github\erts\prototypes\protocol-test1\protocol-test1.c(59): warning C4013: 'malloc' undefined; assuming extern returning int
+  protocol-test1.vcxproj -> F:\Users\Erwin\Documents\GitHub\ERTS\prototypes\Debug\protocol-test1.exe
+  protocol-test1.vcxproj -> F:\Users\Erwin\Documents\GitHub\ERTS\prototypes\Debug\protocol-test1.pdb (Partial PDB)

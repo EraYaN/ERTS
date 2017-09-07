@@ -12,19 +12,19 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{68094529-3515-46C0-AFF2-F850575AC480}</ProjectGuid>
-    <RootNamespace>protocoltest1</RootNamespace>
+    <ProjectGuid>{8DCB8AA5-E743-4399-A294-5C3C1E61EF6F}</ProjectGuid>
+    <RootNamespace>libcrc</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -44,11 +44,11 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>F:\Users\Erwin\Documents\GitHub\ERTS\libraries\libcrc-2.0\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)x64\$(Configuration);$(LibraryPath)</LibraryPath>
+    <TargetExt>.lib</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>F:\Users\Erwin\Documents\GitHub\ERTS\libraries\libcrc-2.0\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)x64\$(Configuration);$(LibraryPath)</LibraryPath>
+    <TargetExt>.lib</TargetExt>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -56,9 +56,6 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
     </ClCompile>
-    <Link>
-      <AdditionalDependencies>libcrc.lib;%(AdditionalDependencies)</AdditionalDependencies>
-    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -71,11 +68,17 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>libcrc.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="protocol-test1.c" />
+    <ClCompile Include="..\..\libraries\libcrc-2.0\src\crc16.c" />
+    <ClCompile Include="..\..\libraries\libcrc-2.0\src\crc32.c" />
+    <ClCompile Include="..\..\libraries\libcrc-2.0\src\crc8.c" />
+    <ClCompile Include="..\..\libraries\libcrc-2.0\src\crcccitt.c" />
+    <ClCompile Include="..\..\libraries\libcrc-2.0\src\crcdnp.c" />
+    <ClCompile Include="..\..\libraries\libcrc-2.0\src\crckrmit.c" />
+    <ClCompile Include="..\..\libraries\libcrc-2.0\src\crcsick.c" />
+    <ClCompile Include="..\..\libraries\libcrc-2.0\src\nmea-chk.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
