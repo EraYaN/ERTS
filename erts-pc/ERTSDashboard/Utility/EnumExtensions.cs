@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 
-namespace ERTSDashboard.Utility
+namespace ERTS.Dashboard.Utility
 {
     public static class EnumExtensions
     {

@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 
 
-namespace ERTSDashboard
+namespace ERTS.Dashboard
 {
     public enum Modes
     {   

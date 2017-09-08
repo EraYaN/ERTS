@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ERTSDashboard.Utility
+namespace ERTS.Dashboard.Utility
 {
     /// <summary>Extension methods for EventHandler-type delegates.</summary>
     public static class EventExtensions

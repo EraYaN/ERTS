@@ -6,14 +6,14 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{FDDDD840-D8EC-4D5A-BC44-CB11CE8C2CDB}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>ERTSDashboard</RootNamespace>
-    <AssemblyName>ERTSDashboard</AssemblyName>
+    <RootNamespace>ERTS.Dashboard</RootNamespace>
+    <AssemblyName>ERTS.Dashboard</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <AssemblyVersion>2017.9.8.41</AssemblyVersion>
+    <AssemblyVersion>2017.9.8.48</AssemblyVersion>
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
@@ -37,6 +37,12 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="OxyPlot, Version=1.0.0.0, Culture=neutral, PublicKeyToken=638079a8f0bd61e9, processorArchitecture=MSIL">
+      <HintPath>..\packages\OxyPlot.Core.1.0.0\lib\net45\OxyPlot.dll</HintPath>
+    </Reference>
+    <Reference Include="OxyPlot.Wpf, Version=1.0.0.0, Culture=neutral, PublicKeyToken=75e952ba404cdbb0, processorArchitecture=MSIL">
+      <HintPath>..\packages\OxyPlot.Wpf.1.0.0\lib\net45\OxyPlot.Wpf.dll</HintPath>
+    </Reference>
     <Reference Include="SharpDX, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
       <HintPath>..\packages\SharpDX.4.0.1\lib\net45\SharpDX.dll</HintPath>
     </Reference>
@@ -63,6 +69,22 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Communication\Command.cs" />
+    <Compile Include="Communication\CommunicationInterface.cs" />
+    <Compile Include="Communication\ComVars.cs" />
+    <Compile Include="Communication\ExtensionMethods.cs" />
+    <Compile Include="Communication\OutputSequence.cs" />
+    <Compile Include="Communication\Packet.cs" />
+    <Compile Include="Communication\PacketReceivedEvent.cs" />
+    <Compile Include="Communication\Sequence.cs" />
+    <Compile Include="Helpers\Data.cs" />
+    <Compile Include="Helpers\Databindings.cs" />
+    <Compile Include="Utility\TextBoxTraceListener.cs" />
+    <Compile Include="Settings\ConfigurationViewModel.cs" />
+    <Compile Include="Settings\Settings.cs" />
+    <Compile Include="Settings\SettingsWindow.xaml.cs">
+      <DependentUpon>SettingsWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Utility\EnumExtensions.cs" />
     <Compile Include="Quadrupel.cs" />
     <Page Include="MainWindow.xaml">
@@ -77,11 +99,17 @@
     <Compile Include="Utility\EventExtensions.cs" />
     <Compile Include="Utility\InputEvent.cs" />
     <Compile Include="InputManager.cs" />
+    <Compile Include="Utility\NumberExtensions.cs" />
+    <Compile Include="Utility\UIExtensions.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Settings\SettingsWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">

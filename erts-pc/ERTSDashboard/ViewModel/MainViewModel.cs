@@ -1,4 +1,4 @@
-﻿using ERTSDashboard.Utility;
+﻿using ERTS.Dashboard.Utility;
 using MicroMvvm;
 using System;
 using System.Collections.Generic;
@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ERTSDashboard.ViewModel
+namespace ERTS.Dashboard.ViewModel
 {
     public class MainViewModel : ObservableObject
     {

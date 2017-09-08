@@ -1,7 +1,7 @@
-﻿<Application x:Class="ERTSDashboard.App"
+﻿<Application x:Class="ERTS.Dashboard.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:ERTSDashboard"
+             xmlns:local="clr-namespace:ERTS.Dashboard"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
          

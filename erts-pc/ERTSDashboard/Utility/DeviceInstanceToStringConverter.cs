@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Globalization;
 
-namespace ERTSDashboard.Utility
+namespace ERTS.Dashboard.Utility
 {
     public class DeviceInstanceToStringConverter : IValueConverter
     {

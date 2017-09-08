@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26730.12
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ERTSDashboard", "ERTSDashboard\ERTSDashboard.csproj", "{FDDDD840-D8EC-4D5A-BC44-CB11CE8C2CDB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ERTS.Dashboard", "ERTSDashboard\ERTS.Dashboard.csproj", "{FDDDD840-D8EC-4D5A-BC44-CB11CE8C2CDB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroMvvm", "MicroMvvm\MicroMvvm.csproj", "{9EFE6CBD-DF21-436E-9F81-E258BAB0B653}"
 EndProject
@@ -18,9 +18,6 @@ Global
 		{FDDDD840-D8EC-4D5A-BC44-CB11CE8C2CDB}.Debug|Main.ActiveCfg = Debug|x64
 		{FDDDD840-D8EC-4D5A-BC44-CB11CE8C2CDB}.Debug|Main.Build.0 = Debug|x64
 		{FDDDD840-D8EC-4D5A-BC44-CB11CE8C2CDB}.Release|Main.ActiveCfg = Release|x64
-		{9EFE6CBD-DF21-436E-9F81-E258BAB0B653}.Debug|x86.ActiveCfg = Debug|x86
-		{9EFE6CBD-DF21-436E-9F81-E258BAB0B653}.Debug|x86.Build.0 = Debug|x86
-		{9EFE6CBD-DF21-436E-9F81-E258BAB0B653}.Release|Main.ActiveCfg = Release|x86
 		{FDDDD840-D8EC-4D5A-BC44-CB11CE8C2CDB}.Release|Main.Build.0 = Release|x64
 		{9EFE6CBD-DF21-436E-9F81-E258BAB0B653}.Debug|Main.ActiveCfg = Debug|x64
 		{9EFE6CBD-DF21-436E-9F81-E258BAB0B653}.Debug|Main.Build.0 = Debug|x64
@@ -36,16 +33,5 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A3A35119-07BA-4577-956D-8C761E740CFA}
-	EndGlobalSection
-	GlobalSection(AutomaticVersions) = postSolution
-		AssemblyInfoFilePath = Properties/AssemblyInfo.cs
-		PrimaryVersionType = AssemblyFileVersionAttribute
-		UpdateAssemblyVersion = True
-		UpdateAssemblyFileVersion = True
-		UpdateAssemblyInfoVersion = True
-		AdvancedSettingsExpanded = True
-		AssemblyVersionSettings = YearStamp.MonthStamp.DayStamp.Increment
-		AssemblyFileVersionSettings = YearStamp.MonthStamp.DayStamp.Increment
-		AssemblyInfoVersionSettings = YearStamp.MonthStamp.DayStamp.Increment
 	EndGlobalSection
 EndGlobal

@@ -1,0 +1,49 @@
+﻿<Window x:Class="ERTS.Dashboard.SettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:local="clr-namespace:ERTS.Dashboard"
+        Title="SoCeBa Settings" Height="350" Width="388" Closing="Window_Closing" SizeToContent="Height" ResizeMode="CanMinimize">
+	<Window.DataContext>
+		<local:ConfigurationViewModel/>
+	</Window.DataContext>
+	<Grid>
+		<TabControl HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0,1,0,0">
+			<TabItem Header="General">
+				<Grid>
+					<StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+						<Label Target="{Binding ElementName=comPortsComboBox}" Content="COM Port:" Height="16" Padding="0" Margin="2,0"/>
+						<ComboBox x:Name="comPortsComboBox" Height="20" Padding="4,0,0,0" VerticalContentAlignment="Center" Margin="2" ItemsSource="{Binding Comports}" SelectedItem="{Binding Path=Comport}"/>
+						<Label Target="{Binding ElementName=baudRateComboBox}" Content="Baudrate:" Height="16" Padding="0" Margin="2,0"/>
+						<ComboBox x:Name="baudRateComboBox" Height="20" Margin="2" Padding="4,0,0,0" VerticalContentAlignment="Center" ItemsSource="{Binding BaudRates}" SelectedItem="{Binding Path=BaudRate}"/>
+                        <CheckBox x:Name="interpolatedOnSaveCheckBox" Height="20" Padding="4,0,0,0" Margin="2,2" Content="Interpolate data on save (S)" IsChecked="{Binding Path=InterpolateOnSave}"/>
+                    </StackPanel>
+				</Grid>
+			</TabItem>
+			<TabItem Header="Advanced">
+				<Grid>
+					<StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+						<Grid Margin="0,2">
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="*"/>
+								<ColumnDefinition Width="*"/>
+							</Grid.ColumnDefinitions>
+							<StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                <Label Target="{Binding ElementName=tickTimeTextBox}" Content="Tick Rate: (seconds)" Height="16" Padding="0" Margin="2,0"/>
+								<TextBox x:Name="tickTimeTextBox" Height="20" Padding="4,0,0,0" VerticalContentAlignment="Center" Margin="2" Text="{Binding Path=TickTime}"/>
+								<Label Target="{Binding ElementName=updateTickIntervalTextBox}" Content="Update Tick Interval:" Height="16" Padding="0" Margin="2,0"/>
+                                <TextBox x:Name="updateTickIntervalTextBox" Height="20" Padding="4,0,0,0" VerticalContentAlignment="Center" Margin="2" Text="{Binding Path=UpdateTickInterval}"/>
+								
+							</StackPanel>
+							<StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Column="1">
+								
+							</StackPanel>
+
+						</Grid>
+						<!--<CheckBox Content="Use matched filter" IsChecked="{Binding MatchedFilterEnabled}" Margin="2"/>-->						
+					</StackPanel>
+				</Grid>
+			</TabItem>			
+		</TabControl>
+
+	</Grid>
+</Window>

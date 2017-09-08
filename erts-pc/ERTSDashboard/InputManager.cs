@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ERTSDashboard
+namespace ERTS.Dashboard
 {
     class InputManager
     {

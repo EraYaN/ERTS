@@ -16,9 +16,10 @@ using System.Threading;
 using System.Diagnostics;
 using SharpDX.DirectInput;
 using System.Windows.Interop;
-using ERTSDashboard.ViewModel;
+using ERTS.Dashboard.ViewModel;
+using ERTS.Dashboard.Utility;
 
-namespace ERTSDashboard
+namespace ERTS.Dashboard
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -47,6 +48,9 @@ namespace ERTSDashboard
 
         private void Window_Initialized(object sender, EventArgs e)
         {
+            TextBoxTraceListener tbtl = new TextBoxTraceListener(DebugTraceTextBox);
+            Debug.Listeners.Add(tbtl);
+            Debug.WriteLine("Welcome, Debug redirection enabled.");
             inputManager = new InputManager();
             devices = inputManager.EnumerateControllers();
             ControllerComboBox.ItemsSource = devices;
