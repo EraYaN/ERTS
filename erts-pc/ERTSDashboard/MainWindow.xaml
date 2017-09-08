@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:utility="clr-namespace:ERTS.Dashboard.Utility"
         mc:Ignorable="d"
-        Title="MainWindow" Height="600" Width="800" Closing="Window_Closing" Initialized="Window_Initialized" PreviewKeyDown="Window_PreviewKeyDown" ResizeMode="NoResize">
+        Title="MainWindow" Height="600" Width="800" PreviewKeyDown="Window_PreviewKeyDown" ResizeMode="NoResize">
     <Window.Resources>
         <utility:DeviceInstanceToStringConverter x:Key="deviceInstanceToStringConverter" />
     </Window.Resources>
