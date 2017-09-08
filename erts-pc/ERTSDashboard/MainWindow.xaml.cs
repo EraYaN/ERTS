@@ -16,6 +16,7 @@ using System.Threading;
 using System.Diagnostics;
 using SharpDX.DirectInput;
 using System.Windows.Interop;
+using ERTSDashboard.ViewModel;
 
 namespace ERTSDashboard
 {
@@ -28,7 +29,7 @@ namespace ERTSDashboard
         List<DeviceInstance> devices;
         public MainWindow()
         {
-            InitializeComponent();            
+            InitializeComponent();
         }
         
         private void UseControllerButton_Click(object sender, RoutedEventArgs e)
@@ -50,6 +51,8 @@ namespace ERTSDashboard
             devices = inputManager.EnumerateControllers();
             ControllerComboBox.ItemsSource = devices;
             inputManager.StartThread();
+
+            this.DataContext = new MainViewModel();
         }
 
         private void Window_PreviewKeyDown(object sender, KeyEventArgs e)

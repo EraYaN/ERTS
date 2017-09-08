@@ -3,11 +3,11 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:ERTSDashboard"
+        xmlns:utility="clr-namespace:ERTSDashboard.Utility"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525" Closing="Window_Closing" Initialized="Window_Initialized" PreviewKeyDown="Window_PreviewKeyDown">
+        Title="MainWindow" Height="600" Width="800" Closing="Window_Closing" Initialized="Window_Initialized" PreviewKeyDown="Window_PreviewKeyDown" ResizeMode="NoResize">
     <Window.Resources>
-        <local:DeviceInstanceToStringConverter x:Key="deviceInstanceToStringConverter" />
+        <utility:DeviceInstanceToStringConverter x:Key="deviceInstanceToStringConverter" />
     </Window.Resources>
     <Grid>
         <ComboBox x:Name="ControllerComboBox" Margin="10,10,90,0" VerticalAlignment="Top">
@@ -18,6 +18,69 @@
             </ComboBox.ItemTemplate>
         </ComboBox>
         <Button x:Name="UseControllerButton" Content="Use" Margin="0,10,10,0" VerticalAlignment="Top" Height="22" Click="UseControllerButton_Click" HorizontalAlignment="Right" Width="75"/>
+        <StackPanel>
+            <GroupBox Header="Status" HorizontalAlignment="Left" Height="100" VerticalAlignment="Top" Width="Auto" Margin="10,40,0,0">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1*"/>
+                        <RowDefinition Height="2*"/>
+                    </Grid.RowDefinitions>
+                    <Label Content="Mode" Grid.Column="0" Grid.Row="0" Width="100" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Center"/>
+                    <Label Content="Battery voltage" Grid.Column="1" Grid.Row="0" Width="100" HorizontalAlignment="Left" VerticalAlignment="Top" HorizontalContentAlignment="Center"/>
+                    <Label Content="{Binding Path=ModeString}" Grid.Column="0" Grid.Row="1" HorizontalContentAlignment="Center" Margin="0,2,0,0" VerticalAlignment="Top" FontSize="18"/>
+                    <Label Content="{Binding Path=ModeDescriptionString}" Grid.Column="0" Grid.Row="1" HorizontalContentAlignment="Center" Margin="0,27,0,0" VerticalAlignment="Top" FontSize="12" Foreground="#FFA4A4A4"/>
+                    <Label Content="{Binding Path=VoltageString}" Grid.Column="1" Grid.Row="1" HorizontalContentAlignment="Center" Margin="0,2,0,0" VerticalAlignment="Top" FontSize="18"/>
+                </Grid>
+            </GroupBox>
 
+            <GroupBox Header="Input" HorizontalAlignment="Left" VerticalAlignment="Top" Width="Auto" Margin="10,0,0,0">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1*"/>
+                    </Grid.RowDefinitions>
+                    
+                    <!-- TODO: Bind all the stuff below when joystick data becomes available. -->
+                    <Canvas HorizontalAlignment="Left" Grid.Column="0" Height="100" Margin="10,10,10,10" VerticalAlignment="Top" Width="100">
+                        <Ellipse Height="100" Stroke="Black" Width="100"/>
+                        <Polyline 
+                          Points="10,10 0,20 10,30 20,20 10,10 10,0" 
+                          Stroke="Blue" StrokeThickness="2"
+                          RenderTransformOrigin="0.5,0.5" Canvas.Left="40" Canvas.Top="30">
+                            <Polyline.RenderTransform>
+                                <RotateTransform Angle="0" />
+                            </Polyline.RenderTransform>
+                        </Polyline>
+                    </Canvas>
+
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                        <Label Content="Roll:"/>
+                        <Label Content="Pitch:"/>
+                        <Label Content="Yaw:"/>
+                        <Label Content="Lift:"/>
+                    </StackPanel>
+                    
+                    <!-- TODO: Fix the sources of these bindings when joystick data becomes available. -->
+                    <StackPanel Grid.Column="2" VerticalAlignment="Center">
+                        <Label Content="{Binding Path=RollString}"/>
+                        <Label Content="{Binding Path=PitchString}"/>
+                        <Label Content="{Binding Path=YawString}"/>
+                        <Label Content="{Binding Path=LiftString}"/>
+                    </StackPanel>
+                </Grid>
+
+            </GroupBox>
+        </StackPanel>
+        
+        <!-- TODO: Write serial data and debug messages to this as a console. -->
+        <TextBox Height="200" TextWrapping="Wrap" Text="TextBox" Margin="10,0,10,10" VerticalAlignment="Bottom" />
     </Grid>
 </Window>

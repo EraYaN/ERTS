@@ -66,6 +66,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Utility\EnumExtensions.cs" />
+    <Compile Include="Quadrupel.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -74,16 +76,18 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DeviceInstanceToStringConverter.cs" />
-    <Compile Include="EventExtensions.cs" />
-    <Compile Include="InputEvent.cs" />
+    <Compile Include="Utility\DeviceInstanceToStringConverter.cs" />
+    <Compile Include="Utility\EventExtensions.cs" />
+    <Compile Include="Utility\InputEvent.cs" />
     <Compile Include="InputManager.cs" />
+    <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Utility\ObservableObject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

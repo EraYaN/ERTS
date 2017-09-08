@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ERTSDashboard
+namespace ERTSDashboard.Utility
 {
     /// <summary>
 	/// A custom event used for higher-level (String) serial messaging.
