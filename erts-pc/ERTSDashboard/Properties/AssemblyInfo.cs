@@ -7,12 +7,12 @@ using System.Windows;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("ERTSDashboard")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("ERTS Dashboard")]
+[assembly: AssemblyDescription("ERTS Dashboard in an application to control a custom multirotor firmware.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("ERTSDashboard")]
-[assembly: AssemblyCopyright("Copyright ©  2017")]
+[assembly: AssemblyProduct("ERTS Dashboard")]
+[assembly: AssemblyCopyright("Copyright © 2017 Erwin de Haan,. Robin Hes, Casper van Wezel")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -51,5 +51,5 @@ using System.Windows;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("2017.9.7.40")]
-[assembly: AssemblyFileVersion("2017.9.7.40")]
+[assembly: AssemblyVersion("2017.9.8.41")]
+[assembly: AssemblyFileVersion("2017.9.8.41")]
