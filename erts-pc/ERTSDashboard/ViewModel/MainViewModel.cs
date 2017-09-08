@@ -1,17 +1,45 @@
 ﻿using ERTS.Dashboard.Utility;
 using MicroMvvm;
+using SharpDX.DirectInput;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Input;
+using System.Windows.Interop;
 
 namespace ERTS.Dashboard.ViewModel
 {
     public class MainViewModel : ObservableObject
     {
         private Quadrupel _quad = new Quadrupel();
-        //private InputManager _input = new InputManager();
+
+        private List<DeviceInstance> _devices;
+
+        public List<DeviceInstance> Devices
+        {
+            get { return _devices; }
+            set
+            {
+                _devices = value;
+                RaisePropertyChanged("Devices");
+            }
+        }
+
+        private DeviceInstance _selectedDevice;
+
+        public DeviceInstance SelectedDevice
+        {
+            get { return _selectedDevice; }
+            set
+            {
+                _selectedDevice = value;
+                RaisePropertyChanged("SelectedDevice");
+            }
+        }
+
 
         public Modes Mode
         {
@@ -27,7 +55,8 @@ namespace ERTS.Dashboard.ViewModel
         public int Voltage
         {
             get { return _quad.Voltage; }
-            set {
+            set
+            {
                 _quad.Voltage = value;
                 RaisePropertyChanged("VoltageString");
             }
@@ -46,6 +75,28 @@ namespace ERTS.Dashboard.ViewModel
         {
             Mode = Modes.Wireless;
             Voltage = 15000;
+            Devices = Data.input.EnumerateControllers();
+            SelectedDevice = null;
+        }
+
+        void BindInputExecute(object obj)
+        {
+            if (SelectedDevice != null)
+            {
+                Data.input.BindDevice((DeviceInstance)SelectedDevice, new WindowInteropHelper(obj as Window).Handle);
+            }
+        }
+
+        bool CanBindInputExecute(object obj)
+        {
+            return SelectedDevice != null && !Data.input.IsDeviceInUse(SelectedDevice);
+        }
+
+        public ICommand BindInput { get { return new RelayCommand<MainWindow>(BindInputExecute, CanBindInputExecute); } }
+
+        public void OnWindowClosing (object sender, EventArgs e)
+        {
+            if (Data.input != null) Data.input.StopThread();
         }
     }
 }

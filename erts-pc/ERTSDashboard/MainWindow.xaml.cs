@@ -26,37 +26,18 @@ namespace ERTS.Dashboard
     /// </summary>
     public partial class MainWindow : Window
     {
-        InputManager inputManager;
-        List<DeviceInstance> devices;
+ 
         public MainWindow()
         {
             InitializeComponent();
-        }
-        
-        private void UseControllerButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (ControllerComboBox.SelectedItem != null)
-            {
-                inputManager.BindDevice((DeviceInstance)ControllerComboBox.SelectedItem, new WindowInteropHelper(this).Handle);
-            }
-        }
 
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            if (inputManager != null) inputManager.StopThread();
-        }
-
-        private void Window_Initialized(object sender, EventArgs e)
-        {
             TextBoxTraceListener tbtl = new TextBoxTraceListener(DebugTraceTextBox);
             Debug.Listeners.Add(tbtl);
             Debug.WriteLine("Welcome, Debug redirection enabled.");
-            inputManager = new InputManager();
-            devices = inputManager.EnumerateControllers();
-            ControllerComboBox.ItemsSource = devices;
-            inputManager.StartThread();
 
-            this.DataContext = new MainViewModel();
+            var vm = new MainViewModel();
+            Closing += vm.OnWindowClosing;
+            this.DataContext = vm;
         }
 
         private void Window_PreviewKeyDown(object sender, KeyEventArgs e)

@@ -10,21 +10,25 @@ namespace ERTS.Dashboard {
 		/// Configuration unit
 		/// </summary>
 		static public Settings cfg;
-		/// <summary>
-		/// Serial communication interface
-		/// </summary>
+        /// <summary>
+        /// Serial communication interface
+        /// </summary>
         static public CommunicationInterface com;
-		/// <summary>
-		/// GUI visualization
-		/// </summary>
+        /// <summary>
+        /// Input manager class
+        /// </summary>
+        static public InputManager input = new InputManager();
+        /// <summary>
+        /// GUI visualization
+        /// </summary>
         //static public Visualization vis;
-		/// <summary>
-		/// Controller class
-		/// </summary>
+        /// <summary>
+        /// Controller class
+        /// </summary>
         //static public Controller ctr;
-		/// <summary>
-		/// Misc data bindings structure used for visualization
-		/// </summary>
+        /// <summary>
+        /// Misc data bindings structure used for visualization
+        /// </summary>
         public static Databindings db = new Databindings();
 		
 		//public static Observer obsvr;		

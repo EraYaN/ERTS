@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ERTS.Dashboard
 {
-    class InputManager
+    public class InputManager
     {
         DirectInput directInput;
         object usedDeviceLock = new object();
@@ -23,7 +23,8 @@ namespace ERTS.Dashboard
 
         public InputManager()
         {
-            directInput = new DirectInput();            
+            directInput = new DirectInput();
+            StartThread();
         }
 
         public List<DeviceInstance> EnumerateControllers()
@@ -44,10 +45,14 @@ namespace ERTS.Dashboard
             return devices;
         }
 
+        public bool IsDeviceInUse(DeviceInstance device)
+        {
+            return UsedDevices.Exists(d => d.Information.InstanceGuid == device.InstanceGuid);
+        }
 
         public bool BindDevice(DeviceInstance device, IntPtr WindowHandle)
         {
-            if (UsedDevices.Exists(d => d.Information.InstanceGuid == device.InstanceGuid)){
+            if (IsDeviceInUse(device)) {
                 Debug.WriteLine("Already bound {2}: {0} ({1})", device.InstanceName, device.InstanceGuid, device.Type);
                 return false;
             }
