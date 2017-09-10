@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ERTS.Dashboard.Communication {
-    public enum MessageType : byte {
-        //Primary commands (0x00-0x1F)
+﻿namespace ERTS.Dashboard.Communication.Enumerations
+{
+    public enum MessageType : byte
+    {
         Unknown = 0x00, ///Default message type
+        //Primary commands (0x01-0x1F)
         ModeSwitch = 0x01, ///Expects Acknowledgement
 
         //Status messages 0x20-0x2F
@@ -15,7 +11,7 @@ namespace ERTS.Dashboard.Communication {
 
         //Periodic messages (0x30-0x3F)
         Telemetry = 0x30, ///Expects no Acknowledgement
-        RemoteControlValues = 0x31, ///Expects no Acknowledgement
+        RemoteControl = 0x31, ///Expects no Acknowledgement
 
         //Parameter messages (0x40-0x9F)
         SetControllerRollPID = 0x40, ///Expects Acknowledgement

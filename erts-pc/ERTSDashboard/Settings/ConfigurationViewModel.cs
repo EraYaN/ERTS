@@ -17,7 +17,7 @@ namespace ERTS.Dashboard {
         /// Constructs the default instance of a SongViewModel
         /// </summary>
         public ConfigurationViewModel() {
-            // _song = new Song { ArtistName = "Unknown", SongTitle = "Unknown" };
+            // _song = new Song { ArtistName = "None", SongTitle = "None" };
         }
         #endregion
 

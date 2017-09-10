@@ -13,7 +13,7 @@
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <AssemblyVersion>2017.9.10.58</AssemblyVersion>
+    <AssemblyVersion>2017.9.10.77</AssemblyVersion>
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
@@ -72,11 +72,17 @@
     <Compile Include="AboutWindow.xaml.cs">
       <DependentUpon>AboutWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Communication\ExceptionType.cs" />
-    <Compile Include="Communication\FlightMode.cs" />
-    <Compile Include="Communication\MessageType.cs" />
+    <Compile Include="Communication\Data\AcknowledgeData.cs" />
+    <Compile Include="Communication\Data\ExceptionData.cs" />
+    <Compile Include="Communication\Data\ModeSwitchData.cs" />
+    <Compile Include="Communication\Data\RemoteControlData.cs" />
+    <Compile Include="Communication\Data\TelemeteryData.cs" />
+    <Compile Include="Communication\Enumerations\ExceptionType.cs" />
+    <Compile Include="Communication\Enumerations\FlightMode.cs" />
+    <Compile Include="Communication\Enumerations\MessageType.cs" />
     <Compile Include="Communication\CommunicationInterface.cs" />
     <Compile Include="Communication\OutputSequence.cs" />
+    <Compile Include="Communication\Data\PackageData.cs" />
     <Compile Include="Communication\Packet.cs" />
     <Compile Include="Communication\PacketReceivedEvent.cs" />
     <Compile Include="Communication\Sequence.cs" />

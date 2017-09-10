@@ -32,13 +32,7 @@ namespace ERTS.Dashboard
         SettingsWindow settingsWindow;
 
         public MainWindow()
-        {
-            var vm = new MainViewModel();
-            Closing += vm.OnWindowClosing;
-            this.DataContext = vm;
-
-            InitializeComponent();
-            
+        {     
             Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
             Thread.CurrentThread.Priority = ThreadPriority.Highest;
             if (File.Exists("cfg.bin"))
@@ -64,8 +58,12 @@ namespace ERTS.Dashboard
                 GlobalData.cfg = new Settings();
             }
             settingsWindow = new SettingsWindow();
+            GlobalData.InitCRC();
+            GlobalData.InitInputManager();
             //GlobalData.vis = new Visualization(powerCanvas);
             //GlobalData.vis.draw();
+
+            InitializeComponent();
         }
         #region UI Event Handlers
 
@@ -92,6 +90,13 @@ namespace ERTS.Dashboard
             AboutWindow aboutWindow = new AboutWindow();
             aboutWindow.ShowDialog();
         }
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            settingsWindow.Close();
+        }
+
         #endregion
+
+
     }
 }
