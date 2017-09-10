@@ -32,6 +32,7 @@ endif
 
 # Toolchain commands
 CC              := '$(GNU_PREFIX)-gcc'
+CPP             := '$(GNU_PREFIX)-g++'
 AS              := '$(GNU_PREFIX)-as'
 AR              := '$(GNU_PREFIX)-ar' -r
 LD              := '$(GNU_PREFIX)-ld'
@@ -45,9 +46,6 @@ remduplicates = $(strip $(if $1,$(firstword $1) $(call remduplicates,$(filter-ou
 
 #source common to all targets
 C_SOURCE_FILES += \
-$(abspath $(HW_SDK_PATH)/components/toolchain/system_nrf51.c) \
-$(abspath $(HW_SDK_PATH)/components/drivers_nrf/delay/nrf_delay.c) \
-$(abspath ./$(PROJECT_NAME).c) \
 $(abspath ./control.c) \
 $(abspath ./drivers/gpio.c) \
 $(abspath ./drivers/timers.c) \
@@ -62,6 +60,8 @@ $(abspath ./invensense/inv_mpu.c) \
 $(abspath ./invensense/inv_mpu_dmp_motion_driver.c) \
 $(abspath ./invensense/ml.c) \
 $(abspath ./invensense/mpu_wrapper.c) \
+$(abspath $(HW_SDK_PATH)/components/toolchain/system_nrf51.c) \
+$(abspath $(HW_SDK_PATH)/components/drivers_nrf/delay/nrf_delay.c) \
 $(abspath $(HW_SDK_PATH)/components/libraries/util/app_error.c) \
 $(abspath $(HW_SDK_PATH)/components/libraries/timer/app_timer.c) \
 $(abspath $(HW_SDK_PATH)/components/libraries/util/nrf_assert.c) \
@@ -73,6 +73,9 @@ $(abspath $(HW_SDK_PATH)/components/ble/common/ble_conn_params.c) \
 $(abspath $(HW_SDK_PATH)/components/ble/ble_services/ble_nus/ble_nus.c) \
 $(abspath $(HW_SDK_PATH)/components/ble/common/ble_srv_common.c) \
 $(abspath $(HW_SDK_PATH)/components/softdevice/common/softdevice_handler/softdevice_handler.c) \
+
+CPP_SOURCE_FILES += \
+$(abspath ./$(PROJECT_NAME).cpp) \
 
 #assembly files common to all targets
 ASM_SOURCE_FILES  = $(abspath $(HW_SDK_PATH)/components/toolchain/gcc/gcc_startup_nrf51.s)
@@ -108,17 +111,23 @@ OUTPUT_BINARY_DIRECTORY = $(OBJECT_DIRECTORY)
 BUILD_DIRECTORIES := $(sort $(OBJECT_DIRECTORY) $(OUTPUT_BINARY_DIRECTORY) $(LISTING_DIRECTORY) )
 
 #flags common to all targets
-CFLAGS  = -DNRF51
-CFLAGS += -DSOFTDEVICE_PRESENT
-CFLAGS += -DS110
-CFLAGS += -DBLE_STACK_SUPPORT_REQD
-CFLAGS += -mcpu=cortex-m0
-CFLAGS += -mthumb -mabi=aapcs --std=gnu11 # abi=Application Binary Interface
-CFLAGS += -Wall -Werror -O3
-CFLAGS += -mfloat-abi=soft # we don't want floats - no hardware fpu
+COMMON_FLAGS  = -DNRF51
+COMMON_FLAGS += -DSOFTDEVICE_PRESENT
+COMMON_FLAGS += -DS110
+COMMON_FLAGS += -DBLE_STACK_SUPPORT_REQD
+COMMON_FLAGS += -mcpu=cortex-m0
+COMMON_FLAGS += -mthumb -mabi=aapcs # abi=Application Binary Interface
+COMMON_FLAGS += -Wall -Werror -O3
+COMMON_FLAGS += -mfloat-abi=soft # we don't want floats - no hardware fpu
 # keep every function in separate section. This will allow linker to dump unused functions
-CFLAGS += -ffunction-sections -fdata-sections -fno-strict-aliasing
-CFLAGS += -fno-builtin --short-enums
+COMMON_FLAGS += -ffunction-sections -fdata-sections -fno-strict-aliasing
+COMMON_FLAGS += -fno-builtin --short-enums
+
+CFLAGS = --std=gnu11
+CFLAGS += $(COMMON_FLAGS)
+
+CXXFLAGS = --std=c++11
+CXXFLAGS += $(COMMON_FLAGS)
 
 # keep every function in separate section. This will allow linker to dump unused functions
 LDFLAGS += -Xlinker -Map=$(LISTING_DIRECTORY)/$(OUTPUT_FILENAME).map
@@ -153,25 +162,33 @@ help:
 	@echo following targets are available:
 	@echo 	$(PROJECT_NAME)
 
+# SDK_C_SOURCE_FILE_NAMES = $(notdir $(SDK_C_SOURCE_FILES))
+# SDK_C_PATHS = $(call remduplicates, $(dir $(SDK_C_SOURCE_FILES) ) )
+# SDK_C_OBJECTS = $(addprefix $(OBJECT_DIRECTORY)/, $(SDK_C_SOURCE_FILE_NAMES:.c=.o) )	
 
 C_SOURCE_FILE_NAMES = $(notdir $(C_SOURCE_FILES))
 C_PATHS = $(call remduplicates, $(dir $(C_SOURCE_FILES) ) )
 C_OBJECTS = $(addprefix $(OBJECT_DIRECTORY)/, $(C_SOURCE_FILE_NAMES:.c=.o) )
+
+CPP_SOURCE_FILE_NAMES = $(notdir $(CPP_SOURCE_FILES))
+CPP_PATHS = $(call remduplicates, $(dir $(CPP_SOURCE_FILES) ) )
+CPP_OBJECTS = $(addprefix $(OBJECT_DIRECTORY)/, $(CPP_SOURCE_FILE_NAMES:.cpp=.o) )
 
 ASM_SOURCE_FILE_NAMES = $(notdir $(ASM_SOURCE_FILES))
 ASM_PATHS = $(call remduplicates, $(dir $(ASM_SOURCE_FILES) ))
 ASM_OBJECTS = $(addprefix $(OBJECT_DIRECTORY)/, $(ASM_SOURCE_FILE_NAMES:.s=.o) )
 
 vpath %.c $(C_PATHS)
+vpath %.cpp $(C_PATHS)
 vpath %.s $(ASM_PATHS)
 
-OBJECTS = $(C_OBJECTS) $(ASM_OBJECTS)
+OBJECTS = $(C_OBJECTS) $(CPP_OBJECTS) $(ASM_OBJECTS)
 
 $(PROJECT_NAME): OUTPUT_FILENAME := $(PROJECT_NAME)
 $(PROJECT_NAME): LINKER_SCRIPT=$(PROJECT_NAME).ld
 $(PROJECT_NAME): $(BUILD_DIRECTORIES) $(OBJECTS)
 	@echo Linking target: $(OUTPUT_FILENAME).out
-	$(NO_ECHO)$(CC) $(LDFLAGS) $(OBJECTS) $(LIBS) -o $(OUTPUT_BINARY_DIRECTORY)/$(OUTPUT_FILENAME).out
+	$(NO_ECHO)$(CPP) $(LDFLAGS) $(C_OBJECTS) $(CPP_OBJECTS) $(ASM_OBJECTS) $(LIBS) -o $(OUTPUT_BINARY_DIRECTORY)/$(OUTPUT_FILENAME).out
 	$(NO_ECHO)$(MAKE) -f $(MAKEFILE_NAME) -C $(MAKEFILE_DIR) -e finalize
 
 ## Create build directories
@@ -184,6 +201,10 @@ $(OBJECT_DIRECTORY)/%.o: %.c
 	@echo Compiling file: $(notdir $<)
 	$(NO_ECHO)$(CC) $(CFLAGS) $(INC_PATHS) -c -o $@ $<
 
+$(OBJECT_DIRECTORY)/%.o: %.cpp
+	@echo Compiling file: $(notdir $<)
+	$(NO_ECHO)$(CPP) $(CXXFLAGS) $(INC_PATHS) -c -o $@ $<
+
 # Assemble files
 $(OBJECT_DIRECTORY)/%.o: %.s
 	@echo Compiling file: $(notdir $<)
@@ -193,7 +214,7 @@ $(OBJECT_DIRECTORY)/%.o: %.s
 # Link
 $(OUTPUT_BINARY_DIRECTORY)/$(OUTPUT_FILENAME).out: $(BUILD_DIRECTORIES) $(OBJECTS)
 	@echo Linking target: $(OUTPUT_FILENAME).out
-	$(NO_ECHO)$(CC) $(LDFLAGS) $(OBJECTS) $(LIBS) -o $(OUTPUT_BINARY_DIRECTORY)/$(OUTPUT_FILENAME).out
+	$(NO_ECHO)$(CPP) $(LDFLAGS) $(OBJECTS) $(LIBS) -o $(OUTPUT_BINARY_DIRECTORY)/$(OUTPUT_FILENAME).out
 
 
 ## Create binary .bin file from the .out file

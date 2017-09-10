@@ -140,7 +140,7 @@ void timers_init(void)
 	#define APP_TIMER_OP_QUEUE_SIZE         4                                           /**< Size of timer operation queues. */
 	#define QUADRUPEL_TIMER_PERIOD  APP_TIMER_TICKS(TIMER_PERIOD, APP_TIMER_PRESCALER)  // timer period is in ms
 	
-	APP_TIMER_INIT(APP_TIMER_PRESCALER, APP_TIMER_OP_QUEUE_SIZE, false);
+	APP_TIMER_INIT(APP_TIMER_PRESCALER, APP_TIMER_OP_QUEUE_SIZE, NULL);
 
 	APP_TIMER_DEF(quadrupel_timer);
 	app_timer_create(&quadrupel_timer, APP_TIMER_MODE_REPEATED, quadrupel_timer_handler);

@@ -39,6 +39,6 @@ void gpio_init(void)
 	nrf_gpio_cfg_output(8);
 	
 	// dmp interrupt - h/w limitation, we cannot setup an interrupt since all gpiote channels are used for the motors
-	nrf_gpio_cfg_input(INT_PIN, 0);
+	nrf_gpio_cfg_input(INT_PIN, NRF_GPIO_PIN_NOPULL);
 }
 

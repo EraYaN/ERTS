@@ -11,15 +11,15 @@
 #ifndef ERTS_QUAD_H__
 #define ERTS_QUAD_H__
 
-#include <inttypes.h>
+#include <stdint.h>
 #include <stdio.h>
+#include <math.h>
 #include "nrf_gpio.h"
 #include "nrf_delay.h"
 #include "inv_mpu.h"
 #include "inv_mpu_dmp_motion_driver.h"
 #include "ml.h"
 #include "app_util_platform.h"
-#include <math.h>
 
 #define RED		22
 #define YELLOW		24

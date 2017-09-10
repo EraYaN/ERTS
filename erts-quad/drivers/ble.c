@@ -34,7 +34,6 @@
 #include "nrf_gpio.h"
 #include "ble_nus.h"
 #include "app_util_platform.h"
-
 #include "erts-quad.h"
 
 #define IS_SRVC_CHANGED_CHARACT_PRESENT 0                                           /**< Include the service_changed characteristic. If not enabled, the server's database cannot be changed for the lifetime of the device. */
