@@ -62,11 +62,11 @@ namespace ERTS.Dashboard
 		{
 			get
 			{
-				if (Data.com == null)
+				if (GlobalData.com == null)
 					return "NULL";
-				if (Data.com.IsOpen)
+				if (GlobalData.com.IsOpen)
 				{
-					return Data.com.BytesInRBuffer + "|" + Data.com.BytesInTBuffer;
+					return GlobalData.com.BytesInRBuffer + "|" + GlobalData.com.BytesInTBuffer;
 				}
 				else
 				{
@@ -79,12 +79,12 @@ namespace ERTS.Dashboard
 		{
 			get
 			{
-				if (Data.ctr != null)
+				if (GlobalData.ctr != null)
 				{
-					if (Data.ctr.LastPing == -1)
+					if (GlobalData.ctr.LastPing == -1)
 						return "xx ms";
 					else
-						return string.Format("{0:f1} ms", Data.ctr.LastPing);
+						return string.Format("{0:f1} ms", GlobalData.ctr.LastPing);
 				}
 				else
 				{
@@ -95,11 +95,11 @@ namespace ERTS.Dashboard
 
         public string AlgorithmRate {
             get {
-                if (Data.ctr != null) {
-                    if (Data.ctr.AlgorithmRate <= 0)
+                if (GlobalData.ctr != null) {
+                    if (GlobalData.ctr.AlgorithmRate <= 0)
                         return "xx Hz";
                     else
-                        return string.Format("{0:f1} Hz", Data.ctr.AlgorithmRate);
+                        return string.Format("{0:f1} Hz", GlobalData.ctr.AlgorithmRate);
                 } else {
                     return "ctr is null";
                 }
@@ -110,11 +110,11 @@ namespace ERTS.Dashboard
 		{
 			get
 			{
-				if (Data.com == null)
+				if (GlobalData.com == null)
 					return Brushes.Red;
-				if (Data.com.IsOpen)
+				if (GlobalData.com.IsOpen)
 				{
-					int b = Data.com.BytesInRBuffer + Data.com.BytesInTBuffer;
+					int b = GlobalData.com.BytesInRBuffer + GlobalData.com.BytesInTBuffer;
 					if (b == 0)
 					{
 						return Brushes.Green;
@@ -139,54 +139,54 @@ namespace ERTS.Dashboard
 		{
 			get
 			{
-                if (Data.cfg == null) {
+                if (GlobalData.cfg == null) {
                     return 1;
                 }
 
-                if (Data.ctr == null)
-					return Controller.HistoryPoints * Data.cfg.TickTime / Data.cfg.UpdateTickInterval;
+                if (GlobalData.ctr == null)
+					return Controller.HistoryPoints * GlobalData.cfg.TickTime / GlobalData.cfg.UpdateTickInterval;
 
-				return Data.cfg.TickTime/Data.cfg.UpdateTickInterval * Data.ctr.PowerHistory.Length;
+				return GlobalData.cfg.TickTime/GlobalData.cfg.UpdateTickInterval * GlobalData.ctr.PowerHistory.Length;
 			}
 		}
 
         public double DutyGraphMaxTime {
             get {
-                if (Data.cfg == null) {
+                if (GlobalData.cfg == null) {
                     return 1;
                 }
-                if (Data.ctr == null)
-                    return Controller.HistoryPoints * Data.cfg.TickTime / Data.cfg.UpdateTickInterval;
+                if (GlobalData.ctr == null)
+                    return Controller.HistoryPoints * GlobalData.cfg.TickTime / GlobalData.cfg.UpdateTickInterval;
 
-                return Data.cfg.TickTime / Data.cfg.UpdateTickInterval * Data.ctr.DutyHistory.Length;
+                return GlobalData.cfg.TickTime / GlobalData.cfg.UpdateTickInterval * GlobalData.ctr.DutyHistory.Length;
             }
         }
 
         public double CurrentGraphMaxTime {
             get {
-                if (Data.cfg == null) {
+                if (GlobalData.cfg == null) {
                     return 1;
                 }
-                if (Data.ctr == null)
-                    return Controller.HistoryPoints * Data.cfg.TickTime / Data.cfg.UpdateTickInterval;
+                if (GlobalData.ctr == null)
+                    return Controller.HistoryPoints * GlobalData.cfg.TickTime / GlobalData.cfg.UpdateTickInterval;
 
-                return Data.cfg.TickTime / Data.cfg.UpdateTickInterval * Data.ctr.CurrentHistory.Length;
+                return GlobalData.cfg.TickTime / GlobalData.cfg.UpdateTickInterval * GlobalData.ctr.CurrentHistory.Length;
             }
         }
         public List<ScatterPoint> PowerPoints {
             get {
                 List<ScatterPoint> l = new List<ScatterPoint>();
-                if (Data.ctr == null)
+                if (GlobalData.ctr == null)
                     return l;
 
                 double Duty = 0;
                 double Current = 0;
                 double Power = 0;
-                long size = Math.Min(Math.Min(Data.ctr.PowerHistory.Length, Data.ctr.CurrentHistory.Length), Data.ctr.DutyHistory.Length);
+                long size = Math.Min(Math.Min(GlobalData.ctr.PowerHistory.Length, GlobalData.ctr.CurrentHistory.Length), GlobalData.ctr.DutyHistory.Length);
                 for (int i = 0; i < size; i++) {
-                    Duty = Data.ctr.DutyHistory.Seq[i];
-                    Current = Data.ctr.CurrentHistory.Seq[i];
-                    Power = Data.ctr.PowerHistory.Seq[i];
+                    Duty = GlobalData.ctr.DutyHistory.Seq[i];
+                    Current = GlobalData.ctr.CurrentHistory.Seq[i];
+                    Power = GlobalData.ctr.PowerHistory.Seq[i];
                     if (Power > 0) {
                         l.Add(new ScatterPoint(Duty, Current, 4, Power));
                     }                  
@@ -199,14 +199,14 @@ namespace ERTS.Dashboard
 			get
 			{
 				List<DataPoint> l = new List<DataPoint>();
-				if (Data.ctr == null)
+				if (GlobalData.ctr == null)
 					return l;
 
 				double x = 0;
-				foreach (double d in Data.ctr.PowerHistory.Seq)
+				foreach (double d in GlobalData.ctr.PowerHistory.Seq)
 				{
 					l.Add(new DataPoint(x, d));
-					x += Data.cfg.TickTime / Data.cfg.UpdateTickInterval;
+					x += GlobalData.cfg.TickTime / GlobalData.cfg.UpdateTickInterval;
 				}
 				return l;
 			}
@@ -214,13 +214,13 @@ namespace ERTS.Dashboard
         public List<DataPoint> RealVoltageGraphPoints {
             get {
                 List<DataPoint> l = new List<DataPoint>();
-                if (Data.ctr == null)
+                if (GlobalData.ctr == null)
                     return l;
 
                 double x = 0;
-                foreach (double d in Data.ctr.RealVoltageHistory.Seq) {
+                foreach (double d in GlobalData.ctr.RealVoltageHistory.Seq) {
                     l.Add(new DataPoint(x, d));
-                    x += Data.cfg.TickTime / Data.cfg.UpdateTickInterval;
+                    x += GlobalData.cfg.TickTime / GlobalData.cfg.UpdateTickInterval;
                 }
                 return l;
             }
@@ -228,13 +228,13 @@ namespace ERTS.Dashboard
         public List<DataPoint> RealCurrentGraphPoints {
             get {
                 List<DataPoint> l = new List<DataPoint>();
-                if (Data.ctr == null)
+                if (GlobalData.ctr == null)
                     return l;
 
                 double x = 0;
-                foreach (double d in Data.ctr.RealCurrentHistory.Seq) {
+                foreach (double d in GlobalData.ctr.RealCurrentHistory.Seq) {
                     l.Add(new DataPoint(x, d));
-                    x += Data.cfg.TickTime / Data.cfg.UpdateTickInterval;
+                    x += GlobalData.cfg.TickTime / GlobalData.cfg.UpdateTickInterval;
                 }
                 return l;
             }
@@ -242,13 +242,13 @@ namespace ERTS.Dashboard
         public List<DataPoint> DutyGraphPoints {
             get {
                 List<DataPoint> l = new List<DataPoint>();
-                if (Data.ctr == null)
+                if (GlobalData.ctr == null)
                     return l;
 
                 double x = 0;
-                foreach (double d in Data.ctr.DutyHistory.Seq) {
+                foreach (double d in GlobalData.ctr.DutyHistory.Seq) {
                     l.Add(new DataPoint(x, d));
-                    x += Data.cfg.TickTime / Data.cfg.UpdateTickInterval;
+                    x += GlobalData.cfg.TickTime / GlobalData.cfg.UpdateTickInterval;
                 }
                 return l;
             }
@@ -256,13 +256,13 @@ namespace ERTS.Dashboard
         public List<DataPoint> CurrentGraphPoints {
             get {
                 List<DataPoint> l = new List<DataPoint>();
-                if (Data.ctr == null)
+                if (GlobalData.ctr == null)
                     return l;
 
                 double x = 0;
-                foreach (double d in Data.ctr.CurrentHistory.Seq) {
+                foreach (double d in GlobalData.ctr.CurrentHistory.Seq) {
                     l.Add(new DataPoint(x, d));
-                    x += Data.cfg.TickTime / Data.cfg.UpdateTickInterval;
+                    x += GlobalData.cfg.TickTime / GlobalData.cfg.UpdateTickInterval;
                 }
                 return l;
             }

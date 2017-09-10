@@ -75,7 +75,7 @@ namespace ERTS.Dashboard.ViewModel
         {
             Mode = Modes.Wireless;
             Voltage = 15000;
-            Devices = Data.input.EnumerateControllers();
+            Devices = GlobalData.input.EnumerateControllers();
             SelectedDevice = null;
         }
 
@@ -83,20 +83,20 @@ namespace ERTS.Dashboard.ViewModel
         {
             if (SelectedDevice != null)
             {
-                Data.input.BindDevice((DeviceInstance)SelectedDevice, new WindowInteropHelper(obj as Window).Handle);
+                GlobalData.input.BindDevice((DeviceInstance)SelectedDevice, new WindowInteropHelper(obj as Window).Handle);
             }
         }
 
         bool CanBindInputExecute(object obj)
         {
-            return SelectedDevice != null && !Data.input.IsDeviceInUse(SelectedDevice);
+            return SelectedDevice != null && !GlobalData.input.IsDeviceInUse(SelectedDevice);
         }
 
         public ICommand BindInput { get { return new RelayCommand<MainWindow>(BindInputExecute, CanBindInputExecute); } }
 
         public void OnWindowClosing (object sender, EventArgs e)
         {
-            if (Data.input != null) Data.input.StopThread();
+            if (GlobalData.input != null) GlobalData.input.StopThread();
         }
     }
 }

@@ -1,10 +1,11 @@
 ﻿using ERTS.Dashboard.Communication;
+using CRCLib;
 
 namespace ERTS.Dashboard {
     /// <summary>
-    /// The static Data class.
+    /// The static GlobalData class.
     /// </summary>
-    public static class Data
+    public static class GlobalData
     {
 		/// <summary>
 		/// Configuration unit
@@ -17,7 +18,11 @@ namespace ERTS.Dashboard {
         /// <summary>
         /// Input manager class
         /// </summary>
-        static public InputManager input = new InputManager();
+        static public InputManager input;
+        /// <summary>
+        /// CRCLib class (holds tons of tables for CRC calculation)
+        /// </summary>
+        static public crclib crc;
         /// <summary>
         /// GUI visualization
         /// </summary>

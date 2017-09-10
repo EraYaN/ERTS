@@ -13,7 +13,7 @@
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <AssemblyVersion>2017.9.8.48</AssemblyVersion>
+    <AssemblyVersion>2017.9.10.56</AssemblyVersion>
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
@@ -69,15 +69,18 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Communication\Command.cs" />
+    <Compile Include="AboutWindow.xaml.cs">
+      <DependentUpon>AboutWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Communication\ExceptionType.cs" />
+    <Compile Include="Communication\FlightMode.cs" />
+    <Compile Include="Communication\MessageType.cs" />
     <Compile Include="Communication\CommunicationInterface.cs" />
-    <Compile Include="Communication\ComVars.cs" />
-    <Compile Include="Communication\ExtensionMethods.cs" />
     <Compile Include="Communication\OutputSequence.cs" />
     <Compile Include="Communication\Packet.cs" />
     <Compile Include="Communication\PacketReceivedEvent.cs" />
     <Compile Include="Communication\Sequence.cs" />
-    <Compile Include="Helpers\Data.cs" />
+    <Compile Include="Helpers\GlobalData.cs" />
     <Compile Include="Helpers\Databindings.cs" />
     <Compile Include="Utility\TextBoxTraceListener.cs" />
     <Compile Include="Settings\ConfigurationViewModel.cs" />
@@ -87,6 +90,10 @@
     </Compile>
     <Compile Include="Utility\EnumExtensions.cs" />
     <Compile Include="Quadrupel.cs" />
+    <Page Include="AboutWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -139,6 +146,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\CRCLib\CRCLib.csproj">
+      <Project>{514bdd5d-ffb9-4896-a04a-11f6595fec58}</Project>
+      <Name>CRCLib</Name>
+    </ProjectReference>
     <ProjectReference Include="..\EraYaN.Serial\EraYaN.Serial.csproj">
       <Project>{e091cb2b-20fa-43c1-a595-1ab23320f97d}</Project>
       <Name>EraYaN.Serial</Name>

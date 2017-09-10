@@ -6,209 +6,72 @@ using System.Threading.Tasks;
 
 namespace ERTS.Dashboard.Communication {
     public class Packet {
-        public byte Version;
-        public Command Command;
-        public byte ID;
-        public short DataLength;
+        public const ushort START_SEQUENCE = 0xFEFF;
+        public const int MAX_PACKET_SIZE = 20;
+        public const int HEADER_SIZE = 5;
+        public const int FOOTER_SIZE = 1;
+        public const int DATA_SIZE = MAX_PACKET_SIZE - HEADER_SIZE - FOOTER_SIZE;
+        public const byte END_SEQUENCE = 0xFF;
+
+        public ushort StartSequence;
+        public MessageType Type;
+        public ushort Checksum;
         public byte[] Data;
-        public byte[] ToByteArray() {
-            byte[] packed;
-            if (DataLength == 0) {
-                packed = new byte[4];
-            } else {
-                if (Command.HasNData()) {
-                    packed = new byte[6 + DataLength];
-                } else {
-                    packed = new byte[4 + DataLength];
-                }
-            }
+        public byte EndSequence;
 
-            packed[0] = 0xF0;
-            packed[1] = Version;
-            packed[2] = (byte)Command;
-            packed[3] = ID;
+        public byte[] ToByteArray(bool SetChecksum = true) {
+            byte[] packed = new byte[MAX_PACKET_SIZE];            
 
-            if (DataLength > 0) {
-                if (Command.HasNData()) {
-                    packed[4] = (byte)(0x00FF & DataLength);
-                    packed[5] = (byte)((0xFF00 & DataLength) >> 4);
-                    Buffer.BlockCopy(Data, 0, packed, 6, DataLength);
-                } else {
-                    Buffer.BlockCopy(Data, 0, packed, 4, DataLength);
-                }
+            packed[0] = (byte)(StartSequence & 0xFF00 >> 8);
+            packed[1] = (byte)(StartSequence & 0x00FF);
+            packed[2] = (byte)Type;
+            packed[3] = 0;
+            packed[4] = 0;
+            Buffer.BlockCopy(Data, 0, packed, 6, DATA_SIZE);
+            packed[MAX_PACKET_SIZE - 1] = EndSequence;
+            if (SetChecksum)
+            {
+                Checksum = GlobalData.crc.calculate_crc16(packed, MAX_PACKET_SIZE);
+
+                packed[3] = (byte)(Checksum & 0xFF00 >> 8);
+                packed[4] = (byte)(Checksum & 0x00FF);
             }
 
             return packed;
         }
 
         public Packet() {
-            Version = CommunicationInterface.PROTOCOL_VERSION;
+            StartSequence = START_SEQUENCE;
+            Data = Enumerable.Repeat((byte)0x0, DATA_SIZE).ToArray();
+            EndSequence = END_SEQUENCE;
         }
 
         public Packet(byte[] PacketData) {
-            //implement
-            if (PacketData.Length < 4) {
-                throw new ArgumentException("The data needs to be at least 4 bytes long, see the protocol specifications.", "data");
-            }
-            if (PacketData[0] != 0xF0) {
-                throw new ArgumentException("Invalid data, start byte not found.", "data");
-            }
-            if (PacketData[1] > CommunicationInterface.PROTOCOL_VERSION) {
-                throw new ArgumentException(string.Format("Invalid data, received protocol version {0} unsupported.", PacketData[1]), "data");
-            }
-            Version = PacketData[1];
-            Command = (Command)PacketData[2];
-            ID = PacketData[3];
-            if (Command.HasNData()) {
-                if (PacketData.Length == 5) {
-                    throw new ArgumentException("Invalid data, invalid data length (5).", "data");
-                }
-                if (PacketData.Length == 6 && (PacketData[4] != 0 && PacketData[5] != 0)) {
-                    throw new ArgumentException("Invalid data, invalid data length, data was truncated.", "data");
-                }
-                if (PacketData.Length > 4) {
-                    DataLength = (short)((PacketData[5] << 8) + PacketData[4]);
-                    if (PacketData.Length < 6 + DataLength) {
-                        throw new ArgumentException("Invalid data, invalid data length, data was truncated.", "data");
-                    }
-                    if (PacketData.Length > 6 + DataLength) {
-                        throw new ArgumentException("Invalid data, invalid data length, data was too long, unsafe.", "data");
-                    }
-                    Data = new byte[DataLength];
-                    Buffer.BlockCopy(PacketData, 6, Data, 0, DataLength);
-                }
-            } else {
-                DataLength = (short)(Command.BasePacketLength() - 4);
-                Data = new byte[DataLength];
-                Buffer.BlockCopy(PacketData, 4, Data, 0, DataLength);
-            }
+            StartSequence = (ushort)((PacketData[0]) << 8 | PacketData[1]);
+            Type = (MessageType)(PacketData[2]);
+            Checksum = (ushort)((PacketData[3]) << 8 | PacketData[4]);
+            Buffer.BlockCopy(PacketData, HEADER_SIZE, Data, 0, DATA_SIZE);
+            EndSequence = PacketData[MAX_PACKET_SIZE - 1];
         }
-
-        public bool Validate() {
-            switch (Command) {
-                case Command.OK:
-                case Command.Reset:
-                case Command.Refresh:
-                case Command.Unsupported:
-                    //no data, no id
-                    if (DataLength != 0 || ID != 0) {
-                        return false;
-                    }
-                    break;
-                case Command.Forbidden:
-                case Command.NotFound:
-                case Command.TypeMismatch:
-                case Command.GetInteger16:
-                case Command.GetInteger32:
-                case Command.GetBoolean:
-                case Command.GetFloat:
-                case Command.GetString:
-                case Command.GetFloatArray:
-                    //no data, id
-                    if (DataLength != 0 || ID == 0) {
-                        return false;
-                    }
-                    break;
-                case Command.VersionUnsupported:
-                    //1 byte data, id
-                    if (DataLength != 1 || ID == 0) {
-                        return false;
-                    }
-                    break;
-                case Command.SetInteger16:
-                    //2 byte int data, id
-                    if (DataLength != 2 || ID == 0) {
-                        return false;
-                    }
-                    break;
-                case Command.SetInteger32:
-                    //4 byte int data, id
-                    if (DataLength != 4 || ID == 0) {
-                        return false;
-                    }
-                    break;
-                case Command.SetBoolean:
-                    //1 byte boolean data, id
-                    if (DataLength != 1 || ID == 0 || (Data[0] != 0 && Data[0] != 1)) {
-                        return false;
-                    }
-                    break;
-                case Command.SetFloat:
-                    //4 byte int data, id
-                    if (DataLength != 4 || ID == 0) {
-                        return false;
-                    }
-                    break;
-                case Command.SetFloatArray:
-                case Command.SetString:
-                    //n byte string data, id
-                    if (DataLength == 0 || ID == 0 || Data.Length != DataLength) {
-                        return false;
-                    }
-                    break; 
-                case Command.Debug:
-                    //n byte string data, no id
-                    if (DataLength == 0 || ID != 0 || Data.Length != DataLength) {
-                        return false;
-                    }
-                    break;
-                default:
-                    return false;
-            }
-            return true;
+        public bool Validate()
+        {
+            byte[] PacketData = ToByteArray(false);
+            ushort cs = GlobalData.crc.calculate_crc16(PacketData, MAX_PACKET_SIZE);
+            return cs == Checksum;
+        }
+        public static bool Validate(byte[] PacketData) {
+            ushort packet_cs = (ushort)((PacketData[3] << 8) | PacketData[4]);
+            PacketData[3] = 0; //checksum to be updated later
+            PacketData[4] = 0; //checksum to be updated later
+            ushort cs = GlobalData.crc.calculate_crc16(PacketData, MAX_PACKET_SIZE);
+            return cs == packet_cs; 
         }
         public override string ToString() {
             StringBuilder sb = new StringBuilder();
-            sb.AppendFormat("Packet v{0}: {1}\n", Version, Command.ToString());
-            sb.AppendFormat("ID: {0}\n", ID);
-            switch (Command) {
-                case Command.OK:
-                case Command.Reset:
-                case Command.Refresh:
-                case Command.Unsupported:
-                case Command.Forbidden:
-                case Command.NotFound:
-                case Command.TypeMismatch:
-                case Command.GetInteger16:
-                case Command.GetInteger32:
-                case Command.GetBoolean:
-                case Command.GetFloat:
-                case Command.GetString:
-                case Command.GetFloatArray:
-                    sb.Append("No Data\n");
-                    break;
-                case Command.VersionUnsupported:
-                    sb.AppendFormat("Last version supported: {0}\n", Data[0]);
-                    break;
-                case Command.SetBoolean:
-                    sb.AppendFormat("Boolean: {0}\n", BitConverter.ToBoolean(Data, 0));
-                    break;
-                case Command.SetInteger16:
-                    sb.AppendFormat("Integer16: {0}\n", BitConverter.ToInt16(Data, 0));
-                    break;
-                case Command.SetInteger32:
-                    sb.AppendFormat("Integer32: {0}\n", BitConverter.ToInt32(Data, 0));
-                    break;
-                case Command.SetFloat:
-                    sb.AppendFormat("Float: {0}\n", BitConverter.ToSingle(Data, 0));
-                    break;
-                case Command.SetString:
-                case Command.Debug:
-                    sb.AppendFormat("Data Length: {0}\n", DataLength);
-                    sb.AppendFormat("Data: {0}\n", Encoding.ASCII.GetString(Data));
-                    break;
-                case Command.SetFloatArray:
-                    sb.AppendFormat("Data Length: {0}\n", DataLength);
-                    StringBuilder sb2 = new StringBuilder();
-                    for (int i = 0; i < DataLength/sizeof(float); i++) {
-                        sb2.Append(string.Format("{0} ",BitConverter.ToSingle(Data, i)));                        
-                    }
-                    sb.AppendFormat("Data: {0}\n", sb2.ToString());
-                    break;
-                default:
-                    sb.Append("Unknown Command\n");
-                    break;
-            }
+            sb.AppendFormat("Packet Type: {0}\n", Type.ToString());
+            sb.AppendFormat("Checksum: {0:X04}", Checksum);
+            sb.AppendFormat("Is Valid: {0}",Validate()? "Yes" : "No");
+            sb.AppendFormat("Data: {0}", BitConverter.ToString(Data,0,DATA_SIZE).Replace("-"," "));
             return sb.ToString();
         }
     }

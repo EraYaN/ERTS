@@ -48,7 +48,7 @@ namespace ERTS.Dashboard
 
 		private void openControlPanelButton_Click(object sender, RoutedEventArgs e)
 		{
-			if (Data.cfg != null)
+			if (GlobalData.cfg != null)
 			{
 				
 			}

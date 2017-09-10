@@ -8,15 +8,15 @@ using System.Diagnostics;
 
 namespace ERTS.Dashboard.Communication {
     public class CommunicationInterface : IDisposable {
-        public static readonly byte PROTOCOL_VERSION = 3;
         SerialInterface serial;
         string serialPort;
         int baudRate;
         public event EventHandler<PacketReceivedEventArgs> PacketReceivedEvent;
 
         bool isReceivingPacket = false;
-        List<byte> packetBuffer;
-        int expectedPacketLength = 4;
+        int bufferIndex = 0;
+        byte[] packetBuffer = new byte[Packet.DATA_SIZE];
+        int expectedPacketLength = Packet.MAX_PACKET_SIZE;
 
         #region Status Properties
         public bool IsOpen {
@@ -45,8 +45,8 @@ namespace ERTS.Dashboard.Communication {
         void com_SerialDataEvent(object sender, SerialDataEventArgs e) {            
             if (isReceivingPacket == false) {                
                 if (e.Data == 0xF0) {
-                    Data.db.UpdateProperty("SerialPortStatusColor");
-                    Data.db.UpdateProperty("SerialPortStatus");
+                    GlobalData.db.UpdateProperty("SerialPortStatusColor");
+                    GlobalData.db.UpdateProperty("SerialPortStatus");
                     packetBuffer = new List<byte>();
                     isReceivingPacket = true;
                     expectedPacketLength = 4;
@@ -62,11 +62,11 @@ namespace ERTS.Dashboard.Communication {
                 }
                 if (packetBuffer.Count == 3) {
                     //command received
-                    expectedPacketLength = ((Command)packetBuffer[2]).BasePacketLength();
+                    expectedPacketLength = ((MessageType)packetBuffer[2]).BasePacketLength();
                 }
                 if (packetBuffer.Count == 6) {
 
-                    if (((Command)packetBuffer[2]).HasNData()) {
+                    if (((MessageType)packetBuffer[2]).HasNData()) {
                         int datlen = (short)((packetBuffer[5] << 8) + packetBuffer[4]);
                         expectedPacketLength = 6 + datlen;
                     }
@@ -90,7 +90,7 @@ namespace ERTS.Dashboard.Communication {
         }
 
         public void SendPacket(Packet p) {
-            if (serial.IsOpen && p.Validate()) {
+            if (serial.IsOpen) {
                 serial.SendByteArray(p.ToByteArray());
             }
         }
@@ -98,7 +98,7 @@ namespace ERTS.Dashboard.Communication {
         #region Protocol Methods
         public void OK() {
             Packet p = new Packet();
-            p.Command = Command.OK;
+            p.Type = MessageType.OK;
             p.ID = 0;
             p.DataLength = 0;
             p.Data = new byte[0] { };
@@ -106,7 +106,7 @@ namespace ERTS.Dashboard.Communication {
         }
         public void Reset() {
             Packet p = new Packet();
-            p.Command = Command.Reset;
+            p.Type = MessageType.Reset;
             p.ID = 0;
             p.DataLength = 0;
             p.Data = new byte[0] { };
@@ -114,7 +114,7 @@ namespace ERTS.Dashboard.Communication {
         }
         public void Refresh() {
             Packet p = new Packet();
-            p.Command = Command.Refresh;
+            p.Type = MessageType.Refresh;
             p.ID = 0;
             p.DataLength = 0;
             p.Data = new byte[0] { };
@@ -122,7 +122,7 @@ namespace ERTS.Dashboard.Communication {
         }
         public void Forbidden(byte id) {
             Packet p = new Packet();
-            p.Command = Command.Forbidden;
+            p.Type = MessageType.Forbidden;
             p.ID = id;
             p.DataLength = 0;
             p.Data = new byte[0] { };
@@ -130,7 +130,7 @@ namespace ERTS.Dashboard.Communication {
         }
         public void NotFound(byte id) {
             Packet p = new Packet();
-            p.Command = Command.NotFound;
+            p.Type = MessageType.NotFound;
             p.ID = id;
             p.DataLength = 0;
             p.Data = new byte[0] { };
@@ -138,7 +138,7 @@ namespace ERTS.Dashboard.Communication {
         }
         public void TypeMismatch(byte id) {
             Packet p = new Packet();
-            p.Command = Command.TypeMismatch;
+            p.Type = MessageType.TypeMismatch;
             p.ID = id;
             p.DataLength = 0;
             p.Data = new byte[0] { };
@@ -146,7 +146,7 @@ namespace ERTS.Dashboard.Communication {
         }
         public void VersionUnsupported() {
             Packet p = new Packet();
-            p.Command = Command.VersionUnsupported;
+            p.Type = MessageType.VersionUnsupported;
             p.ID = 0;
             p.DataLength = 1;
             p.Data = new byte[1] { PROTOCOL_VERSION };
@@ -154,7 +154,7 @@ namespace ERTS.Dashboard.Communication {
         }
         public void Unsupported() {
             Packet p = new Packet();
-            p.Command = Command.Unsupported;
+            p.Type = MessageType.Unsupported;
             p.ID = 0;
             p.DataLength = 0;
             p.Data = new byte[0] { };
@@ -162,7 +162,7 @@ namespace ERTS.Dashboard.Communication {
         }
         public void SetBoolean(byte id, bool val) {
             Packet p = new Packet();
-            p.Command = Command.SetBoolean;
+            p.Type = MessageType.SetBoolean;
             p.ID = id;
             p.DataLength = sizeof(byte);
             p.Data = new byte[1] { (val ? (byte)1 : (byte)0) };
@@ -171,7 +171,7 @@ namespace ERTS.Dashboard.Communication {
         }
         public void SetInteger16(byte id, short val) {
             Packet p = new Packet();
-            p.Command = Command.SetInteger16;
+            p.Type = MessageType.SetInteger16;
             p.ID = id;
             p.DataLength = sizeof(short);
             p.Data = BitConverter.GetBytes(val);
@@ -179,7 +179,7 @@ namespace ERTS.Dashboard.Communication {
         }
         public void SetInteger32(byte id, int val) {
             Packet p = new Packet();
-            p.Command = Command.SetInteger32;
+            p.Type = MessageType.SetInteger32;
             p.ID = id;
             p.DataLength = sizeof(int);
             p.Data = BitConverter.GetBytes(val);
@@ -187,7 +187,7 @@ namespace ERTS.Dashboard.Communication {
         }
         public void SetFloat(byte id, float val) {
             Packet p = new Packet();
-            p.Command = Command.SetFloat;
+            p.Type = MessageType.SetFloat;
             p.ID = id;
             p.DataLength = sizeof(float);
             p.Data = BitConverter.GetBytes(val);
@@ -196,7 +196,7 @@ namespace ERTS.Dashboard.Communication {
         public void SetString(byte id, string val) {
             byte[] str_b = Encoding.ASCII.GetBytes(val);
             Packet p = new Packet();
-            p.Command = Command.SetString;
+            p.Type = MessageType.SetString;
             p.ID = id;
             p.DataLength = (short)str_b.Length;
             p.Data = str_b;
@@ -209,7 +209,7 @@ namespace ERTS.Dashboard.Communication {
                 Buffer.BlockCopy(BitConverter.GetBytes(val[i]), 0, arr_b, i*sizeof(float), sizeof(float));
             }
             Packet p = new Packet();
-            p.Command = Command.SetFloatArray;
+            p.Type = MessageType.SetFloatArray;
             p.ID = id;
             p.DataLength = (short)arr_b.Length;
             p.Data = arr_b;
@@ -218,7 +218,7 @@ namespace ERTS.Dashboard.Communication {
 
         public void GetBoolean(byte id) {
             Packet p = new Packet();
-            p.Command = Command.GetBoolean;
+            p.Type = MessageType.GetBoolean;
             p.ID = id;
             p.DataLength = 0;
             p.Data = new byte[0] { };
@@ -226,7 +226,7 @@ namespace ERTS.Dashboard.Communication {
         }
         public void GetInteger16(byte id) {
             Packet p = new Packet();
-            p.Command = Command.GetInteger16;
+            p.Type = MessageType.GetInteger16;
             p.ID = id;
             p.DataLength = 0;
             p.Data = new byte[0] { };
@@ -234,7 +234,7 @@ namespace ERTS.Dashboard.Communication {
         }
         public void GetInteger32(byte id) {
             Packet p = new Packet();
-            p.Command = Command.GetInteger32;
+            p.Type = MessageType.GetInteger32;
             p.ID = id;
             p.DataLength = 0;
             p.Data = new byte[0] { };
@@ -242,7 +242,7 @@ namespace ERTS.Dashboard.Communication {
         }
         public void GetFloat(byte id) {
             Packet p = new Packet();
-            p.Command = Command.GetFloat;
+            p.Type = MessageType.GetFloat;
             p.ID = id;
             p.DataLength = 0;
             p.Data = new byte[0] { };
@@ -250,7 +250,7 @@ namespace ERTS.Dashboard.Communication {
         }
         public void GetString(byte id) {
             Packet p = new Packet();
-            p.Command = Command.GetString;
+            p.Type = MessageType.GetString;
             p.ID = id;
             p.DataLength = 0;
             p.Data = new byte[0] { };
@@ -258,7 +258,7 @@ namespace ERTS.Dashboard.Communication {
         }
         public void GetFloatArray(byte id) {
             Packet p = new Packet();
-            p.Command = Command.GetFloatArray;
+            p.Type = MessageType.GetFloatArray;
             p.ID = id;
             p.DataLength = 0;
             p.Data = new byte[0] { };
@@ -267,7 +267,7 @@ namespace ERTS.Dashboard.Communication {
         public void Debug(string val) {
             byte[] str_b = Encoding.ASCII.GetBytes(val);
             Packet p = new Packet();
-            p.Command = Command.Debug;
+            p.Type = MessageType.Debug;
             p.ID = 0;
             p.DataLength = (short)str_b.Length;
             p.Data = str_b;

@@ -15,47 +15,25 @@ namespace ERTS.Dashboard {
             get;
             set;
         }
-        [System.ComponentModel.DefaultValueAttribute(921600)]
+        [System.ComponentModel.DefaultValueAttribute(115200)]
         public int BaudRate {
             get;
             set;
-        }
-        [System.ComponentModel.DefaultValueAttribute(false)]
-        public bool InterpolateOnSave {
-            get;
-            set;
-        }
-
-        [System.ComponentModel.DefaultValueAttribute(1.0)]
-        public double TickTime {
-            get;
-            set;
-        }
-        [System.ComponentModel.DefaultValueAttribute(1)]
-        public int UpdateTickInterval {
-            get;
-            set;
-        }
+        }        
 
         public Settings() {
 
         }
         protected Settings(SerializationInfo info, StreamingContext context) {
             try { Comport = info.GetString("Comport"); } catch { }
-            try { BaudRate = info.GetInt32("BaudRate"); } catch { }
-            try { InterpolateOnSave = info.GetBoolean("InterpolateOnSave"); } catch { }
-            try { TickTime = info.GetDouble("TickTime"); } catch { }
-            try { UpdateTickInterval = info.GetInt32("UpdateTickInterval"); } catch { }
+            try { BaudRate = info.GetInt32("BaudRate"); } catch { }            
         }
         [SecurityPermissionAttribute(SecurityAction.Demand,
         SerializationFormatter = true)]
 
         public virtual void GetObjectData(SerializationInfo info, StreamingContext context) {
             info.AddValue("Comport", Comport);
-            info.AddValue("BaudRate", BaudRate);
-            info.AddValue("InterpolateOnSave", InterpolateOnSave);            
-            info.AddValue("TickTime", TickTime);
-            info.AddValue("UpdateTickInterval", UpdateTickInterval);
+            info.AddValue("BaudRate", BaudRate);           
         }
     }
 }

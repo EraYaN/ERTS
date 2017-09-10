@@ -46,15 +46,15 @@ namespace ERTS.Dashboard {
         }
         public string Comport {
             get {
-                if (Data.cfg != null) {
-                    return Data.cfg.Comport;
+                if (GlobalData.cfg != null) {
+                    return GlobalData.cfg.Comport;
                 }
                 return String.Empty;
             }
             set {
-                if (Data.cfg != null) {
-                    if (Data.cfg.Comport != value) {
-                        Data.cfg.Comport = value;
+                if (GlobalData.cfg != null) {
+                    if (GlobalData.cfg.Comport != value) {
+                        GlobalData.cfg.Comport = value;
                         RaisePropertyChanged("Comport");
                     }
                 }
@@ -62,32 +62,32 @@ namespace ERTS.Dashboard {
         }
         public int BaudRate {
             get {
-                if (Data.cfg != null) {
-                    return Data.cfg.BaudRate;
+                if (GlobalData.cfg != null) {
+                    return GlobalData.cfg.BaudRate;
                 }
                 return 0;
             }
             set {
-                if (Data.cfg != null) {
-                    if (Data.cfg.BaudRate != value) {
-                        Data.cfg.BaudRate = value;
+                if (GlobalData.cfg != null) {
+                    if (GlobalData.cfg.BaudRate != value) {
+                        GlobalData.cfg.BaudRate = value;
                         RaisePropertyChanged("BaudRate");
                     }
                 }
             }
         }
 
-        public bool InterpolateOnSave {
+        /*public bool InterpolateOnSave {
             get {
-                if (Data.cfg != null) {
-                    return Data.cfg.InterpolateOnSave;
+                if (GlobalData.cfg != null) {
+                    return GlobalData.cfg.InterpolateOnSave;
                 }
                 return false;
             }
             set {
-                if (Data.cfg != null) {
-                    if (Data.cfg.InterpolateOnSave != value) {
-                        Data.cfg.InterpolateOnSave = value;
+                if (GlobalData.cfg != null) {
+                    if (GlobalData.cfg.InterpolateOnSave != value) {
+                        GlobalData.cfg.InterpolateOnSave = value;
                         RaisePropertyChanged("InterpolateOnSave");
                     }
                 }
@@ -96,15 +96,15 @@ namespace ERTS.Dashboard {
 
         public double TickTime {
             get {
-                if (Data.cfg != null) {
-                    return Data.cfg.TickTime;
+                if (GlobalData.cfg != null) {
+                    return GlobalData.cfg.TickTime;
                 }
                 return 0;
             }
             set {
-                if (Data.cfg != null) {
-                    if (Data.cfg.TickTime != value) {
-                        Data.cfg.TickTime = value;
+                if (GlobalData.cfg != null) {
+                    if (GlobalData.cfg.TickTime != value) {
+                        GlobalData.cfg.TickTime = value;
                         RaisePropertyChanged("TickTime");
                     }
                 }
@@ -112,20 +112,20 @@ namespace ERTS.Dashboard {
         }
         public int UpdateTickInterval {
             get {
-                if (Data.cfg != null) {
-                    return Data.cfg.UpdateTickInterval;
+                if (GlobalData.cfg != null) {
+                    return GlobalData.cfg.UpdateTickInterval;
                 }
                 return 0;
             }
             set {
-                if (Data.cfg != null) {
-                    if (Data.cfg.UpdateTickInterval != value) {
-                        Data.cfg.UpdateTickInterval = value;
+                if (GlobalData.cfg != null) {
+                    if (GlobalData.cfg.UpdateTickInterval != value) {
+                        GlobalData.cfg.UpdateTickInterval = value;
                         RaisePropertyChanged("UpdateTickInterval");
                     }
                 }
             }
-        }
+        }*/
         
         #endregion
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Ports;
 
@@ -94,23 +95,23 @@ namespace EraYaN.Serial
                 }
                 return 0;
             } catch (IOException e) {
-                //MessageBox.Show("SerialInterface Error:\n" + e.Message, "SerialInterface Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                Debug.WriteLine("Error: " + e.Message, "SerialInterface");
                 lastError = e.Message;
                 return -1;
             } catch (ArgumentException e) {
-                //MessageBox.Show("SerialInterface Error:\n" + e.Message, "SerialInterface Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                Debug.WriteLine("Error: " + e.Message, "SerialInterface");
                 lastError = e.Message;
                 return -2;
             } catch (InvalidOperationException e) {
-                //MessageBox.Show("SerialInterface Error:\n" + e.Message, "SerialInterface Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                Debug.WriteLine("Error: " + e.Message, "SerialInterface");
                 lastError = e.Message;
                 return -3;
             } catch (UnauthorizedAccessException e) {
-                //MessageBox.Show("SerialInterface Error:\n" + e.Message, "SerialInterface Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                Debug.WriteLine("Error: " + e.Message, "SerialInterface");
                 lastError = e.Message;
                 return -4;
             } catch (Exception e) {
-                //MessageBox.Show("SerialInterface Error:\n" + e.Message, "SerialInterface Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                Debug.WriteLine("Error: " + e.Message, "SerialInterface");
                 lastError = e.Message;
                 return 1;
             }
