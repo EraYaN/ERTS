@@ -23,7 +23,7 @@
 #include <string.h>
 #include <math.h>
 #include "inv_mpu.h"
-#include "erts-quad.h"
+#include "driver.h"
 
 /* The following functions must be defined for this platform:
  * i2c_write(unsigned char slave_addr, unsigned char reg_addr,
@@ -1340,7 +1340,7 @@ int mpu_read_fifo(short *gyro, short *accel, unsigned long *timestamp,
         return 0;
 //    log_i("FIFO count: %hd\n", fifo_count);
     if (fifo_count > (st.hw->max_fifo >> 1)) {
-        // FIFO is 50% full, better check overflow bit. 
+        // FIFO is 50% full, better check overflow bit.
         if (i2c_read(st.hw->addr, st.reg->int_status, 1, data))
             return -1;
         if (data[0] & BIT_FIFO_OVERFLOW) {
