@@ -6,7 +6,7 @@
         xmlns:utility="clr-namespace:ERTS.Dashboard.Utility"
         xmlns:viewmodel="clr-namespace:ERTS.Dashboard.ViewModel"
         mc:Ignorable="d"
-        Title="MainWindow" Height="600" Width="800" PreviewKeyDown="Window_PreviewKeyDown" ResizeMode="NoResize" Initialized="Window_Initialized">
+        Title="MainWindow" Height="600" Width="800" PreviewKeyDown="Window_PreviewKeyDown" ResizeMode="NoResize" Initialized="Window_Initialized" Closing="Window_Closing">
     <Window.Resources>
         <utility:DeviceInstanceToStringConverter x:Key="deviceInstanceToStringConverter" />
     </Window.Resources>

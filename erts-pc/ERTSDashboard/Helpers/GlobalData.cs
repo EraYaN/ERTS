@@ -19,10 +19,19 @@ namespace ERTS.Dashboard {
         /// Input manager class
         /// </summary>
         static public InputManager input;
+        static public void InitInputManager()
+        {
+            input = new InputManager();
+            input.StartThread();
+        }
         /// <summary>
         /// CRCLib class (holds tons of tables for CRC calculation)
         /// </summary>
         static public crclib crc;
+        static public void InitCRC()
+        {
+            crc = new crclib();
+        }
         /// <summary>
         /// GUI visualization
         /// </summary>
@@ -34,7 +43,7 @@ namespace ERTS.Dashboard {
         /// <summary>
         /// Misc data bindings structure used for visualization
         /// </summary>
-        public static Databindings db = new Databindings();
+        //public static Databindings db = new Databindings();
 		
 		//public static Observer obsvr;		
     }
