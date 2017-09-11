@@ -5,10 +5,12 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ERTS.Dashboard
+namespace ERTS.Dashboard.Input
 {
-    public class InputManager
+    public class InputManager : IDisposable
     {
+        public event EventHandler<InputEventArgs> InputEvent;
+
         DirectInput directInput;
         object usedDeviceLock = new object();
         List<Device> UsedDevices = new List<Device>();
@@ -52,13 +54,15 @@ namespace ERTS.Dashboard
 
         public bool BindDevice(DeviceInstance device, IntPtr WindowHandle)
         {
-            if (IsDeviceInUse(device)) {
+            if (IsDeviceInUse(device))
+            {
                 Debug.WriteLine("Already bound {2}: {0} ({1})", device.InstanceName, device.InstanceGuid, device.Type);
                 return false;
             }
-            
+
             Device boundDevice;
-            switch (device.Type) {
+            switch (device.Type)
+            {
                 case DeviceType.Keyboard:
                     boundDevice = new Keyboard(directInput);
                     break;
@@ -94,7 +98,7 @@ namespace ERTS.Dashboard
 
         public void StopThread()
         {
-            if (cancelTokenSource !=null)
+            if (cancelTokenSource != null)
                 cancelTokenSource.Cancel(false);
         }
 
@@ -110,7 +114,8 @@ namespace ERTS.Dashboard
             {
                 if (cancelToken.IsCancellationRequested)
                 {
-                    lock (usedDeviceLock) {
+                    lock (usedDeviceLock)
+                    {
                         foreach (Device d in UsedDevices)
                         {
                             d.Unacquire();
@@ -122,19 +127,20 @@ namespace ERTS.Dashboard
                 lock (usedDeviceLock)
                 {
                     foreach (Device d in UsedDevices)
-                    {                        
+                    {
                         if (!d.IsDisposed)
                         {
                             d.Poll();
                             if (d.Information.Type == DeviceType.Keyboard)
                             {
                                 var updates = ((Keyboard)d).GetBufferedData();
-                                foreach (var state in updates)
-                                {                                    
+                                foreach (KeyboardUpdate state in updates)
+                                {
                                     Debug.Write(state);
                                     Debug.WriteLine(String.Format("; Raw: {0}; Key: {1}", state.RawOffset, state.Key));
                                 }
-                            } else if (d.Information.Type == DeviceType.Mouse)
+                            }
+                            else if (d.Information.Type == DeviceType.Mouse)
                             {
                                 var updates = ((Mouse)d).GetBufferedData();
                                 foreach (var state in updates)
@@ -142,7 +148,8 @@ namespace ERTS.Dashboard
                                     Debug.Write(state);
                                     Debug.WriteLine(String.Format("; Raw: {0}; IsButtom: {1}", state.RawOffset, state.IsButton));
                                 }
-                            } else
+                            }
+                            else
                             {
                                 var updates = ((Joystick)d).GetBufferedData();
                                 foreach (var state in updates)
@@ -154,9 +161,61 @@ namespace ERTS.Dashboard
 
                         }
                     }
-                } 
-            
+                }
+
             }
         }
+
+        #region IDisposable Support
+        private bool disposedValue = false; // To detect redundant calls
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    // dispose managed state (managed objects).
+                    StopThread();
+                    directInput.Dispose();
+                }
+
+                // free unmanaged resources (unmanaged objects) and override a finalizer below.
+                // set large fields to null.
+                UsedDevices = null;
+                disposedValue = true;
+            }
+        }
+
+        // override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
+        ~InputManager()
+        {
+            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+            Dispose(false);
+        }
+
+        // This code added to correctly implement the disposable pattern.
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        #endregion
+
+        #region Event Source
+        void SendInputEvent(IStateUpdate StateUpdate, Guid DeviceGuid)
+        {
+            OnInput(new InputEventArgs(StateUpdate, DeviceGuid));
+        }
+
+        protected virtual void OnInput(InputEventArgs e)
+        {
+            if (InputEvent != null)
+            {
+                InputEvent(this, e);
+            }
+        }
+        #endregion
     }
 }

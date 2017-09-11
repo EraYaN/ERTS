@@ -1,5 +1,6 @@
 ﻿using ERTS.Dashboard.Communication;
 using CRCLib;
+using ERTS.Dashboard.Input;
 
 namespace ERTS.Dashboard {
     /// <summary>
@@ -25,6 +26,14 @@ namespace ERTS.Dashboard {
             input.StartThread();
         }
         /// <summary>
+        /// Connects all inputs to the controller and other modules.
+        /// </summary>
+        static public PatchBox patchbox;
+        static public void InitPatchBox()
+        {
+            patchbox = new PatchBox();
+        }
+        /// <summary>
         /// CRCLib class (holds tons of tables for CRC calculation)
         /// </summary>
         static public crclib crc;
@@ -37,14 +46,19 @@ namespace ERTS.Dashboard {
         /// </summary>
         //static public Visualization vis;
         /// <summary>
-        /// Controller class
+        /// Controller class, implements all timers and behaviour of the PC side of the control software.
         /// </summary>
         //static public Controller ctr;
+        static public void InitController()
+        {
+            //ctr = new Controller();
+            return;
+        }
         /// <summary>
         /// Misc data bindings structure used for visualization
         /// </summary>
         //public static Databindings db = new Databindings();
-		
-		//public static Observer obsvr;		
+
+        //public static Observer obsvr;		
     }
 }

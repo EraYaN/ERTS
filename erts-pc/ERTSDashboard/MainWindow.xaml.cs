@@ -60,6 +60,8 @@ namespace ERTS.Dashboard
             settingsWindow = new SettingsWindow();
             GlobalData.InitCRC();
             GlobalData.InitInputManager();
+            GlobalData.InitPatchBox();
+            GlobalData.InitController();
             //GlobalData.vis = new Visualization(powerCanvas);
             //GlobalData.vis.draw();
 

@@ -13,7 +13,7 @@
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <AssemblyVersion>2017.9.10.77</AssemblyVersion>
+    <AssemblyVersion>2017.9.11.78</AssemblyVersion>
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
@@ -88,6 +88,10 @@
     <Compile Include="Communication\Sequence.cs" />
     <Compile Include="Helpers\GlobalData.cs" />
     <Compile Include="Helpers\Databindings.cs" />
+    <Compile Include="Input\BindingActuatedEvent.cs" />
+    <Compile Include="Input\ControlActuator.cs" />
+    <Compile Include="Input\InputBinding.cs" />
+    <Compile Include="Input\PatchBox.cs" />
     <Compile Include="Utility\TextBoxTraceListener.cs" />
     <Compile Include="Settings\ConfigurationViewModel.cs" />
     <Compile Include="Settings\Settings.cs" />
@@ -110,8 +114,8 @@
     </Compile>
     <Compile Include="Utility\DeviceInstanceToStringConverter.cs" />
     <Compile Include="Utility\EventExtensions.cs" />
-    <Compile Include="Utility\InputEvent.cs" />
-    <Compile Include="InputManager.cs" />
+    <Compile Include="Input\InputEvent.cs" />
+    <Compile Include="Input\InputManager.cs" />
     <Compile Include="Utility\NumberExtensions.cs" />
     <Compile Include="Utility\UIExtensions.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
@@ -165,5 +169,6 @@
       <Name>MicroMvvm</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
