@@ -10,7 +10,7 @@ GNU_PREFIX := arm-none-eabi
 export OUTPUT_FILENAME
 #MAKEFILE_NAME := $(CURDIR)/$(word $(words $(MAKEFILE_LIST)),$(MAKEFILE_LIST))
 MAKEFILE_NAME := $(MAKEFILE_LIST)
-MAKEFILE_DIR := $(dir $(MAKEFILE_NAME) ) 
+MAKEFILE_DIR := $(dir $(MAKEFILE_NAME) )
 
 TEMPLATE_PATH = $(HW_SDK_PATH)/components/toolchain/gcc
 
@@ -25,7 +25,7 @@ RM := rm -rf
 
 #echo suspend
 ifeq ("$(VERBOSE)","1")
-NO_ECHO := 
+NO_ECHO :=
 else
 NO_ECHO := @
 endif
@@ -46,7 +46,6 @@ remduplicates = $(strip $(if $1,$(firstword $1) $(call remduplicates,$(filter-ou
 
 #source common to all targets
 C_SOURCE_FILES += \
-$(abspath ./control.c) \
 $(abspath ./drivers/gpio.c) \
 $(abspath ./drivers/timers.c) \
 $(abspath ./drivers/uart.c) \
@@ -76,6 +75,7 @@ $(abspath $(HW_SDK_PATH)/components/softdevice/common/softdevice_handler/softdev
 
 CPP_SOURCE_FILES += \
 $(abspath ./$(PROJECT_NAME).cpp) \
+$(abspath ./quad.cpp) \
 
 #assembly files common to all targets
 ASM_SOURCE_FILES  = $(abspath $(HW_SDK_PATH)/components/toolchain/gcc/gcc_startup_nrf51.s)
@@ -83,6 +83,7 @@ ASM_SOURCE_FILES  = $(abspath $(HW_SDK_PATH)/components/toolchain/gcc/gcc_startu
 #includes common to all targets
 INC_PATHS += -I$(abspath ./)
 INC_PATHS += -I$(abspath ./invensense)
+INC_PATHS += -I$(abspath ./drivers)
 INC_PATHS += -I$(abspath ./drivers/config)
 INC_PATHS += -I$(abspath ./shared)
 INC_PATHS += -I$(abspath $(HW_SDK_PATH)/components/device)
@@ -136,9 +137,9 @@ LDFLAGS += -mcpu=cortex-m0
 # let linker to dump unused sections
 LDFLAGS += -Wl,--gc-sections
 # use newlib in nano version
-LDFLAGS += --specs=nano.specs -lc -lnosys 
+LDFLAGS += --specs=nano.specs -lc -lnosys
 # math library
-LDFLAGS += -lm 
+LDFLAGS += -lm
 LIBS = -lm
 
 # Assembler flags
@@ -150,7 +151,7 @@ ASMFLAGS += -DBLE_STACK_SUPPORT_REQD
 #default target - first one defined
 
 #It should not clean by default, that is stupid.
-default: $(PROJECT_NAME) 
+default: $(PROJECT_NAME)
 
 #building all targets
 all: clean
@@ -164,7 +165,7 @@ help:
 
 # SDK_C_SOURCE_FILE_NAMES = $(notdir $(SDK_C_SOURCE_FILES))
 # SDK_C_PATHS = $(call remduplicates, $(dir $(SDK_C_SOURCE_FILES) ) )
-# SDK_C_OBJECTS = $(addprefix $(OBJECT_DIRECTORY)/, $(SDK_C_SOURCE_FILE_NAMES:.c=.o) )	
+# SDK_C_OBJECTS = $(addprefix $(OBJECT_DIRECTORY)/, $(SDK_C_SOURCE_FILE_NAMES:.c=.o) )
 
 C_SOURCE_FILE_NAMES = $(notdir $(C_SOURCE_FILES))
 C_PATHS = $(call remduplicates, $(dir $(C_SOURCE_FILES) ) )
@@ -184,7 +185,8 @@ vpath %.s $(ASM_PATHS)
 
 OBJECTS = $(C_OBJECTS) $(CPP_OBJECTS) $(ASM_OBJECTS)
 
-$(PROJECT_NAME): OUTPUT_FILENAME := $(PROJECT_NAME)
+OUTPUT_FILENAME := $(PROJECT_NAME)
+
 $(PROJECT_NAME): LINKER_SCRIPT=$(PROJECT_NAME).ld
 $(PROJECT_NAME): $(BUILD_DIRECTORIES) $(OBJECTS)
 	@echo Linking target: $(OUTPUT_FILENAME).out
@@ -234,7 +236,7 @@ genbin:
 	$(NO_ECHO)$(OBJCOPY) -O binary $(OUTPUT_BINARY_DIRECTORY)/$(OUTPUT_FILENAME).out $(OUTPUT_BINARY_DIRECTORY)/$(OUTPUT_FILENAME).bin
 
 ## Create binary .hex file from the .out file
-genhex: 
+genhex:
 	@echo Preparing: $(OUTPUT_FILENAME).hex
 	$(NO_ECHO)$(OBJCOPY) -O ihex $(OUTPUT_BINARY_DIRECTORY)/$(OUTPUT_FILENAME).out $(OUTPUT_BINARY_DIRECTORY)/$(OUTPUT_FILENAME).hex
 
@@ -253,12 +255,15 @@ cleanobj:
 upload:
 	$(DFU_TOOL) $(OUTPUT_BINARY_DIRECTORY)/$(OUTPUT_FILENAME).bin
 
-pc: 
+upload_mac:
+	python $(DFU_TOOL) -p "/dev/tty.usbserial-DN00P2TE" $(OUTPUT_BINARY_DIRECTORY)/$(OUTPUT_FILENAME).bin
+
+pc:
 	cd ../$(PROJECT_NAME_PC)/; make
 
-pc-run: 
+pc-run:
 	cd ../$(PROJECT_NAME_PC)/; make run
-	
+
 # Upload should not build.
 upload-run: pc
 	$(DFU_TOOL) $(OUTPUT_BINARY_DIRECTORY)/$(OUTPUT_FILENAME).bin

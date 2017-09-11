@@ -1,15 +1,4 @@
-/*------------------------------------------------------------------
- *  erts-quad.h -- defines, globals, function prototypes
- *
- *  I. Protonotarios
- *  Embedded Software Lab
- *
- *  July 2016
- *------------------------------------------------------------------
- */
-
-#ifndef ERTS_QUAD_H__
-#define ERTS_QUAD_H__
+#pragma once
 
 #include <stdint.h>
 #include <stdio.h>
@@ -21,20 +10,19 @@
 #include "ml.h"
 #include "app_util_platform.h"
 
-#define RED		22
-#define YELLOW		24
-#define GREEN		28
-#define BLUE		30
-#define INT_PIN		5
+#define NUM_MOTORS  4
 
-bool demo_done;
+#define RED         22
+#define YELLOW      24
+#define GREEN       28
+#define BLUE        30
+#define INT_PIN     5
 
 // Control
-int16_t motor[4],ae[4];
-void run_filters_and_control();
+extern int16_t motor[4], ae[4];
 
 // Timers
-#define TIMER_PERIOD	50 //50ms=20Hz (MAX 23bit, 4.6h)
+#define TIMER_PERIOD    50 //50ms=20Hz (MAX 23bit, 4.6h)
 void timers_init(void);
 uint32_t get_time_us(void);
 bool check_timer_flag(void);
@@ -46,9 +34,9 @@ void gpio_init(void);
 // Queue
 #define QUEUE_SIZE 256
 typedef struct {
-	uint8_t Data[QUEUE_SIZE];
-	uint16_t first,last;
-  	uint16_t count; 
+    uint8_t Data[QUEUE_SIZE];
+    uint16_t first,last;
+    uint16_t count;
 } queue;
 void init_queue(queue *q);
 void enqueue(queue *q, char x);
@@ -57,24 +45,24 @@ char dequeue(queue *q);
 // UART
 #define RX_PIN_NUMBER  16
 #define TX_PIN_NUMBER  14
-queue rx_queue;
-queue tx_queue;
-uint32_t last_correct_checksum_time;
+extern queue rx_queue;
+extern queue tx_queue;
+extern uint32_t last_correct_checksum_time;
 void uart_init(void);
 void uart_put(uint8_t);
 
 // TWI
-#define TWI_SCL	4
-#define TWI_SDA	2
+#define TWI_SCL 4
+#define TWI_SDA 2
 void twi_init(void);
 bool i2c_write(uint8_t slave_addr, uint8_t reg_addr, uint8_t length, uint8_t const *data);
 bool i2c_read(uint8_t slave_addr, uint8_t reg_addr, uint8_t length, uint8_t *data);
 
 // MPU wrapper
-int16_t phi, theta, psi;
-int16_t sp, sq, sr;
-int16_t sax, say, saz;
-uint8_t sensor_fifo_count;
+extern int16_t phi, theta, psi;
+extern int16_t sp, sq, sr;
+extern int16_t sax, say, saz;
+extern uint8_t sensor_fifo_count;
 void imu_init(bool dmp, uint16_t interrupt_frequency); // if dmp is true, the interrupt frequency is 100Hz - otherwise 32Hz-8kHz
 void get_dmp_data(void);
 void get_raw_sensor_data(void);
@@ -82,13 +70,13 @@ bool check_sensor_int_flag(void);
 void clear_sensor_int_flag(void);
 
 // Barometer
-int32_t pressure;
-int32_t temperature;
+extern int32_t pressure;
+extern int32_t temperature;
 void read_baro(void);
 void baro_init(void);
 
 // ADC
-uint16_t bat_volt;
+extern uint16_t bat_volt;
 void adc_init(void);
 void adc_request_sample(void);
 
@@ -101,10 +89,8 @@ bool flash_read_byte(uint32_t address, uint8_t *buffer);
 bool flash_read_bytes(uint32_t address, uint8_t *buffer, uint32_t count);
 
 // BLE
-queue ble_rx_queue;
-queue ble_tx_queue;
-volatile bool radio_active;
+extern queue ble_rx_queue;
+extern queue ble_tx_queue;
+extern volatile bool radio_active;
 void ble_init(void);
 void ble_send(void);
-
-#endif // ERTS_QUAD_H__

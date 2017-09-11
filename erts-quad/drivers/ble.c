@@ -34,11 +34,15 @@
 #include "nrf_gpio.h"
 #include "ble_nus.h"
 #include "app_util_platform.h"
-#include "erts-quad.h"
+#include "driver.h"
+
+queue ble_rx_queue;
+queue ble_tx_queue;
+volatile bool radio_active;
 
 #define IS_SRVC_CHANGED_CHARACT_PRESENT 0                                           /**< Include the service_changed characteristic. If not enabled, the server's database cannot be changed for the lifetime of the device. */
 
-#define DEVICE_NAME                     "Quadrupel"		          /**< Name of device. Will be included in the advertising data. */
+#define DEVICE_NAME                     "Quadrupel"               /**< Name of device. Will be included in the advertising data. */
 #define NUS_SERVICE_UUID_TYPE           BLE_UUID_TYPE_VENDOR_BEGIN                  /**< UUID type for the Nordic UART Service (vendor specific). */
 
 #define APP_ADV_INTERVAL                64                                          /**< The advertising interval (in units of 0.625 ms. This value corresponds to 40 ms). */
@@ -62,7 +66,7 @@ static ble_uuid_t                       m_adv_uuids[] = {{BLE_UUID_NUS_SERVICE, 
 
 /**@brief Function for the GAP initialization.
  *
- * @details This function will set up all the necessary GAP (Generic Access Profile) parameters of 
+ * @details This function will set up all the necessary GAP (Generic Access Profile) parameters of
  *          the device. It also sets the permissions and appearance.
  */
 static void gap_params_init(void)
@@ -72,7 +76,7 @@ static void gap_params_init(void)
     ble_gap_conn_sec_mode_t sec_mode;
 
     BLE_GAP_CONN_SEC_MODE_SET_OPEN(&sec_mode);
-    
+
 /*    err_code = sd_ble_gap_device_name_set(&sec_mode,
                                           (const uint8_t *) DEVICE_NAME,
                                           strlen(DEVICE_NAME));
@@ -103,7 +107,7 @@ static void nus_data_handler(ble_nus_t * p_nus, uint8_t * p_data, uint16_t lengt
 {
     for (uint32_t i = 0; i < length; i++)
     {
-	enqueue(&ble_rx_queue, p_data[i]);
+    enqueue(&ble_rx_queue, p_data[i]);
     }
 }
 
@@ -113,11 +117,11 @@ static void services_init(void)
 {
     uint32_t       err_code;
     ble_nus_init_t nus_init;
-    
+
     memset(&nus_init, 0, sizeof(nus_init));
 
     nus_init.data_handler = nus_data_handler;
-    
+
     err_code = ble_nus_init(&m_nus, &nus_init);
     APP_ERROR_CHECK(err_code);
 }
@@ -163,7 +167,7 @@ static void conn_params_init(void)
 {
     uint32_t               err_code;
     ble_conn_params_init_t cp_init;
-    
+
     memset(&cp_init, 0, sizeof(cp_init));
 
     cp_init.p_conn_params                  = NULL;
@@ -174,7 +178,7 @@ static void conn_params_init(void)
     cp_init.disconnect_on_fail             = true;//false
     cp_init.evt_handler                    = on_conn_params_evt;
     cp_init.error_handler                  = conn_params_error_handler;
-    
+
     err_code = ble_conn_params_init(&cp_init);
     APP_ERROR_CHECK(err_code);
 }
@@ -187,16 +191,16 @@ static void conn_params_init(void)
 static void on_ble_evt(ble_evt_t * p_ble_evt)
 {
     uint32_t                         err_code;
-    
+
     switch (p_ble_evt->header.evt_id)
     {
         case BLE_GAP_EVT_CONNECTED:
-	    nrf_gpio_pin_clear(GREEN);
+        nrf_gpio_pin_clear(GREEN);
             m_conn_handle = p_ble_evt->evt.gap_evt.conn_handle;
             break;
-            
+
         case BLE_GAP_EVT_DISCONNECTED:
-	    nrf_gpio_pin_set(GREEN);
+        nrf_gpio_pin_set(GREEN);
             m_conn_handle = BLE_CONN_HANDLE_INVALID;
             break;
 
@@ -219,10 +223,10 @@ static void on_ble_evt(ble_evt_t * p_ble_evt)
 }
 
 
-/**@brief Function for dispatching a S110 SoftDevice event to all modules with a S110 SoftDevice 
+/**@brief Function for dispatching a S110 SoftDevice event to all modules with a S110 SoftDevice
  *        event handler.
  *
- * @details This function is called from the S110 SoftDevice event interrupt handler after a S110 
+ * @details This function is called from the S110 SoftDevice event interrupt handler after a S110
  *          SoftDevice event has been received.
  *
  * @param[in] p_ble_evt  S110 SoftDevice event.
@@ -232,7 +236,7 @@ static void ble_evt_dispatch(ble_evt_t * p_ble_evt)
     ble_conn_params_on_ble_evt(p_ble_evt);
     ble_nus_on_ble_evt(&m_nus, p_ble_evt);
     on_ble_evt(p_ble_evt);
-    ble_advertising_on_ble_evt(p_ble_evt);    
+    ble_advertising_on_ble_evt(p_ble_evt);
 }
 
 
@@ -243,7 +247,7 @@ static void ble_evt_dispatch(ble_evt_t * p_ble_evt)
 static void ble_stack_init(void)
 {
     uint32_t err_code;
-    
+
     // Initialize SoftDevice.
     SOFTDEVICE_HANDLER_INIT(NRF_CLOCK_LFCLKSRC_XTAL_20_PPM, NULL);
 
@@ -253,7 +257,7 @@ static void ble_stack_init(void)
     ble_enable_params.gatts_enable_params.service_changed = IS_SRVC_CHANGED_CHARACT_PRESENT;
     err_code = sd_ble_enable(&ble_enable_params);
     APP_ERROR_CHECK(err_code);
-    
+
     // Subscribe for BLE events.
     err_code = softdevice_ble_evt_handler_set(ble_evt_dispatch);
     APP_ERROR_CHECK(err_code);
@@ -289,61 +293,60 @@ static void advertising_init(void)
 
 void ble_send(void)
 {
-	uint8_t data[20];
-	uint8_t length;
+    uint8_t data[20];
+    uint8_t length;
 
-	while(ble_tx_queue.count)
-	{
-		if (ble_tx_queue.count > 20)
-		{
-			for (uint8_t p=0;p<20;p++)
-			{
-				data[p] = dequeue(&ble_tx_queue);
-			}
-			ble_nus_string_send(&m_nus, data, 20);
-		}
-		else
-		{ 
-			length = ble_tx_queue.count;
-			for (uint8_t p=0;p<length;p++)
-			{
-				data[p] = dequeue(&ble_tx_queue);
-			}
-			ble_nus_string_send(&m_nus, data, length);
-		}	
-	}	
-}
-
-void SWI1_IRQHandler(void)
-{
-	radio_active = !radio_active;
+    while(ble_tx_queue.count)
+    {
+        if (ble_tx_queue.count > 20)
+        {
+            for (uint8_t p=0;p<20;p++)
+            {
+                data[p] = dequeue(&ble_tx_queue);
+            }
+            ble_nus_string_send(&m_nus, data, 20);
+        }
+        else
+        {
+            length = ble_tx_queue.count;
+            for (uint8_t p=0;p<length;p++)
+            {
+                data[p] = dequeue(&ble_tx_queue);
+            }
+            ble_nus_string_send(&m_nus, data, length);
+        }
+    }
 }
 
 void notifications_init(void)
 {
-	radio_active = false;
-	sd_nvic_ClearPendingIRQ(SWI1_IRQn);
-	sd_nvic_SetPriority(SWI1_IRQn, 1);
-	sd_nvic_EnableIRQ(SWI1_IRQn);
+    radio_active = false;
+    sd_nvic_ClearPendingIRQ(SWI1_IRQn);
+    sd_nvic_SetPriority(SWI1_IRQn, 1);
+    sd_nvic_EnableIRQ(SWI1_IRQn);
 
-	sd_radio_notification_cfg_set(NRF_RADIO_NOTIFICATION_TYPE_INT_ON_BOTH, NRF_RADIO_NOTIFICATION_DISTANCE_1740US);
+    sd_radio_notification_cfg_set(NRF_RADIO_NOTIFICATION_TYPE_INT_ON_BOTH, NRF_RADIO_NOTIFICATION_DISTANCE_1740US);
+}
+
+void SWI1_IRQHandler() {
+    radio_active = !radio_active;
 }
 
 void ble_init(void)
 {
-	uint32_t err_code;
+    uint32_t err_code;
 
-	init_queue(&ble_rx_queue); // Initialize receive queue
-	init_queue(&ble_tx_queue); // Initialize transmit queue
+    init_queue(&ble_rx_queue); // Initialize receive queue
+    init_queue(&ble_tx_queue); // Initialize transmit queue
 
-	ble_stack_init();
-	notifications_init();
-	gap_params_init();
-	services_init();
-	advertising_init();
-	conn_params_init();
+    ble_stack_init();
+    notifications_init();
+    gap_params_init();
+    services_init();
+    advertising_init();
+    conn_params_init();
 
-	err_code = ble_advertising_start(BLE_ADV_MODE_FAST);
-	APP_ERROR_CHECK(err_code);
+    err_code = ble_advertising_start(BLE_ADV_MODE_FAST);
+    APP_ERROR_CHECK(err_code);
 
 }
