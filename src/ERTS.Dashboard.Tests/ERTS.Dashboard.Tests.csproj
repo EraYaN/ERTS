@@ -57,7 +57,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ERTSDashboard\ERTS.Dashboard.csproj">
+    <ProjectReference Include="..\ERTS.Dashboard\ERTS.Dashboard.csproj">
       <Project>{fdddd840-d8ec-4d5a-bc44-cb11ce8c2cdb}</Project>
       <Name>ERTS.Dashboard</Name>
     </ProjectReference>

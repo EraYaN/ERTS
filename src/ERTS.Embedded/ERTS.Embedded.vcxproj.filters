@@ -1,0 +1,97 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A20A}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFA}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD02}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="erts-quad.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="quad.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="drivers\adc.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="drivers\baro.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="drivers\ble.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="drivers\gpio.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="drivers\queue.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="drivers\spi_flash.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="drivers\timers.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="drivers\twi.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="drivers\uart.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="invensense\inv_mpu.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="invensense\inv_mpu_dmp_motion_driver.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="invensense\ml.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="invensense\mpu_wrapper.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="erts-quad.ld" />
+    <None Include="Makefile" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="quad.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="drivers\driver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="drivers\config\nrf_drv_config.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="drivers\config\pstorage_platform.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="invensense\dmpKey.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="invensense\dmpmap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="invensense\inv_mpu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="invensense\inv_mpu_dmp_motion_driver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="invensense\ml.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
