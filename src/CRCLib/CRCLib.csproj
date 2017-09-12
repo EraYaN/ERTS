@@ -11,7 +11,7 @@
     <AssemblyName>CRCLib</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <AssemblyVersion>2017.9.11.8</AssemblyVersion>
+    <AssemblyVersion>2017.9.12.9</AssemblyVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>

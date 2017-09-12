@@ -9,22 +9,6 @@
       <Configuration>Release</Configuration>
       <Platform>ARM</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Debug|x86">
-      <Configuration>Debug</Configuration>
-      <Platform>x86</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Release|x86">
-      <Configuration>Release</Configuration>
-      <Platform>x86</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Debug|x64">
-      <Configuration>Debug</Configuration>
-      <Platform>x64</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Release|x64">
-      <Configuration>Release</Configuration>
-      <Platform>x64</Platform>
-    </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="drivers\adc.c" />
@@ -72,26 +56,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'" Label="Configuration">
     <UseDebugLibraries>true</UseDebugLibraries>
     <ConfigurationType>Makefile</ConfigurationType>
+    <RemoteRootDir>~/ERTS/src</RemoteRootDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'" Label="Configuration">
     <UseDebugLibraries>false</UseDebugLibraries>
     <ConfigurationType>Makefile</ConfigurationType>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'" Label="Configuration">
-    <UseDebugLibraries>true</UseDebugLibraries>
-    <ConfigurationType>Makefile</ConfigurationType>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'" Label="Configuration">
-    <UseDebugLibraries>false</UseDebugLibraries>
-    <ConfigurationType>Makefile</ConfigurationType>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <UseDebugLibraries>true</UseDebugLibraries>
-    <ConfigurationType>Makefile</ConfigurationType>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <UseDebugLibraries>false</UseDebugLibraries>
-    <ConfigurationType>Makefile</ConfigurationType>
+    <RemoteRootDir>~/ERTS/src</RemoteRootDir>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings" />
@@ -100,45 +70,17 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <RemoteBuildCommandLine>cd $(RemoteProjectDir) &amp;&amp; make</RemoteBuildCommandLine>
-    <RemoteReBuildCommandLine>make clean &amp;&amp; make</RemoteReBuildCommandLine>
-    <RemoteCleanCommandLine>make clean</RemoteCleanCommandLine>
-    <RemoteBuildOutputs>_build/ERTS.Embedded.bin</RemoteBuildOutputs>
-    <AdditionalSourcesToCopyMapping>$(SolutionDir)libraries:=$(RemoteRootDir)/libraries;$(AdditionalSourcesToCopyMapping)</AdditionalSourcesToCopyMapping>
+    <RemoteReBuildCommandLine>cd $(RemoteProjectDir) &amp;&amp; make clean &amp;&amp; make</RemoteReBuildCommandLine>
+    <RemoteCleanCommandLine>cd $(RemoteProjectDir) &amp;&amp; make clean</RemoteCleanCommandLine>
+    <RemoteBuildOutputs>$(RemoteProjectDir)/_build/erts-quad.bin</RemoteBuildOutputs>
+    <NMakeIncludeSearchPath>$(ProjectDir);$(ProjectDir)invensense;$(ProjectDir)drivers;$(ProjectDir)drivers\config;$(SolutionDir)..\libraries\nRF51_SDK_10.0.0_dc26b5e\components\device;$(SolutionDir)..\libraries\nRF51_SDK_10.0.0_dc26b5e\components\toolchain\gcc;$(SolutionDir)..\libraries\nRF51_SDK_10.0.0_dc26b5e\components\toolchain;$(SolutionDir)..\libraries\nRF51_SDK_10.0.0_dc26b5e\components\drivers_nrf\hal;$(SolutionDir)..\libraries\nRF51_SDK_10.0.0_dc26b5e\components\drivers_nrf\delay;$(SolutionDir)..\libraries\nRF51_SDK_10.0.0_dc26b5e\components\softdevice\s110\headers;$(SolutionDir)..\libraries\nRF51_SDK_10.0.0_dc26b5e\components\drivers_nrf\config;$(SolutionDir)..\libraries\nRF51_SDK_10.0.0_dc26b5e\components\libraries\util;$(SolutionDir)..\libraries\nRF51_SDK_10.0.0_dc26b5e\components\ble\common;$(SolutionDir)..\libraries\nRF51_SDK_10.0.0_dc26b5e\components\drivers_nrf\pstorage;$(SolutionDir)..\libraries\nRF51_SDK_10.0.0_dc26b5e\components\libraries\timer;$(SolutionDir)..\libraries\nRF51_SDK_10.0.0_dc26b5e\components\ble\ble_services\ble_nus;$(SolutionDir)..\libraries\nRF51_SDK_10.0.0_dc26b5e\components\drivers_nrf\common;$(SolutionDir)..\libraries\nRF51_SDK_10.0.0_dc26b5e\components\ble\ble_advertising;$(SolutionDir)..\libraries\nRF51_SDK_10.0.0_dc26b5e\components\libraries\trace;$(SolutionDir)..\libraries\nRF51_SDK_10.0.0_dc26b5e\components\softdevice\common\softdevice_handler;$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
     <RemoteBuildCommandLine>cd $(RemoteProjectDir) &amp;&amp; make</RemoteBuildCommandLine>
-    <RemoteReBuildCommandLine>make clean &amp;&amp; make</RemoteReBuildCommandLine>
-    <RemoteCleanCommandLine>make clean</RemoteCleanCommandLine>
-    <RemoteBuildOutputs>_build/ERTS.Embedded.bin</RemoteBuildOutputs>
-    <AdditionalSourcesToCopyMapping>$(SolutionDir)libraries:=$(RemoteRootDir)/libraries;$(AdditionalSourcesToCopyMapping)</AdditionalSourcesToCopyMapping>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <RemoteBuildCommandLine>cd $(RemoteProjectDir) &amp;&amp; make</RemoteBuildCommandLine>
-    <RemoteReBuildCommandLine>make clean &amp;&amp; make</RemoteReBuildCommandLine>
-    <RemoteCleanCommandLine>make clean</RemoteCleanCommandLine>
-    <RemoteBuildOutputs>_build/ERTS.Embedded.bin</RemoteBuildOutputs>
-    <AdditionalSourcesToCopyMapping>$(SolutionDir)libraries:=$(RemoteRootDir)/libraries;$(AdditionalSourcesToCopyMapping)</AdditionalSourcesToCopyMapping>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <RemoteBuildCommandLine>cd $(RemoteProjectDir) &amp;&amp; make</RemoteBuildCommandLine>
-    <RemoteReBuildCommandLine>make clean &amp;&amp; make</RemoteReBuildCommandLine>
-    <RemoteCleanCommandLine>make clean</RemoteCleanCommandLine>
-    <RemoteBuildOutputs>_build/ERTS.Embedded.bin</RemoteBuildOutputs>
-    <AdditionalSourcesToCopyMapping>$(SolutionDir)libraries:=$(RemoteRootDir)/libraries;$(AdditionalSourcesToCopyMapping)</AdditionalSourcesToCopyMapping>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
-    <RemoteBuildCommandLine>cd $(RemoteProjectDir) &amp;&amp; make</RemoteBuildCommandLine>
-    <RemoteReBuildCommandLine>make clean &amp;&amp; make</RemoteReBuildCommandLine>
-    <RemoteCleanCommandLine>make clean</RemoteCleanCommandLine>
-    <RemoteBuildOutputs>_build/ERTS.Embedded.bin</RemoteBuildOutputs>
-    <AdditionalSourcesToCopyMapping>$(SolutionDir)libraries:=$(RemoteRootDir)/libraries;$(AdditionalSourcesToCopyMapping)</AdditionalSourcesToCopyMapping>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
-    <RemoteBuildCommandLine>cd $(RemoteProjectDir) &amp;&amp; make</RemoteBuildCommandLine>
-    <RemoteReBuildCommandLine>make clean &amp;&amp; make</RemoteReBuildCommandLine>
-    <RemoteCleanCommandLine>make clean</RemoteCleanCommandLine>
-    <RemoteBuildOutputs>_build/ERTS.Embedded.bin</RemoteBuildOutputs>
-    <AdditionalSourcesToCopyMapping>$(SolutionDir)libraries:=$(RemoteRootDir)/libraries;$(AdditionalSourcesToCopyMapping)</AdditionalSourcesToCopyMapping>
+    <RemoteReBuildCommandLine>cd $(RemoteProjectDir) &amp;&amp; make clean &amp;&amp; make</RemoteReBuildCommandLine>
+    <RemoteCleanCommandLine>cd $(RemoteProjectDir) &amp;&amp; make clean</RemoteCleanCommandLine>
+    <RemoteBuildOutputs>$(RemoteProjectDir)/_build/erts-quad.bin</RemoteBuildOutputs>
+    <NMakeIncludeSearchPath>$(ProjectDir);$(ProjectDir)invensense;$(ProjectDir)drivers;$(ProjectDir)drivers\config;$(SolutionDir)..\libraries\nRF51_SDK_10.0.0_dc26b5e\components\device;$(SolutionDir)..\libraries\nRF51_SDK_10.0.0_dc26b5e\components\toolchain\gcc;$(SolutionDir)..\libraries\nRF51_SDK_10.0.0_dc26b5e\components\toolchain;$(SolutionDir)..\libraries\nRF51_SDK_10.0.0_dc26b5e\components\drivers_nrf\hal;$(SolutionDir)..\libraries\nRF51_SDK_10.0.0_dc26b5e\components\drivers_nrf\delay;$(SolutionDir)..\libraries\nRF51_SDK_10.0.0_dc26b5e\components\softdevice\s110\headers;$(SolutionDir)..\libraries\nRF51_SDK_10.0.0_dc26b5e\components\drivers_nrf\config;$(SolutionDir)..\libraries\nRF51_SDK_10.0.0_dc26b5e\components\libraries\util;$(SolutionDir)..\libraries\nRF51_SDK_10.0.0_dc26b5e\components\ble\common;$(SolutionDir)..\libraries\nRF51_SDK_10.0.0_dc26b5e\components\drivers_nrf\pstorage;$(SolutionDir)..\libraries\nRF51_SDK_10.0.0_dc26b5e\components\libraries\timer;$(SolutionDir)..\libraries\nRF51_SDK_10.0.0_dc26b5e\components\ble\ble_services\ble_nus;$(SolutionDir)..\libraries\nRF51_SDK_10.0.0_dc26b5e\components\drivers_nrf\common;$(SolutionDir)..\libraries\nRF51_SDK_10.0.0_dc26b5e\components\ble\ble_advertising;$(SolutionDir)..\libraries\nRF51_SDK_10.0.0_dc26b5e\components\libraries\trace;$(SolutionDir)..\libraries\nRF51_SDK_10.0.0_dc26b5e\components\softdevice\common\softdevice_handler;$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
   </PropertyGroup>
   <ItemDefinitionGroup />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

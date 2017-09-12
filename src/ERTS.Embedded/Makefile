@@ -1,6 +1,6 @@
-PROJECT_NAME := ERTS.Embedded
+PROJECT_NAME := erts-quad
 
-HW_SDK_PATH := ../libraries/nRF51_SDK_10.0.0_dc26b5e
+HW_SDK_PATH := ../../libraries/nRF51_SDK_10.0.0_dc26b5e
 DFU_TOOL := ../tools/dfu_serial/./serial_dfu.py
 
 GNU_VERSION := 5.4.1
