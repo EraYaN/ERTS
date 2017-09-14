@@ -171,10 +171,10 @@ void Quadrupel::remote_control(uint16_t lift, int16_t roll, int16_t pitch, int16
 	bb = b + b;
 	d = DRONE_CONSTANT_D;
 
-	oo1 = (a_lift / b + 2 * a_pitch / (bb)-a_yaw / d);
-	oo2 = (a_lift / b - 2 * a_roll / (bb)+a_yaw / d);
-	oo3 = (a_lift / b - 2 * a_pitch / (bb)-a_yaw / d);
-	oo4 = (a_lift / b + 2 * a_roll / (bb)+a_yaw / d);
+	oo1 = (lift / b + 2 * pitch / (bb)-yaw / d);
+	oo2 = (lift / b - 2 * roll / (bb)+yaw / d);
+	oo3 = (lift / b - 2 * pitch / (bb)-yaw / d);
+	oo4 = (lift / b + 2 * roll / (bb)+yaw / d);
 
 	// clip ooi as rotors only provide prositive thrust
 	if (oo1 < 0) oo1 = 0;
