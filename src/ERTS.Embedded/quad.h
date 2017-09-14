@@ -39,7 +39,7 @@ public:
 
     flightMode_t get_mode() { return _mode; }
 
-    void set_mode(flightMode_t new_mode) { _new_mode = new_mode; }
+	void set_mode(flightMode_t new_mode);
 
     void update_motors();
 

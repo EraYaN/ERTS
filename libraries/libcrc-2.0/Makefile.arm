@@ -56,32 +56,7 @@
 # end application to different environments.
 #
 
-ifeq ($(OS),Windows_NT)
-
-INCDIR = include\\
-LIBDIR = lib\\
-OBJDIR = obj\\
-SRCDIR = src\\
-TSTDIR = test\\
-EXADIR = examples\\
-
-CC     = cl
-LINK   = link
-RM     = del /q
-STRIP  = dir
-OBJEXT = .obj
-LIBEXT = .lib
-EXEEXT = .exe
-OFLAG  = -Fo
-XFLAG  = /NOLOGO /OUT:
-AR     = lib
-ARQC   = /NOLOGO /OUT:
-ARQ    = /NOLOGO
-RANLIB = dir
-CFLAGS = -Ox -Ot -MT -GT -volatile:iso -I${INCDIR} -nologo -J -sdl -Wall -WX \
-	-wd4464 -wd4710 -wd4711 -wd4201 -wd4820
-
-else
+include ../Shared.mk
 
 INCDIR = include/
 LIBDIR = lib/
@@ -90,24 +65,9 @@ SRCDIR = src/
 TSTDIR = test/
 EXADIR = examples/
 
-CC     = cc
-LINK   = cc
-RM     = /bin/rm -f
-STRIP  = strip
-OBJEXT = .o
-LIBEXT = .a
-EXEEXT =
-OFLAG  = -o
-XFLAG  = -o
-AR     = ar
-ARQC   = qc 
-ARQ    = q
-RANLIB = ranlib
 CFLAGS = -Wall -Wextra -Wstrict-prototypes -Wshadow -Wpointer-arith \
 	-Wcast-qual -Wcast-align -Wwrite-strings -Wredundant-decls \
 	-Wnested-externs -Werror -O3 -funsigned-char -I${INCDIR}
-
-endif
 
 #
 # Default compile commands for the source files
@@ -129,7 +89,7 @@ ${EXADIR}${OBJDIR}%${OBJEXT} : ${EXADIR}%.c
 #
 
 all:							\
-	${LIBDIR}libcrc${LIBEXT}			\
+	libcrc_build			\
 	testall${EXEEXT}				\
 	tstcrc${EXEEXT}
 
@@ -177,13 +137,13 @@ tstcrc${EXEEXT} :					\
 		${LIBDIR}libcrc${LIBEXT}
 	${STRIP} tstcrc${EXEEXT}
 
-libonly: ${LIBDIR}libcrc${LIBEXT}
+libonly: libcrc_build
 #
 # libcrc is the library which can be linked with other applications. The
 # extension of the library depends on the operating system used.
 #
 
-${LIBDIR}libcrc${LIBEXT} :			\
+libcrc_build :			\
 	${OBJDIR}crc8${OBJEXT}			\
 	${OBJDIR}crc16${OBJEXT}			\
 	${OBJDIR}crc32${OBJEXT}			\
@@ -194,14 +154,14 @@ ${LIBDIR}libcrc${LIBEXT} :			\
 	${OBJDIR}nmea-chk${OBJEXT}		\
 	Makefile
 		${RM}        ${LIBDIR}libcrc${LIBEXT}
-		${AR} ${ARQC}${LIBDIR}libcrc${LIBEXT} ${OBJDIR}crc16${OBJEXT}
-		${AR} ${ARQ} ${LIBDIR}libcrc${LIBEXT} ${OBJDIR}crc32${OBJEXT}
-		${AR} ${ARQ} ${LIBDIR}libcrc${LIBEXT} ${OBJDIR}crc8${OBJEXT}
-		${AR} ${ARQ} ${LIBDIR}libcrc${LIBEXT} ${OBJDIR}crcccitt${OBJEXT}
-		${AR} ${ARQ} ${LIBDIR}libcrc${LIBEXT} ${OBJDIR}crcdnp${OBJEXT}
-		${AR} ${ARQ} ${LIBDIR}libcrc${LIBEXT} ${OBJDIR}crckrmit${OBJEXT}
-		${AR} ${ARQ} ${LIBDIR}libcrc${LIBEXT} ${OBJDIR}crcsick${OBJEXT}
-		${AR} ${ARQ} ${LIBDIR}libcrc${LIBEXT} ${OBJDIR}nmea-chk${OBJEXT}
+		${AR}c ${LIBDIR}libcrc${LIBEXT} ${OBJDIR}crc16${OBJEXT}
+		${AR} ${LIBDIR}libcrc${LIBEXT} ${OBJDIR}crc32${OBJEXT}
+		${AR} ${LIBDIR}libcrc${LIBEXT} ${OBJDIR}crc8${OBJEXT}
+		${AR} ${LIBDIR}libcrc${LIBEXT} ${OBJDIR}crcccitt${OBJEXT}
+		${AR} ${LIBDIR}libcrc${LIBEXT} ${OBJDIR}crcdnp${OBJEXT}
+		${AR} ${LIBDIR}libcrc${LIBEXT} ${OBJDIR}crckrmit${OBJEXT}
+		${AR} ${LIBDIR}libcrc${LIBEXT} ${OBJDIR}crcsick${OBJEXT}
+		${AR} ${LIBDIR}libcrc${LIBEXT} ${OBJDIR}nmea-chk${OBJEXT}
 		${RANLIB}    ${LIBDIR}libcrc${LIBEXT}
 
 #
