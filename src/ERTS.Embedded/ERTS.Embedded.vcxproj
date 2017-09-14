@@ -11,35 +11,34 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Makefile" />
+  </ItemGroup>
+  <ItemGroup>
     <ClCompile Include="drivers\adc.c" />
     <ClCompile Include="drivers\baro.c" />
     <ClCompile Include="drivers\ble.c" />
     <ClCompile Include="drivers\gpio.c" />
+    <ClCompile Include="drivers\invensense\inv_mpu.c" />
+    <ClCompile Include="drivers\invensense\inv_mpu_dmp_motion_driver.c" />
+    <ClCompile Include="drivers\invensense\ml.c" />
+    <ClCompile Include="drivers\invensense\mpu_wrapper.c" />
     <ClCompile Include="drivers\queue.c" />
     <ClCompile Include="drivers\spi_flash.c" />
     <ClCompile Include="drivers\timers.c" />
     <ClCompile Include="drivers\twi.c" />
     <ClCompile Include="drivers\uart.c" />
     <ClCompile Include="erts-quad.cpp" />
-    <ClCompile Include="invensense\inv_mpu.c" />
-    <ClCompile Include="invensense\inv_mpu_dmp_motion_driver.c" />
-    <ClCompile Include="invensense\ml.c" />
-    <ClCompile Include="invensense\mpu_wrapper.c" />
     <ClCompile Include="quad.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="erts-quad.ld" />
-    <None Include="Makefile" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="drivers\config\nrf_drv_config.h" />
     <ClInclude Include="drivers\config\pstorage_platform.h" />
     <ClInclude Include="drivers\driver.h" />
-    <ClInclude Include="invensense\dmpKey.h" />
-    <ClInclude Include="invensense\dmpmap.h" />
-    <ClInclude Include="invensense\inv_mpu.h" />
-    <ClInclude Include="invensense\inv_mpu_dmp_motion_driver.h" />
-    <ClInclude Include="invensense\ml.h" />
+    <ClInclude Include="drivers\invensense\dmpKey.h" />
+    <ClInclude Include="drivers\invensense\dmpmap.h" />
+    <ClInclude Include="drivers\invensense\inv_mpu.h" />
+    <ClInclude Include="drivers\invensense\inv_mpu_dmp_motion_driver.h" />
+    <ClInclude Include="drivers\invensense\ml.h" />
     <ClInclude Include="quad.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

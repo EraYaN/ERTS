@@ -10,6 +10,12 @@ extern "C"
 #include "packet.h"
 #include "packet_datastructures.h"
 
+
+// TODO[c] use proper values
+// note: float/double
+#define DRONE_CONSTANT_B 1.00
+#define DRONE_CONSTANT_D 1.00
+
 class Quadrupel {
     flightMode_t _mode = Safe;
     flightMode_t _new_mode = Safe;
