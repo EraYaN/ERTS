@@ -22,7 +22,7 @@ namespace ERTS.Dashboard.Input
             //TODO figure out Value scaling and keyboard vs joystick statechange using GetType or something.
             //TODO set value in controller.
             //GlobalData.ctr.SetYaw(e.InnerEvent.StateUpdate.Value);
-            Debug.WriteLine("Sending Yaw Input to Controller, by method call.")
+            Debug.WriteLine("Sending Yaw Input to Controller, by method call.");
         }
     }
 }
