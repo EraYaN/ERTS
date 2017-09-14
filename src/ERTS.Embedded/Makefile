@@ -26,7 +26,7 @@ $(abspath ./drivers/invensense/inv_mpu.c) \
 $(abspath ./drivers/invensense/inv_mpu_dmp_motion_driver.c) \
 $(abspath ./drivers/invensense/ml.c) \
 $(abspath ./drivers/invensense/mpu_wrapper.c) \
-$(HW_SDK_SOURCE_FILES) # from Shared.mk
+$(HW_SDK_C_SOURCE_FILES) # from Shared.mk
 
 CPP_SOURCE_FILES += \
 $(abspath ./$(PROJECT_NAME).cpp) \
@@ -61,7 +61,7 @@ CXXFLAGS += $(COMMON_FLAGS) # from Shared.mk
 
 LDFLAGS += $(SHARED_LDFLAGS)
 # math library
-#LDFLAGS += -lm
+LDFLAGS += -lm
 
 LIBS = -lm -l$(EXT_DEPS_COMM) -l$(EXT_DEPS_CRC)
 
