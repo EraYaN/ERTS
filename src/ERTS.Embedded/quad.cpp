@@ -164,7 +164,29 @@ void Quadrupel::remote_control(uint16_t lift, int16_t roll, int16_t pitch, int16
     if (_mode != Manual)
         return;
 
-    // TODO: Implement equations for desired lift, roll (rate?), pitch (rate?) and yaw (rate?).
+	// Equations to get desired lift, roll (rate?), pitch (rate?) and yaw (rate?).
+	int oo1, oo2, oo3, oo4;
+	int b, d, bb;
+	b = DRONE_CONSTANT_B;
+	bb = b + b;
+	d = DRONE_CONSTANT_D;
+
+	oo1 = (a_lift / b + 2 * a_pitch / (bb)-a_yaw / d);
+	oo2 = (a_lift / b - 2 * a_roll / (bb)+a_yaw / d);
+	oo3 = (a_lift / b - 2 * a_pitch / (bb)-a_yaw / d);
+	oo4 = (a_lift / b + 2 * a_roll / (bb)+a_yaw / d);
+
+	// clip ooi as rotors only provide prositive thrust
+	if (oo1 < 0) oo1 = 0;
+	if (oo2 < 0) oo2 = 0;
+	if (oo3 < 0) oo3 = 0;
+	if (oo4 < 0) oo4 = 0;
+
+	// with ai = oi it follows
+	ae[0] = sqrt(oo1);
+	ae[1] = sqrt(oo2);
+	ae[2] = sqrt(oo3);
+	ae[3] = sqrt(oo4);
 }
 
 void Quadrupel::update_motors() {
