@@ -1,6 +1,7 @@
 ﻿using ERTS.Dashboard.Communication;
 using CRCLib;
 using ERTS.Dashboard.Input;
+using ERTS.Dashboard.Control;
 
 namespace ERTS.Dashboard {
     /// <summary>
@@ -42,23 +43,34 @@ namespace ERTS.Dashboard {
             crc = new crclib();
         }
         /// <summary>
-        /// GUI visualization
-        /// </summary>
-        //static public Visualization vis;
-        /// <summary>
         /// Controller class, implements all timers and behaviour of the PC side of the control software.
         /// </summary>
-        //static public Controller ctr;
+        static public Controller ctr;
         static public void InitController()
         {
-            //ctr = new Controller();
+            ctr = new Controller();
             return;
         }
         /// <summary>
         /// Misc data bindings structure used for visualization
         /// </summary>
         //public static Databindings db = new Databindings();
-
-        //public static Observer obsvr;		
+        
+        static public void Dispose()
+        {
+            if (cfg != null)
+                cfg = null;
+            if (com != null)
+                com.Dispose();
+            if (input != null)
+                input.Dispose();
+            if (patchbox != null)
+                patchbox = null;
+            if (crc != null)
+                crc = null;
+            if (ctr != null)
+                ctr.Dispose();
+            return;
+        }
     }
 }

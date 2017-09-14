@@ -95,6 +95,7 @@ namespace ERTS.Dashboard
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             settingsWindow.Close();
+            GlobalData.input.Dispose();
         }
 
         #endregion

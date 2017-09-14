@@ -17,15 +17,17 @@ namespace ERTS.Dashboard.Input
         /// </summary>
         public readonly IStateUpdate StateUpdate;
         public readonly Guid DeviceGuid;
+        public readonly bool InputEngaged;
         /// <summary>
         /// Wrapper for input data event
         /// </summary>
         /// <param name="_UpdateData">The device update structure.</param>
         /// <param name="_DeviceGuid">The device GUID.</param>
-        public InputEventArgs(IStateUpdate _StateUpdate, Guid _DeviceGuid)
+        public InputEventArgs(IStateUpdate _StateUpdate, Guid _DeviceGuid, bool _InputEngaged = true)
         {
             StateUpdate = _StateUpdate;
             DeviceGuid = _DeviceGuid;
+            InputEngaged = _InputEngaged;
         }
     }
 }

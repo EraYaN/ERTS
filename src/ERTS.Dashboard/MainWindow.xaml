@@ -64,16 +64,19 @@
                     </Grid.RowDefinitions>
 
                     <!-- TODO: Bind all the stuff below when joystick data becomes available. -->
-                    <Canvas HorizontalAlignment="Left" Grid.Column="0" Height="100" Margin="10,10,10,10" VerticalAlignment="Top" Width="100">
-                        <Ellipse Height="100" Stroke="Black" Width="100"/>
+                    <Canvas HorizontalAlignment="Left" Grid.Column="0" Height="100" Margin="10,10,10,10" VerticalAlignment="Top" Width="115">
+                        <Ellipse Height="100" StrokeThickness="1" Stroke="Black" Width="100"/>
                         <Polyline 
                           Points="10,10 0,20 10,30 20,20 10,10 10,0" 
                           Stroke="Blue" StrokeThickness="2"
-                          RenderTransformOrigin="0.5,0.5" Canvas.Left="40" Canvas.Top="30">
+                            Fill="Transparent"
+                          RenderTransformOrigin="0.5,0.66" Canvas.Left="{Binding Roll}" Canvas.Top="{Binding Pitch}">
                             <Polyline.RenderTransform>
-                                <RotateTransform Angle="0" />
+                                <RotateTransform Angle="{Binding Yaw}" />
                             </Polyline.RenderTransform>
                         </Polyline>
+                        <Rectangle Stroke="Black" StrokeThickness="1" Fill="Transparent" Height="100" Width="7" Canvas.Left="109"/>
+                        <Rectangle Fill="Blue" Height="{Binding Lift}" Width="5" Canvas.Bottom="1" Canvas.Left="110"/>
                     </Canvas>
 
                     <StackPanel Grid.Column="1" VerticalAlignment="Center">

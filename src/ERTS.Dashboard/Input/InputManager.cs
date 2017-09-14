@@ -1,4 +1,5 @@
-﻿using SharpDX.DirectInput;
+﻿using SharpDX;
+using SharpDX.DirectInput;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -14,6 +15,10 @@ namespace ERTS.Dashboard.Input
         DirectInput directInput;
         object usedDeviceLock = new object();
         List<Device> UsedDevices = new List<Device>();
+
+        bool IsInputEngaged = true;
+
+        Task threadTask;
 
         //Set for mode 1 RC control
         JoystickOffset Pitch = JoystickOffset.RotationY; //XB360 Right Stick Vertical
@@ -49,7 +54,22 @@ namespace ERTS.Dashboard.Input
 
         public bool IsDeviceInUse(DeviceInstance device)
         {
-            return UsedDevices.Exists(d => d.Information.InstanceGuid == device.InstanceGuid);
+            if (UsedDevices != null)
+                return UsedDevices.Exists(d => d.Information.InstanceGuid == device.InstanceGuid);
+            else
+                return false;
+        }
+
+        public void DisengageInput()
+        {
+            Debug.WriteLine("Disengaged Input.");
+            IsInputEngaged = false;
+        }
+
+        public void EngageInput()
+        {
+            Debug.WriteLine("Engaged Input.");
+            IsInputEngaged = true;
         }
 
         public bool BindDevice(DeviceInstance device, IntPtr WindowHandle)
@@ -105,7 +125,7 @@ namespace ERTS.Dashboard.Input
         public void StartThread()
         {
             cancelTokenSource = new CancellationTokenSource();
-            Task.Factory.StartNew(() => ThreadLoop(cancelTokenSource.Token));
+            threadTask = Task.Factory.StartNew(() => ThreadLoop(cancelTokenSource.Token));
         }
 
         private void ThreadLoop(CancellationToken cancelToken)
@@ -116,9 +136,12 @@ namespace ERTS.Dashboard.Input
                 {
                     lock (usedDeviceLock)
                     {
-                        foreach (Device d in UsedDevices)
+                        if (UsedDevices != null)
                         {
-                            d.Unacquire();
+                            foreach (Device d in UsedDevices)
+                            {
+                                d.Unacquire();
+                            }
                         }
                     }
                     return;
@@ -128,37 +151,47 @@ namespace ERTS.Dashboard.Input
                 {
                     foreach (Device d in UsedDevices)
                     {
-                        if (!d.IsDisposed)
+                        try
                         {
-                            d.Poll();
-                            if (d.Information.Type == DeviceType.Keyboard)
+                            if (!d.IsDisposed)
                             {
-                                var updates = ((Keyboard)d).GetBufferedData();
-                                foreach (KeyboardUpdate state in updates)
+                                d.Poll();
+                                if (d.Information.Type == DeviceType.Keyboard)
                                 {
-                                    Debug.Write(state);
-                                    Debug.WriteLine(String.Format("; Raw: {0}; Key: {1}", state.RawOffset, state.Key));
+                                    var updates = ((Keyboard)d).GetBufferedData();
+                                    foreach (KeyboardUpdate state in updates)
+                                    {
+                                       
+                                        Debug.Write(state);
+                                        Debug.WriteLine(String.Format("; Raw: {0}; Key: {1}", state.RawOffset, state.Key));
+                                        SendInputEvent(state, d.Information.InstanceGuid);
+                                    }
                                 }
-                            }
-                            else if (d.Information.Type == DeviceType.Mouse)
-                            {
-                                var updates = ((Mouse)d).GetBufferedData();
-                                foreach (var state in updates)
+                                else if (d.Information.Type == DeviceType.Mouse)
                                 {
-                                    Debug.Write(state);
-                                    Debug.WriteLine(String.Format("; Raw: {0}; IsButtom: {1}", state.RawOffset, state.IsButton));
+                                    var updates = ((Mouse)d).GetBufferedData();
+                                    foreach (MouseUpdate state in updates)
+                                    {
+                                        Debug.Write(state);
+                                        Debug.WriteLine(String.Format("; Raw: {0}; IsButtom: {1}", state.RawOffset, state.IsButton));
+                                        SendInputEvent(state, d.Information.InstanceGuid);
+                                    }
                                 }
-                            }
-                            else
-                            {
-                                var updates = ((Joystick)d).GetBufferedData();
-                                foreach (var state in updates)
+                                else
                                 {
-                                    Debug.Write(state);
-                                    Debug.WriteLine(String.Format("; Raw: {0}; Key: {1}", state.RawOffset, state.Value));
+                                    var updates = ((Joystick)d).GetBufferedData();
+                                    foreach (JoystickUpdate state in updates)
+                                    {
+                                        Debug.Write(state);
+                                        Debug.WriteLine(String.Format("; Raw: {0}; Key: {1}", state.RawOffset, state.Value));
+                                        SendInputEvent(state, d.Information.InstanceGuid);
+                                    }
                                 }
-                            }
 
+                            }
+                        } catch(SharpDXException e)
+                        {
+                            //shutdown artifact.
                         }
                     }
                 }
@@ -177,6 +210,8 @@ namespace ERTS.Dashboard.Input
                 {
                     // dispose managed state (managed objects).
                     StopThread();
+                    if (threadTask != null)
+                        threadTask.Wait();
                     directInput.Dispose();
                 }
 
@@ -206,7 +241,7 @@ namespace ERTS.Dashboard.Input
         #region Event Source
         void SendInputEvent(IStateUpdate StateUpdate, Guid DeviceGuid)
         {
-            OnInput(new InputEventArgs(StateUpdate, DeviceGuid));
+            OnInput(new InputEventArgs(StateUpdate, DeviceGuid, IsInputEngaged));
         }
 
         protected virtual void OnInput(InputEventArgs e)
