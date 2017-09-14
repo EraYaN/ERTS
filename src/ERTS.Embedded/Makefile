@@ -1,7 +1,7 @@
 PROJECT_NAME := erts-quad
 
 HW_SDK_PATH := ../../libraries/nRF51_SDK_10.0.0_dc26b5e
-DFU_TOOL := ../tools/dfu_serial/./serial_dfu.py
+DFU_TOOL := ../../tools/dfu_serial/./serial_dfu.py
 
 GNU_VERSION := 5.4.1
 GNU_PREFIX := arm-none-eabi
@@ -54,10 +54,10 @@ $(abspath ./drivers/adc.c) \
 $(abspath ./drivers/baro.c) \
 $(abspath ./drivers/ble.c) \
 $(abspath ./drivers/spi_flash.c) \
-$(abspath ./invensense/inv_mpu.c) \
-$(abspath ./invensense/inv_mpu_dmp_motion_driver.c) \
-$(abspath ./invensense/ml.c) \
-$(abspath ./invensense/mpu_wrapper.c) \
+$(abspath ./drivers/invensense/inv_mpu.c) \
+$(abspath ./drivers/invensense/inv_mpu_dmp_motion_driver.c) \
+$(abspath ./drivers/invensense/ml.c) \
+$(abspath ./drivers/invensense/mpu_wrapper.c) \
 $(abspath $(HW_SDK_PATH)/components/toolchain/system_nrf51.c) \
 $(abspath $(HW_SDK_PATH)/components/drivers_nrf/delay/nrf_delay.c) \
 $(abspath $(HW_SDK_PATH)/components/libraries/util/app_error.c) \
@@ -71,20 +71,28 @@ $(abspath $(HW_SDK_PATH)/components/ble/common/ble_conn_params.c) \
 $(abspath $(HW_SDK_PATH)/components/ble/ble_services/ble_nus/ble_nus.c) \
 $(abspath $(HW_SDK_PATH)/components/ble/common/ble_srv_common.c) \
 $(abspath $(HW_SDK_PATH)/components/softdevice/common/softdevice_handler/softdevice_handler.c) \
+$(abspath ../../libraries/libcrc-2.0/src/crc8.c) \
+$(abspath ../../libraries/libcrc-2.0/src/crc16.c) \
 
 CPP_SOURCE_FILES += \
 $(abspath ./$(PROJECT_NAME).cpp) \
 $(abspath ./quad.cpp) \
+$(abspath ./comm/acknowledge_data.cpp) \
+$(abspath ./comm/mode_switch_data.cpp) \
+$(abspath ./comm/packet.cpp) \
+$(abspath ./comm/remote_control_data.cpp) \
+$(abspath ./comm/telemetry_data.cpp) \
 
 #assembly files common to all targets
 ASM_SOURCE_FILES  = $(abspath $(HW_SDK_PATH)/components/toolchain/gcc/gcc_startup_nrf51.s)
 
 #includes common to all targets
 INC_PATHS += -I$(abspath ./)
-INC_PATHS += -I$(abspath ./invensense)
+INC_PATHS += -I$(abspath ./comm)
 INC_PATHS += -I$(abspath ./drivers)
 INC_PATHS += -I$(abspath ./drivers/config)
 INC_PATHS += -I$(abspath ./shared)
+INC_PATHS += -I$(abspath ../../libraries/libcrc-2.0/include)
 INC_PATHS += -I$(abspath $(HW_SDK_PATH)/components/device)
 INC_PATHS += -I$(abspath $(HW_SDK_PATH)/components/toolchain/gcc)
 INC_PATHS += -I$(abspath $(HW_SDK_PATH)/components/toolchain)
@@ -179,7 +187,7 @@ ASM_PATHS = $(call remduplicates, $(dir $(ASM_SOURCE_FILES) ))
 ASM_OBJECTS = $(addprefix $(OBJECT_DIRECTORY)/, $(ASM_SOURCE_FILE_NAMES:.s=.o) )
 
 vpath %.c $(C_PATHS)
-vpath %.cpp $(C_PATHS)
+vpath %.cpp $(CPP_PATHS)
 vpath %.s $(ASM_PATHS)
 
 OBJECTS = $(C_OBJECTS) $(CPP_OBJECTS) $(ASM_OBJECTS)

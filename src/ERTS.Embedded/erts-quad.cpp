@@ -1,5 +1,4 @@
 #include "quad.h"
-#include "nrf_delay.h"
 
 extern "C"
 {
