@@ -106,7 +106,7 @@ COMMON_FLAGS += -Wall -Werror -O3
 COMMON_FLAGS += -mfloat-abi=soft # we don't want floats - no hardware fpu
 # keep every function in separate section. This will allow linker to dump unused functions
 COMMON_FLAGS += -ffunction-sections -fdata-sections -fno-strict-aliasing
-COMMON_FLAGS += -fno-builtin --short-enums
+COMMON_FLAGS += -fno-builtin --short-enums -fshort-wchar
 
 # keep every function in separate section. This will allow linker to dump unused functions
 SHARED_LDFLAGS += -Xlinker -Map=$(LISTING_DIRECTORY)/$(OUTPUT_FILENAME).map
@@ -114,6 +114,8 @@ SHARED_LDFLAGS += -mthumb -mabi=aapcs -L $(TEMPLATE_PATH) -T$(LINKER_SCRIPT)
 SHARED_LDFLAGS += -mcpu=cortex-m0
 # let linker to dump unused sections
 SHARED_LDFLAGS += -Wl,--gc-sections
+# suppress wchar 2-byte vs 4-byte warnings
+SHARED_LDFLAGS += -Wl,--no-wchar-size-warning
 # use newlib in nano version
 SHARED_LDFLAGS += --specs=nano.specs -lc -lnosys
 

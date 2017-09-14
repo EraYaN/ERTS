@@ -67,20 +67,23 @@ EXADIR = examples/
 
 CFLAGS = -Wall -Wextra -Wstrict-prototypes -Wshadow -Wpointer-arith \
 	-Wcast-qual -Wcast-align -Wwrite-strings -Wredundant-decls \
-	-Wnested-externs -Werror -O3 -funsigned-char -I${INCDIR}
+	-Wnested-externs -Werror -O3 -funsigned-char -I${INCDIR} $(COMMON_FLAGS)
 
 #
 # Default compile commands for the source files
 #
 
 ${OBJDIR}%${OBJEXT} : ${SRCDIR}%.c
-	${CC} -c ${CFLAGS} ${OFLAG}$@ $<
+	@echo Compiling file: $(notdir $<)
+	$(NO_ECHO)${CC} -c ${CFLAGS} ${OFLAG}$@ $<
 
 ${TSTDIR}${OBJDIR}%${OBJEXT} : ${TSTDIR}%.c
-	${CC} -c ${CFLAGS} ${OFLAG}$@ $<
+	@echo Compiling file: $(notdir $<)
+	$(NO_ECHO)${CC} -c ${CFLAGS} ${OFLAG}$@ $<
 
 ${EXADIR}${OBJDIR}%${OBJEXT} : ${EXADIR}%.c
-	${CC} -c ${CFLAGS} ${OFLAG}$@ $<
+	@echo Compiling file: $(notdir $<)
+	$(NO_ECHO)${CC} -c ${CFLAGS} ${OFLAG}$@ $<
 
 #
 # The make file is used to compile the library, a test program to verify the
@@ -154,15 +157,17 @@ libcrc_build :			\
 	${OBJDIR}nmea-chk${OBJEXT}		\
 	Makefile
 		${RM}        ${LIBDIR}libcrc${LIBEXT}
-		${AR}c ${LIBDIR}libcrc${LIBEXT} ${OBJDIR}crc16${OBJEXT}
-		${AR} ${LIBDIR}libcrc${LIBEXT} ${OBJDIR}crc32${OBJEXT}
-		${AR} ${LIBDIR}libcrc${LIBEXT} ${OBJDIR}crc8${OBJEXT}
-		${AR} ${LIBDIR}libcrc${LIBEXT} ${OBJDIR}crcccitt${OBJEXT}
-		${AR} ${LIBDIR}libcrc${LIBEXT} ${OBJDIR}crcdnp${OBJEXT}
-		${AR} ${LIBDIR}libcrc${LIBEXT} ${OBJDIR}crckrmit${OBJEXT}
-		${AR} ${LIBDIR}libcrc${LIBEXT} ${OBJDIR}crcsick${OBJEXT}
-		${AR} ${LIBDIR}libcrc${LIBEXT} ${OBJDIR}nmea-chk${OBJEXT}
-		${RANLIB}    ${LIBDIR}libcrc${LIBEXT}
+		@echo "Packing ${LIBDIR}libcrc${LIBEXT}"
+		$(NO_ECHO)${AR}cvs ${LIBDIR}libcrc${LIBEXT} ${OBJDIR}*${OBJEXT}
+		#$(NO_ECHO)${AR}c ${LIBDIR}libcrc${LIBEXT} ${OBJDIR}crc16${OBJEXT}
+		#$(NO_ECHO)${AR} ${LIBDIR}libcrc${LIBEXT} ${OBJDIR}crc32${OBJEXT}
+		#$(NO_ECHO)${AR} ${LIBDIR}libcrc${LIBEXT} ${OBJDIR}crc8${OBJEXT}
+		#$(NO_ECHO)${AR} ${LIBDIR}libcrc${LIBEXT} ${OBJDIR}crcccitt${OBJEXT}
+		#$(NO_ECHO)${AR} ${LIBDIR}libcrc${LIBEXT} ${OBJDIR}crcdnp${OBJEXT}
+		#$(NO_ECHO)${AR} ${LIBDIR}libcrc${LIBEXT} ${OBJDIR}crckrmit${OBJEXT}
+		#$(NO_ECHO)${AR} ${LIBDIR}libcrc${LIBEXT} ${OBJDIR}crcsick${OBJEXT}
+		#$(NO_ECHO)${AR} ${LIBDIR}libcrc${LIBEXT} ${OBJDIR}nmea-chk${OBJEXT}
+		#$(NO_ECHO)${RANLIB}    ${LIBDIR}libcrc${LIBEXT}
 
 #
 # Individual source files with their header file dependencies
