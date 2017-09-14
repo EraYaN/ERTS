@@ -1,3 +1,5 @@
+normal: default
+
 EXT_DEPS_COMM := ertscommunication
 EXT_DEPS_CRC := crc
 
