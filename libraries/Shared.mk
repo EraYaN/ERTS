@@ -21,8 +21,6 @@ GNU_PREFIX := arm-none-eabi
 
 TEMPLATE_PATH = $(HW_SDK_PATH)/components/toolchain/gcc
 
-LINKER_SCRIPT=$(abspath ../../libraries/shared.ld)
-
 MK := mkdir
 RM := rm -rf
 
