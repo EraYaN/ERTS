@@ -28,6 +28,8 @@ namespace ERTS.Dashboard.Input
         #region Event Handler
         private void InputEventFilterHandler(object sender, InputEventArgs e)
         {
+            if (!e.InputEngaged)
+                return;
             if(!controlActuators.Any(cA => cA.DeviceGuid == e.DeviceGuid))            
                 return;
             if (!controlActuators.Any(cA => cA.RawOffset == e.StateUpdate.RawOffset))

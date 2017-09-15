@@ -59,7 +59,7 @@ namespace ERTS.Dashboard.Control
         {
             double rcCommand = _input;
             if (RC_EXPO > 0)
-                rcCommand = rcCommand * Math.Pow(Math.Abs(rcCommand),3) * expo + rcCommand * (1 - expo);
+                rcCommand = rcCommand * Math.Pow(Math.Abs(rcCommand),3) * expo + rcCommand * (1 - expo); // Courtesy of CleanFlight/BetaFlight
             double rcRate = rcCommand * rate;
             return rcRate;
         }
