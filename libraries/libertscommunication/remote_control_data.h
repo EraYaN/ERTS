@@ -10,6 +10,8 @@ public:
 
     ~RemoteControlData() override { delete _data; }
 
+    uint32_t get_ack_number() override;
+
     bool get_expects_acknowledgement() override;
 
     uint16_t    get_lift()  { return _data->lift;  }

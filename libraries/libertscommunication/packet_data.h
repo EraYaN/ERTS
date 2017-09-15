@@ -2,8 +2,6 @@
 
 #include "packet_datastructures.h"
 
-//TODO: Implement acknowledgement logic.
-
 class PacketData {
 public:
     virtual ~PacketData() = default;
@@ -14,7 +12,7 @@ public:
 
     virtual bool is_valid() = 0;
 
-    // virtual void set_ack_number() = 0;
+    virtual uint32_t get_ack_number() = 0;
 
     virtual byte* to_byte_array() = 0;
 };

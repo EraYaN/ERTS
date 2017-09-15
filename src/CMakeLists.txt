@@ -25,15 +25,26 @@ set(SOURCE_FILES
         ERTS.Embedded/drivers/invensense/ml.c
         ERTS.Embedded/drivers/invensense/ml.h
         ERTS.Embedded/drivers/invensense/mpu_wrapper.c
-        ERTS.Embedded/comm/packet.cpp
-        ERTS.Embedded/comm/packet.h
-        ERTS.Embedded/comm/packet_datastructures.h
         ERTS.Embedded/erts-quad.cpp
         ERTS.Embedded/quad.cpp
-        ERTS.Embedded/quad.h ERTS.Embedded/comm/packet_data.h ERTS.Embedded/comm/telemetry_data.cpp ERTS.Embedded/comm/telemetry_data.h ERTS.Embedded/comm/remote_control_data.cpp ERTS.Embedded/comm/remote_control_data.h ERTS.Embedded/comm/mode_switch_data.cpp ERTS.Embedded/comm/mode_switch_data.h ERTS.Embedded/comm/acknowledge_data.cpp ERTS.Embedded/comm/acknowledge_data.h)
+        ERTS.Embedded/quad.h
+        ../libraries/libertscommunication/packet.h
+        ../libraries/libertscommunication/packet.cpp
+        ../libraries/libertscommunication/packet_data.h
+        ../libraries/libertscommunication/packet_datastructures.h
+        ../libraries/libertscommunication/acknowledge_data.h
+        ../libraries/libertscommunication/acknowledge_data.cpp
+        ../libraries/libertscommunication/mode_switch_data.h
+        ../libraries/libertscommunication/mode_switch_data.cpp
+        ../libraries/libertscommunication/remote_control_data.h
+        ../libraries/libertscommunication/remote_control_data.cpp
+        ../libraries/libertscommunication/telemetry_data.h
+        ../libraries/libertscommunication/telemetry_data.cpp
+        )
 
 include_directories(
         ../libraries/libcrc-2.0/include
+        ../libraries/libertscommunication
         ../libraries/nRF51_SDK_10.0.0_dc26b5e/components/libraries/util
         ../libraries/nRF51_SDK_10.0.0_dc26b5e/components/ble/common
         ../libraries/nRF51_SDK_10.0.0_dc26b5e/components/ble/ble_services/ble_nus
@@ -47,7 +58,6 @@ include_directories(
         ../libraries/nRF51_SDK_10.0.0_dc26b5e/components/softdevice/s110/headers
         ../libraries/nRF51_SDK_10.0.0_dc26b5e/components/softdevice/common/softdevice_handler
         ERTS.Embedded/drivers
-        ERTS.Embedded/comm
 )
 
 add_executable(src ${SOURCE_FILES})

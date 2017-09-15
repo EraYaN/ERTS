@@ -8,6 +8,10 @@ int AcknowledgeData::get_length() {
     return sizeof(acknowledgeData_t);
 }
 
+uint32_t AcknowledgeData::get_ack_number() {
+    return 0;
+}
+
 bool AcknowledgeData::get_expects_acknowledgement() {
     return false;
 }

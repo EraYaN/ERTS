@@ -10,28 +10,34 @@ extern "C"
 #include "packet.h"
 #include "packet_datastructures.h"
 
-
-// TODO[c] use proper values
-// note: float/double
-#define DRONE_CONSTANT_B 1.00
-#define DRONE_CONSTANT_D 1.00
+#define MODE_SWITCH_OK 0
+#define MODE_SWITCH_UNSUPPORTED 1
 
 class Quadrupel {
     flightMode_t _mode = Safe;
     flightMode_t _new_mode = Safe;
+    bool _is_calibrated;
+    uint32_t _accum_loop_time;
     uint32_t counter = 0;
-    char comm_buffer[20];
+    bool _receiving = false;
+    uint16_t _start_sequence = 0;
+    char comm_buffer[MAX_PACKET_SIZE];
     uint8_t comm_buffer_index = 0;
+    // TODO: Determine decent values.
+    const double b = 1.00;
+    const double d = 1.00;
 
     void receive();
 
     void send(Packet *packet);
 
-    void acknowledge();
+    void acknowledge(uint32_t ack_number);
 
     void heartbeat();
 
     bool handle_packet(Packet *packet);
+
+    void kill();
 
     void remote_control(uint16_t lift, int16_t roll, int16_t pitch, int16_t yaw);
 
@@ -45,7 +51,7 @@ public:
 
     flightMode_t get_mode() { return _mode; }
 
-	void set_mode(flightMode_t new_mode);
+	int set_mode(flightMode_t new_mode);
 
     void update_motors();
 

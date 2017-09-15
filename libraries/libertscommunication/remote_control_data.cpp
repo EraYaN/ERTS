@@ -9,6 +9,10 @@ int RemoteControlData::get_length() {
     return sizeof(remoteControlData_t);
 }
 
+uint32_t RemoteControlData::get_ack_number() {
+    return 0;
+}
+
 bool RemoteControlData::get_expects_acknowledgement() {
     return false;
 }

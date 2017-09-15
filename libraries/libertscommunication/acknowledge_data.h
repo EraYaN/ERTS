@@ -11,6 +11,8 @@ public:
 
     int get_length() override;
 
+    uint32_t get_ack_number() override;
+
     bool get_expects_acknowledgement() override;
 
     bool is_valid() override;
