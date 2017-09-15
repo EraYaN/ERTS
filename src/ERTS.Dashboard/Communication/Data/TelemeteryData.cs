@@ -7,11 +7,11 @@ namespace ERTS.Dashboard.Communication.Data
     {
         ushort batteryVoltage; //12 bits
         FlightMode flightMode; // 4 bits
-        ushort phi;
-        ushort theta;
-        ushort p;
-        ushort q;
-        ushort r;
+        short phi;
+        short theta;
+        short p;
+        short q;
+        short r;
         ushort loopTime;
 
         public ushort BatteryVoltage {
@@ -20,19 +20,19 @@ namespace ERTS.Dashboard.Communication.Data
         public FlightMode FlightMode {
             get { return flightMode; }
         }
-        public ushort Phi {
+        public short Phi {
             get { return phi; }
         }
-        public ushort Theta {
+        public short Theta {
             get { return theta; }
         }
-        public ushort P {
+        public short P {
             get { return p; }
         }
-        public ushort Q {
+        public short Q {
             get { return q; }
         }
-        public ushort R {
+        public short R {
             get { return r; }
         }
         public ushort LoopTime {
@@ -40,7 +40,7 @@ namespace ERTS.Dashboard.Communication.Data
         }
 
 
-        public TelemetryData(ushort BatteryVoltage, FlightMode FlightMode, ushort Phi, ushort Theta, ushort P, ushort Q, ushort R, ushort LoopTime)
+        public TelemetryData(ushort BatteryVoltage, FlightMode FlightMode, short Phi, short Theta, short P, short Q, short R, ushort LoopTime)
         {
             batteryVoltage = BatteryVoltage;
             flightMode = FlightMode;
@@ -65,11 +65,11 @@ namespace ERTS.Dashboard.Communication.Data
 
             flightMode = (FlightMode)(tmp & 0x000F);
 
-            phi = BitConverter.ToUInt16(data, sizeof(ushort));
-            theta = BitConverter.ToUInt16(data, sizeof(ushort) * 2);
-            p = BitConverter.ToUInt16(data, sizeof(ushort) * 3);
-            q = BitConverter.ToUInt16(data, sizeof(ushort) * 4);
-            r = BitConverter.ToUInt16(data, sizeof(ushort) * 5);
+            phi = BitConverter.ToInt16(data, sizeof(short));
+            theta = BitConverter.ToInt16(data, sizeof(short) * 2);
+            p = BitConverter.ToInt16(data, sizeof(short) * 3);
+            q = BitConverter.ToInt16(data, sizeof(short) * 4);
+            r = BitConverter.ToInt16(data, sizeof(short) * 5);
             loopTime = BitConverter.ToUInt16(data, sizeof(ushort) * 6);
         }
 

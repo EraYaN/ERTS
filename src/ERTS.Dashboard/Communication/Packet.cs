@@ -103,7 +103,7 @@ namespace ERTS.Dashboard.Communication {
                     Data = new ExceptionData(dataSegment);
                     break;
                 default:
-                    throw new ArgumentException("Data does not contain valid message type.","data");
+                    throw new ArgumentException("Data does not contain valid message type.","PacketData");
 
             }
             EndSequence = PacketData[MAX_PACKET_SIZE - 1];
@@ -129,9 +129,13 @@ namespace ERTS.Dashboard.Communication {
         public override string ToString() {
             StringBuilder sb = new StringBuilder();
             sb.AppendFormat("Packet Type: {0}\n", Type.ToString());
-            sb.AppendFormat("Checksum: {0:X04}", Checksum);
-            sb.AppendFormat("Is Valid: {0}",Validate()? "Yes" : "No");
-            sb.AppendFormat("Data: {0}", BitConverter.ToString(Data.ToByteArray(),0,DATA_SIZE).Replace("-"," "));
+            sb.AppendFormat("Checksum: {0:X04}\n", Checksum);
+            sb.AppendFormat("Is Valid: {0}\n",Validate()? "Yes" : "No");
+            sb.Append("Data: \n");
+            foreach(byte b in Data.ToByteArray()) {
+                sb.Append(b.ToString("X2"));
+            }
+            sb.AppendLine();
             return sb.ToString();
         }
     }

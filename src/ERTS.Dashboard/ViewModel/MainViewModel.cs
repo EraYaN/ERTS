@@ -18,11 +18,9 @@ namespace ERTS.Dashboard.ViewModel
     {
         private List<DeviceInstance> _devices;
 
-        public List<DeviceInstance> Devices
-        {
+        public List<DeviceInstance> Devices {
             get { return _devices; }
-            set
-            {
+            set {
                 _devices = value;
                 RaisePropertyChanged("Devices");
             }
@@ -30,67 +28,113 @@ namespace ERTS.Dashboard.ViewModel
 
         private DeviceInstance _selectedDevice;
 
-        public DeviceInstance SelectedDevice
-        {
+        public DeviceInstance SelectedDevice {
             get { return _selectedDevice; }
-            set
-            {
+            set {
                 _selectedDevice = value;
                 RaisePropertyChanged("SelectedDevice");
             }
         }
 
 
-        public FlightMode Mode
-        {
-            get { return GlobalData.ctr.Mode; }
-            set
-            {
-                GlobalData.ctr.Mode = value;
-                RaisePropertyChanged("ModeString");
-                RaisePropertyChanged("ModeDescriptionString");
-            }
-        }
-
-        public int Voltage
-        {
-            get { if (GlobalData.ctr != null)
-                    return GlobalData.ctr.Voltage;
-                else
-                    return -1;
-            }
-            set
-            {
+        public FlightMode Mode {
+            get {
                 if (GlobalData.ctr != null)
                 {
-                    GlobalData.ctr.Voltage = value;
-                    RaisePropertyChanged("VoltageString");
+                    return GlobalData.ctr.Mode;
+                }
+                else
+                {
+                    return FlightMode.None;
                 }
             }
         }
 
-        public string ModeString { get { return ((int)Mode).ToString(); } }
+        public double Voltage {
+            get {
+                if (GlobalData.ctr != null)
+                    return GlobalData.ctr.Voltage;
+                else
+                    return -1;
+            }
+        }
+
+        public string ModeString { get { return ((int)Mode).ToString("X"); } }
         public string ModeDescriptionString { get { return Mode.GetDescription(); } }
         public string VoltageString { get { return Voltage.ToString() + " mV"; } }
 
-        public string LiftString { get { return GlobalData.ctr.Lift.ToString("N2"); } }
+        public string LiftString {
+            get {
+                if (GlobalData.ctr != null)
+                    return GlobalData.ctr.Lift.ToString("N2");
+                else
+                    return "-";
+            }
+        }
 
-        public string RollString { get { return GlobalData.ctr.RollRate.ToString("N2") + " 1/s"; } }
-        public string PitchString { get { return GlobalData.ctr.PitchRate.ToString("N2") + " 1/s"; } }
+        public string RollString {
+            get {
+                if (GlobalData.ctr != null)
+                    return GlobalData.ctr.RollRate.ToString("N2") + " 1/s";
+                else
+                    return "-";
+            }
+        }
+        public string PitchString {
+            get {
+                if (GlobalData.ctr != null)
+                    return GlobalData.ctr.PitchRate.ToString("N2") + " 1/s";
+                else
+                    return "-";
+            }
+        }
 
-        public string YawString { get { return GlobalData.ctr.YawRate.ToString("N2") + " 1/s"; } }
+        public string YawString {
+            get {
+                if (GlobalData.ctr != null)
+                    return GlobalData.ctr.YawRate.ToString("N2") + " 1/s";
+                else
+                    return "-";
+            }
+        }
 
-        public double Lift { get { return GlobalData.ctr.Lift * 98; } }
-        public double Roll { get { return GlobalData.ctr.RollRate * 40 + 40; } }
-        public double Pitch { get { return GlobalData.ctr.PitchRate * 35 + 35; } }
-        public double Yaw { get { return GlobalData.ctr.YawRate * 180; } }
+        public double Lift {
+            get {
+                if (GlobalData.ctr != null)
+                    return GlobalData.ctr.Lift * 98;
+                else
+                    return 0;
+            }
+        }
+        public double Roll {
+            get {
+                if (GlobalData.ctr != null)
+                    return GlobalData.ctr.RollRate * 40 + 40;
+                else
+                    return 40;
+            }
+        }
+        public double Pitch {
+            get {
+                if (GlobalData.ctr != null)
+                    return GlobalData.ctr.PitchRate * 35 + 35;
+                else
+                    return 35;
+            }
+        }
+        public double Yaw {
+            get {
+                if (GlobalData.ctr != null)
+                    return GlobalData.ctr.YawRate * 180;
+                else
+                    return 0;
+            }
+        }
 
-        
+
 
         public MainViewModel()
         {
-            Mode = FlightMode.None;
-            Voltage = 15000;
             if (GlobalData.input != null)
                 Devices = GlobalData.input.EnumerateControllers();
             else
@@ -107,24 +151,39 @@ namespace ERTS.Dashboard.ViewModel
             {
                 RaisePropertyChanged("LiftString");
                 RaisePropertyChanged("Lift");
+                return;
             }
-            if (e.PropertyName == "RollRate")
+            else if (e.PropertyName == "RollRate")
             {
                 RaisePropertyChanged("RollString");
                 RaisePropertyChanged("Roll");
+                return;
             }
-            if (e.PropertyName == "PitchRate")
+            else if (e.PropertyName == "PitchRate")
             {
                 RaisePropertyChanged("PitchString");
                 RaisePropertyChanged("Pitch");
+                return;
             }
-            if (e.PropertyName == "YawRate")
+            else if (e.PropertyName == "YawRate")
             {
                 RaisePropertyChanged("YawString");
                 RaisePropertyChanged("Yaw");
+                return;
             }
-            
-            
+            else if (e.PropertyName == "Mode")
+            {
+                RaisePropertyChanged("ModeString");
+                RaisePropertyChanged("ModeDescriptionString");
+                return;
+            }
+            else if (e.PropertyName == "Voltage")
+            {
+                RaisePropertyChanged("VoltageString");
+                return;
+            }
+
+
         }
 
         void BindInputExecute(object obj)
@@ -141,6 +200,6 @@ namespace ERTS.Dashboard.ViewModel
         }
 
         public ICommand BindInput { get { return new RelayCommand<MainWindow>(BindInputExecute, CanBindInputExecute); } }
-        
+
     }
 }

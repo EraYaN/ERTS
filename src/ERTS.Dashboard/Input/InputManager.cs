@@ -15,6 +15,7 @@ namespace ERTS.Dashboard.Input
         DirectInput directInput;
         object usedDeviceLock = new object();
         List<Device> UsedDevices = new List<Device>();
+        List<WaitHandle> WaitHandles = new List<WaitHandle>();
 
         bool IsInputEngaged = true;
 
@@ -106,10 +107,13 @@ namespace ERTS.Dashboard.Input
             // Acquire the device
 
             boundDevice.SetCooperativeLevel(WindowHandle, CooperativeLevel.NonExclusive | CooperativeLevel.Background);
+            WaitHandle handle = new AutoResetEvent(false);
+            boundDevice.SetNotification(handle);
             boundDevice.Acquire();
 
             lock (usedDeviceLock)
             {
+                WaitHandles.Add(handle);
                 UsedDevices.Add(boundDevice);
             }
 
@@ -132,6 +136,8 @@ namespace ERTS.Dashboard.Input
         {
             while (true)
             {
+                if (WaitHandles.Count == 0)
+                    Thread.Sleep(500);
                 if (cancelToken.IsCancellationRequested)
                 {
                     lock (usedDeviceLock)
@@ -149,6 +155,10 @@ namespace ERTS.Dashboard.Input
 
                 lock (usedDeviceLock)
                 {
+                    if (WaitHandles.Count > 0)
+                    {
+                        WaitHandle.WaitAny(WaitHandles.ToArray(), 1000);
+                    }
                     foreach (Device d in UsedDevices)
                     {
                         try

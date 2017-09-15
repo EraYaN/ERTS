@@ -30,7 +30,7 @@ namespace ERTS.Dashboard.Input
         {
             if (!e.InputEngaged)
                 return;
-            if(!controlActuators.Any(cA => cA.DeviceGuid == e.DeviceGuid))            
+            if(!controlActuators.Any(cA => cA.DeviceGuid == e.DeviceGuid))
                 return;
             if (!controlActuators.Any(cA => cA.RawOffset == e.StateUpdate.RawOffset))
                 return;

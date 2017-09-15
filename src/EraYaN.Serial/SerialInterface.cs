@@ -132,8 +132,9 @@ namespace EraYaN.Serial
         }
 
         void serialPort_ErrorReceived(object sender, SerialErrorReceivedEventArgs e) {
-            //MessageBox.Show();
-            throw new NotImplementedException();
+            //MessageBox.Show();\
+            Debug.WriteLine(String.Format("Serial Error {0}",e.EventType));
+            //throw new NotImplementedException();
         }
 
         /*void serialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
