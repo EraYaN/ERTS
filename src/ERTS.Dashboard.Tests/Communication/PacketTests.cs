@@ -12,7 +12,7 @@ namespace ERTS.Dashboard.Communication.Tests
         [TestInitialize]
         public void Init()
         {
-            GlobalData.InitCRC();
+            GlobalData.InitCRCLib();
         }
 
         [TestMethod]

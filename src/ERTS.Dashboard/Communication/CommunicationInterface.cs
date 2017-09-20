@@ -16,7 +16,8 @@ namespace ERTS.Dashboard.Communication
 
         bool isReceivingPacket = false;
         int bufferIndex = 0;
-        byte[] packetBuffer = new byte[Packet.DATA_SIZE];
+        byte[] packetBuffer = new byte[Packet.MAX_PACKET_SIZE];
+        ushort lastTwoBytes = 0;
 
         #region Status Properties
         public bool IsOpen {
@@ -46,11 +47,21 @@ namespace ERTS.Dashboard.Communication
 
         void com_SerialDataEvent(object sender, SerialDataEventArgs e)
         {
+            Debug.WriteLine(e.Data,"COMMBYTE");
+            lastTwoBytes = (ushort)(lastTwoBytes << 8 | e.Data);
             if (isReceivingPacket == false)
             {
-                isReceivingPacket = true;
-                packetBuffer[bufferIndex] = e.Data;
-                bufferIndex++;
+                if (lastTwoBytes == Packet.START_SEQUENCE)
+                {
+                    packetBuffer[0] = ((Packet.START_SEQUENCE & 0xFF00) >> 8);
+                    packetBuffer[1] = (Packet.START_SEQUENCE & 0x00FF);
+                    bufferIndex = 2;
+                    isReceivingPacket = true;
+                }
+                else
+                {
+                    Debug.WriteLine(String.Format("Looking for packet start wiht {0:X4}", lastTwoBytes));
+                }
             }
             else
             {
@@ -61,6 +72,7 @@ namespace ERTS.Dashboard.Communication
                     if (packetBuffer[0] != ((Packet.START_SEQUENCE & 0xFF00) >> 8) || packetBuffer[1] != ((Packet.START_SEQUENCE & 0x00FF)))
                     {
                         //TODO Send exception
+                        Debug.WriteLine("Packet did not have correct header.");
                         isReceivingPacket = false;
                         bufferIndex = 0;
                     }
@@ -70,6 +82,7 @@ namespace ERTS.Dashboard.Communication
                     if (!Enum.IsDefined(typeof(MessageType), packetBuffer[2]))
                     {
                         //TODO Send exception
+                        Debug.WriteLine("Packet had bad type.");
                         isReceivingPacket = false;
                         bufferIndex = 0;
                     }
@@ -79,6 +92,7 @@ namespace ERTS.Dashboard.Communication
                     if (packetBuffer[Packet.MAX_PACKET_SIZE - 1] != Packet.END_SEQUENCE)
                     {
                         //TODO Send exception
+                        Debug.WriteLine("Packet had bad end sequence.");
                         isReceivingPacket = false;
                         bufferIndex = 0;
                     }
@@ -86,7 +100,17 @@ namespace ERTS.Dashboard.Communication
                     {
                         try
                         {
-                            PacketReceived(new Packet(packetBuffer.ToArray()));
+                            if (Packet.Validate(packetBuffer))
+                            {
+                                Packet p = new Packet(packetBuffer.ToArray());
+                                Debug.WriteLine(p.ToString());
+                                PacketReceived(p);
+                            }
+                            else
+                            {
+                                Debug.WriteLine("Packet checksum mismatch.");
+                            }
+
                         }
                         catch (ArgumentException ex)
                         {
@@ -129,7 +153,7 @@ namespace ERTS.Dashboard.Communication
             SendPacket(p);
         }
 
-        public void Telemetry(ushort BatteryVoltage, FlightMode FlightMode, ushort Phi, ushort Theta, ushort P, ushort Q, ushort R, ushort LoopTime)
+        public void Telemetry(ushort BatteryVoltage, FlightMode FlightMode, short Phi, short Theta, short P, short Q, short R, ushort LoopTime)
         {
             Packet p = new Packet(MessageType.Telemetry)
             {

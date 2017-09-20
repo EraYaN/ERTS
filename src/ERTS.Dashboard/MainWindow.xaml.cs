@@ -35,35 +35,8 @@ namespace ERTS.Dashboard
         {     
             Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
             Thread.CurrentThread.Priority = ThreadPriority.Highest;
-            if (File.Exists("cfg.bin"))
-            {
-                try
-                {
-                    IFormatter formatter = new BinaryFormatter();
-                    using (Stream stream = new FileStream("cfg.bin", FileMode.Open, FileAccess.Read, FileShare.Read))
-                    {
-                        GlobalData.cfg = (Settings)formatter.Deserialize(stream);
-                    }
-                }
-                catch
-                {
-                    GlobalData.cfg = new Settings();
-                }
-                finally
-                {
-                }
-            }
-            else
-            {
-                GlobalData.cfg = new Settings();
-            }
-            settingsWindow = new SettingsWindow();
-            GlobalData.InitCRC();
-            GlobalData.InitInputManager();
-            GlobalData.InitPatchBox();
-            GlobalData.InitController();
-            //GlobalData.vis = new Visualization(powerCanvas);
-            //GlobalData.vis.draw();
+            
+            settingsWindow = new SettingsWindow();            
 
             InitializeComponent();
         }
@@ -80,6 +53,8 @@ namespace ERTS.Dashboard
             TextBoxTraceListener tbtl = new TextBoxTraceListener(DebugTraceTextBox);
             Debug.Listeners.Add(tbtl);
             Debug.WriteLine("Welcome, Debug redirection enabled.");
+
+            GlobalData.Init();
         }
         private void SettingsMenuItem_Click(object sender, RoutedEventArgs e)
         {
@@ -95,7 +70,7 @@ namespace ERTS.Dashboard
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             settingsWindow.Close();
-            GlobalData.input.Dispose();
+            GlobalData.Dispose();
         }
 
         #endregion

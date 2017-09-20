@@ -2,74 +2,177 @@
 using CRCLib;
 using ERTS.Dashboard.Input;
 using ERTS.Dashboard.Control;
+using System.IO;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
+using System;
+using System.Diagnostics;
 
-namespace ERTS.Dashboard {
+namespace ERTS.Dashboard
+{
     /// <summary>
     /// The static GlobalData class.
     /// </summary>
     public static class GlobalData
     {
-		/// <summary>
-		/// Configuration unit
-		/// </summary>
-		static public Settings cfg;
+        /// <summary>
+        /// Configuration unit
+        /// </summary>
+        static public Settings cfg;
+        static public bool InitConfiguration()
+        {
+            if (File.Exists("cfg.bin"))
+            {
+                try
+                {
+                    IFormatter formatter = new BinaryFormatter();
+                    using (Stream stream = new FileStream("cfg.bin", FileMode.Open, FileAccess.Read, FileShare.Read))
+                    {
+                        cfg = (Settings)formatter.Deserialize(stream);
+                    }
+                }
+                catch
+                {
+                    cfg = new Settings();
+                }
+                finally
+                {
+                }
+            }
+            else
+            {
+                cfg = new Settings();
+            }
+            return cfg != null;
+
+        }
         /// <summary>
         /// Serial communication interface
         /// </summary>
         static public CommunicationInterface com;
+        static public bool InitCommunicationInterface()
+        {
+            if (crc != null && cfg != null)
+            {
+                if (!String.IsNullOrEmpty(cfg.Comport) && cfg.BaudRate > 0)
+                {
+                    com = new CommunicationInterface(cfg.Comport, cfg.BaudRate);
+                    if (!com.IsOpen)
+                    {
+                        com.Dispose();
+                        com = null;
+                        return false;
+                    }
+                    return com.IsOpen;
+                }
+                else
+                {
+                    Debug.WriteLine("COM Port or Baud Rate not valid. OPen Settings and restart.");
+                    return false;
+                }
+            }
+            else
+            {
+                Debug.WriteLine("CRCLib and Configuration must exist before starting the CommunicationInterface.");
+                return false;
+            }
+        }
         /// <summary>
         /// Input manager class
         /// </summary>
         static public InputManager input;
-        static public void InitInputManager()
+        static public bool InitInputManager()
         {
             input = new InputManager();
             input.StartThread();
+            return true;
         }
         /// <summary>
         /// Connects all inputs to the controller and other modules.
         /// </summary>
         static public PatchBox patchbox;
-        static public void InitPatchBox()
+        static public bool InitPatchBox()
         {
-            patchbox = new PatchBox();
+            if (input != null)
+                patchbox = new PatchBox();
+            return true;
         }
         /// <summary>
         /// CRCLib class (holds tons of tables for CRC calculation)
         /// </summary>
         static public crclib crc;
-        static public void InitCRC()
+        static public bool InitCRCLib()
         {
             crc = new crclib();
+            return true;
         }
         /// <summary>
         /// Controller class, implements all timers and behaviour of the PC side of the control software.
         /// </summary>
         static public Controller ctr;
-        static public void InitController()
+        static public bool InitController()
         {
-            ctr = new Controller();
-            return;
+            if (patchbox != null && input != null && com != null)
+            {
+                ctr = new Controller();
+                return true;
+            }
+            else
+            {
+                Debug.WriteLine("PatchBox, InputManager and CommunicationInterface must all exist before starting the Controller.");
+                return false;
+            }
         }
         /// <summary>
         /// Misc data bindings structure used for visualization
         /// </summary>
         //public static Databindings db = new Databindings();
-        
+        static public void Init()
+        {
+            if (InitConfiguration())
+                Debug.WriteLine("Started Configuration.");
+            else
+                Debug.WriteLine("Starting Configuration failed.");
+            if (InitCRCLib())
+                Debug.WriteLine("Started CRCLib.");
+            else
+                Debug.WriteLine("Starting CRCLib failed.");
+            if (InitCommunicationInterface())
+                Debug.WriteLine("Started CommunicationInterface.");
+            else
+                Debug.WriteLine("Starting CommunicationInterface failed.");
+            if (InitInputManager())
+                Debug.WriteLine("Started InputManager.");
+            else
+                Debug.WriteLine("Starting InputManager failed.");
+            if (InitPatchBox())
+                Debug.WriteLine("Started PatchBox.");
+            else
+                Debug.WriteLine("Starting PatchBox failed.");
+            if (InitController())
+                Debug.WriteLine("Started Controller.");
+            else
+                Debug.WriteLine("Starting Controller failed.");
+            return;
+        }
         static public void Dispose()
         {
-            if (cfg != null)
-                cfg = null;
-            if (com != null)
-                com.Dispose();
-            if (input != null)
-                input.Dispose();
-            if (patchbox != null)
-                patchbox = null;
-            if (crc != null)
-                crc = null;
+
             if (ctr != null)
                 ctr.Dispose();
+            if (com != null)
+                com.Dispose();
+            if (patchbox != null)
+                patchbox = null;
+            if (input != null)
+                input.Dispose();            
+            if (crc != null)
+                crc = null;
+            if (cfg != null)
+            {
+                cfg.Save();
+                cfg = null;
+            }
             return;
         }
     }
