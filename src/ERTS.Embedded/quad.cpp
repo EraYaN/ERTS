@@ -162,7 +162,7 @@ void Quadrupel::tick() {
 
     if (check_timer_flag()) { // The following is executed every 50 ms (20 Hz).
         counter++;
-        
+
         adc_request_sample();
         read_baro();
 
@@ -196,12 +196,12 @@ int Quadrupel::set_mode(flightMode_t new_mode) {
             switch (new_mode) {
                 // Always OK.
                 case Panic:
-                case Calibration: {
+                case Calibration:
+                case Manual: {
                     result =  MODE_SWITCH_OK;
                     break;
                 }
                 // Requires calibration.
-                case Manual:
                 case YawControl:
                 case FullControl:
                 case Raw:
@@ -267,14 +267,12 @@ void Quadrupel::remote_control(uint16_t lift, int16_t roll, int16_t pitch, int16
         return;
 
 	// Equations to get desired lift, roll (rate?), pitch (rate?) and yaw (rate?).
-	int oo1, oo2, oo3, oo4;
-	int bb;
-	bb = b + b;
+	double_t oo1, oo2, oo3, oo4;
 
-	oo1 = (lift / b + 2 * pitch / (bb)-yaw / d);
-	oo2 = (lift / b - 2 * roll / (bb)+yaw / d);
-	oo3 = (lift / b - 2 * pitch / (bb)-yaw / d);
-	oo4 = (lift / b + 2 * roll / (bb)+yaw / d);
+	oo1 = (lift / b + 2 * pitch / (2 * b) - yaw / d);
+	oo2 = (lift / b - 2 * roll  / (2 * b) + yaw / d);
+	oo3 = (lift / b - 2 * pitch / (2 * b) - yaw / d);
+	oo4 = (lift / b + 2 * roll  / (2 * b) + yaw / d);
 
 	// clip ooi as rotors only provide positive thrust
 	if (oo1 < 0) oo1 = 0;
@@ -283,10 +281,10 @@ void Quadrupel::remote_control(uint16_t lift, int16_t roll, int16_t pitch, int16
 	if (oo4 < 0) oo4 = 0;
 
 	// with ai = oi it follows
-	ae[0] = sqrt(oo1);
-	ae[1] = sqrt(oo2);
-	ae[2] = sqrt(oo3);
-	ae[3] = sqrt(oo4);
+	ae[0] = (int16_t)sqrt(oo1);
+	ae[1] = (int16_t)sqrt(oo2);
+	ae[2] = (int16_t)sqrt(oo3);
+	ae[3] = (int16_t)sqrt(oo4);
 }
 
 void Quadrupel::update_motors() {
