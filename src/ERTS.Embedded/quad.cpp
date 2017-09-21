@@ -7,8 +7,13 @@
 // TODO: Perhaps make the drone (almost) entirely interrupt-driven.
 // TODO: Handle connection loss.
 // TODO: Tick on interrupt.
+// TODO: Fix loop time.
+// TODO: Implement exceptions.
+// TODO: Implement flash write/dump.
+// TODO: Implement parameter (b/d) change messages.
 
 Quadrupel::Quadrupel() {
+    // Initialize all drivers.
     uart_init();
     gpio_init();
     timers_init();
@@ -18,6 +23,8 @@ Quadrupel::Quadrupel() {
     baro_init();
     spi_flash_init();
     ble_init();
+
+    init_divider();
 }
 
 void Quadrupel::receive() {
@@ -110,7 +117,7 @@ void Quadrupel::acknowledge(uint32_t ack_number) {
 
 void Quadrupel::heartbeat() {
     // Calculate loop time.
-    uint16_t loop_time = _accum_loop_time;
+    auto loop_time = (uint16_t)_accum_loop_time;
 
     auto packet = new Packet(Telemetry);
     auto data = new TelemetryData(bat_volt, phi, theta, sp, sq, sr, loop_time, _mode);
@@ -137,6 +144,7 @@ bool Quadrupel::handle_packet(Packet *packet) {
         }
         case Kill: {
             kill();
+            break;
         }
         default:
             // Could not handle packet.
@@ -266,25 +274,24 @@ void Quadrupel::remote_control(uint16_t lift, int16_t roll, int16_t pitch, int16
     if (_mode != Manual)
         return;
 
-	// Equations to get desired lift, roll (rate?), pitch (rate?) and yaw (rate?).
-	double_t oo1, oo2, oo3, oo4;
+	// Equations to get desired lift, roll rate, pitch rate and yaw rate.
+	int32_t oo1, oo2, oo3, oo4;
 
-	oo1 = (lift / b + 2 * pitch / (2 * b) - yaw / d);
-	oo2 = (lift / b - 2 * roll  / (2 * b) + yaw / d);
-	oo3 = (lift / b - 2 * pitch / (2 * b) - yaw / d);
-	oo4 = (lift / b + 2 * roll  / (2 * b) + yaw / d);
-
-	// clip ooi as rotors only provide positive thrust
-	if (oo1 < 0) oo1 = 0;
-	if (oo2 < 0) oo2 = 0;
-	if (oo3 < 0) oo3 = 0;
-	if (oo4 < 0) oo4 = 0;
+	oo1 = lift / (2 * b) + pitch / b - yaw / d;
+	oo2 = lift / (2 * b) - roll  / b + yaw / d;
+	oo3 = lift / (2 * b) - pitch / b - yaw / d;
+	oo4 = lift / (2 * b) + roll  / b + yaw / d;
 
 	// with ai = oi it follows
-	ae[0] = (int16_t)sqrt(oo1);
-	ae[1] = (int16_t)sqrt(oo2);
-	ae[2] = (int16_t)sqrt(oo3);
-	ae[3] = (int16_t)sqrt(oo4);
+//	ae[0] = (int16_t)sqrt(oo1);
+//	ae[1] = (int16_t)sqrt(oo2);
+//	ae[2] = (int16_t)sqrt(oo3);
+//	ae[3] = (int16_t)sqrt(oo4);
+
+    ae[0] = scale_motor(oo1);
+    ae[1] = scale_motor(oo2);
+    ae[2] = scale_motor(oo3);
+    ae[3] = scale_motor(oo4);
 }
 
 void Quadrupel::update_motors() {
@@ -298,3 +305,22 @@ void Quadrupel::control() {
 
 }
 
+void Quadrupel::init_divider() {
+    uint32_t min = 0;
+    auto max = (uint32_t)(UINT16_MAX / (2 * b) + INT16_MAX / b + INT16_MAX / d);
+
+    divider = (uint16_t)((max - min) / (MOTOR_MAX - MOTOR_MIN));
+}
+
+uint16_t Quadrupel::scale_motor(int32_t value) {
+    // Clamp to zero if required.
+    value = value < 0 ? 0 : value;
+
+    // Scale
+    value = value / divider;
+
+    // Offset
+    value += MOTOR_MIN;
+
+    return (uint16_t)value;
+}

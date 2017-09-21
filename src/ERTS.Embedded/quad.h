@@ -14,6 +14,13 @@ extern "C"
 #define MODE_SWITCH_UNSUPPORTED 1
 
 class Quadrupel {
+    const uint16_t MOTOR_MIN = 0;
+    const uint16_t MOTOR_MAX = 1500;
+
+    uint16_t b = 1;
+    uint16_t d = 1;
+    uint16_t divider = 1;
+
     flightMode_t _mode = Safe;
     flightMode_t _new_mode = Safe;
     bool _is_calibrated;
@@ -23,9 +30,7 @@ class Quadrupel {
     uint16_t _start_sequence = 0;
     char comm_buffer[MAX_PACKET_SIZE];
     uint8_t comm_buffer_index = 0;
-    // TODO: Determine decent values.
-    const double b = 1.00;
-    const double d = 1.00;
+
 
     void receive();
 
@@ -40,6 +45,10 @@ class Quadrupel {
     void kill();
 
     void remote_control(uint16_t lift, int16_t roll, int16_t pitch, int16_t yaw);
+
+    void init_divider();
+
+    inline uint16_t scale_motor(int32_t value);
 
 public:
     int16_t motor[4], ae[4];
