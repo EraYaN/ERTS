@@ -66,4 +66,6 @@ public:
     void update_motors();
 
     void control();
+
+    void set_parameters(uint16_t b, uint16_t d);
 };

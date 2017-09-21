@@ -20,6 +20,6 @@ bool AcknowledgeData::is_valid() {
     return true;
 }
 
-byte *AcknowledgeData::to_byte_array() {
-    return (byte*)_data;
+void AcknowledgeData::to_buffer(uint8_t *buffer) {
+
 }

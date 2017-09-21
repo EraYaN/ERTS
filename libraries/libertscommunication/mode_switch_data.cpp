@@ -1,7 +1,7 @@
 #include <cstring>
 #include "mode_switch_data.h"
 
-ModeSwitchData::ModeSwitchData(byte *data) {
+ModeSwitchData::ModeSwitchData(const uint8_t *data) {
     memcpy(&_data, data, get_length());
 }
 
@@ -17,7 +17,6 @@ bool ModeSwitchData::is_valid() {
     return _data->newMode != None;
 }
 
-byte *ModeSwitchData::to_byte_array() {
-    // Not implemented.
-    return nullptr;
+void ModeSwitchData::to_buffer(uint8_t *buffer) {
+
 }

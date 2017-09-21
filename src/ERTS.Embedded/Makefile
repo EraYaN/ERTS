@@ -79,9 +79,9 @@ default: $(PROJECT_NAME)
 #building all targets
 all: clean
 	$(NO_ECHO)$(MAKE) -f $(MAKEFILE_NAME) -C $(MAKEFILE_DIR) -e cleanobj
-	$(NO_ECHO)$(MAKE) -f $(MAKEFILE_NAME) -C $(MAKEFILE_DIR) -e $(PROJECT_NAME)	
+	$(NO_ECHO)$(MAKE) -f $(MAKEFILE_NAME) -C $(MAKEFILE_DIR) -e $(PROJECT_NAME)
 
-deps: $(EXT_DEPS_LIB_NAMES) 
+deps: $(EXT_DEPS_LIB_NAMES)
 
 #target for printing all targets
 help:
@@ -122,7 +122,7 @@ $(PROJECT_NAME): $(EXT_DEPS_COMM_LIB) $(EXT_DEPS_CRC_LIB) $(BUILD_DIRECTORIES) $
 $(BUILD_DIRECTORIES):
 #	echo $(MAKEFILE_NAME)
 	$(MK) $@
-	
+
 # Create objects from C SRC files
 $(OBJECT_DIRECTORY)/%.o: %.c
 	@echo Compiling file: $(notdir $<)
@@ -172,7 +172,7 @@ echosize:
 
 clean: $(addsuffix clean, $(EXT_DEPS_CRC_LIB) $(EXT_DEPS_COMM_LIB))
 	$(RM) $(BUILD_DIRECTORIES)
-	
+
 
 cleanobj:
 	$(RM) $(BUILD_DIRECTORIES)/*.o
@@ -182,4 +182,4 @@ upload:
 	$(DFU_TOOL) $(OUTPUT_BINARY_DIRECTORY)/$(OUTPUT_FILENAME).bin
 
 upload_mac:
-	python $(DFU_TOOL) -p "/dev/tty.usbserial-DN00P2TE" $(OUTPUT_BINARY_DIRECTORY)/$(OUTPUT_FILENAME).bin
+	python $(DFU_TOOL) -p "/dev/tty.usbserial-DN00P2TZ" $(OUTPUT_BINARY_DIRECTORY)/$(OUTPUT_FILENAME).bin

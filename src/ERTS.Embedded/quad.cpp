@@ -1,6 +1,7 @@
 #include "quad.h"
 #include "acknowledge_data.h"
 #include "mode_switch_data.h"
+#include "parameter_data.h"
 #include "remote_control_data.h"
 #include "telemetry_data.h"
 
@@ -58,6 +59,7 @@ void Quadrupel::receive() {
                     case SetControllerYawPID:
                     case SetControllerHeightPID:
                     case SetMessageFrequencies:
+                    case Parameters:
                     case Reset:
                     case Kill:
                     case Exception:
@@ -106,13 +108,14 @@ void Quadrupel::receive() {
 }
 
 void Quadrupel::send(Packet *packet) {
-    byte *bytes = packet->get_byte_array();
+    auto buffer = new uint8_t[MAX_PACKET_SIZE];
+    packet->to_buffer(buffer);
 
     for (int i = 0; i < MAX_PACKET_SIZE; ++i) {
-        uart_put(bytes[i]);
+        uart_put(buffer[i]);
     }
 
-    delete bytes;
+    delete[] buffer;
     delete packet;
 }
 
@@ -126,13 +129,13 @@ void Quadrupel::acknowledge(uint32_t ack_number) {
 
 void Quadrupel::heartbeat() {
     // Calculate loop time.
-    /*auto loop_time = (uint16_t)_accum_loop_time;
+    auto loop_time = (uint16_t)_accum_loop_time;
 
     auto packet = new Packet(Telemetry);
     auto data = new TelemetryData(bat_volt, phi, theta, sp, sq, sr, loop_time, _mode);
     packet->set_data(data);
 
-    send(packet);*/
+    send(packet);
 }
 
 bool Quadrupel::handle_packet(Packet *packet) {
@@ -158,6 +161,11 @@ bool Quadrupel::handle_packet(Packet *packet) {
             kill();
             break;
         }
+        case Parameters: {
+            auto *data = dynamic_cast<ParameterData *>(packet->get_data());
+            set_parameters(data->get_b(), data->get_d());
+            break;
+        }
         default:
             // Could not handle packet.
             return false;
@@ -179,6 +187,12 @@ void Quadrupel::tick() {
     uint32_t timestamp = get_time_us();
     _new_mode = _mode;
     receive();
+
+//    printf("%10ld | ", get_time_us());
+//    printf("%3d %3d %3d %3d | ", ae[0], ae[1], ae[2], ae[3]);
+//    printf("%6d %6d %6d | ", phi, theta, psi);
+//    printf("%6d %6d %6d | ", sp, sq, sr);
+//    printf("%4d | %4ld | %6ld \n", bat_volt, temperature, pressure);
 
     if (check_timer_flag()) { // The following is executed every 50 ms (20 Hz).
         counter++;
@@ -335,4 +349,11 @@ uint16_t Quadrupel::scale_motor(int32_t value) {
     value += MOTOR_MIN;
 
     return (uint16_t)value;
+}
+
+void Quadrupel::set_parameters(uint16_t b, uint16_t d) {
+    this->b = b;
+    this->d = d;
+
+    init_divider();
 }

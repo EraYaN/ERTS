@@ -40,7 +40,7 @@ set(SOURCE_FILES
         ../libraries/libertscommunication/remote_control_data.cpp
         ../libraries/libertscommunication/telemetry_data.h
         ../libraries/libertscommunication/telemetry_data.cpp
-        )
+        ../libraries/libertscommunication/parameter_data.cpp ../libraries/libertscommunication/parameter_data.h)
 
 include_directories(
         ../libraries/libcrc-2.0/include

@@ -28,7 +28,6 @@ Packet::Packet(const byte* packet)
     _type = static_cast<messageType_t>(packet[2]);
 #if defined(USE_CRC16)
     checksum = (packet[4]) << 8 | packet[3]; //checksum to be updated later
-    memcpy(_data_segment, &packet[5], DATA_SIZE);
 #elif defined(USE_CRC8)
     checksum = packet[3]; //checksum to be updated later
     memcpy(data_segment, &packet[3], DATA_SIZE);
@@ -38,10 +37,10 @@ Packet::Packet(const byte* packet)
 
     switch (_type) {
         case ModeSwitch:
-            _data = new ModeSwitchData(_data_segment);
+            _data = new ModeSwitchData(&packet[5]);
             break;
         case RemoteControl:
-            _data = new RemoteControlData(_data_segment);
+            _data = new RemoteControlData(&packet[5]);
             break;
         case Kill:
             // Nothing
@@ -59,40 +58,22 @@ Packet::~Packet()
     delete _data;
 }
 
-byte* Packet::get_byte_array() {
-    byte* packet = new byte[MAX_PACKET_SIZE];
+void Packet::to_buffer(uint8_t *buffer) {
+    buffer[0] = (_start & 0xFF00) >> 8;
+    buffer[1] = _start & 0x00FF;
+    buffer[2] = _type;
+    buffer[3] = 0; //checksum to be updated later
+    buffer[4] = 0; //checksum to be updated later
+//    memset(&buffer[5], 0, DATA_SIZE);
+    _data->to_buffer(&buffer[5]);
 
-    packet[0] = (_start & 0xFF00) >> 8;
-    packet[1] = _start & 0x00FF;
-    packet[2] = _type;
-#if defined(USE_CRC16)
-    packet[3] = 0; //checksum to be updated later
-    packet[4] = 0; //checksum to be updated later
-    memset(&packet[5], 0, DATA_SIZE);
-    memcpy(&packet[5], _data, DATA_SIZE);
-#elif defined(USE_CRC8)
-    packet[3] = 0; //checksum to be updated later
-    memset(&packet[4], 0, DATA_SIZE);
-    memcpy(&packet[4], data, DATA_SIZE);
-#else
-    memset(&packet[3], 0, DATA_SIZE);
-    memcpy(&packet[3], data, DATA_SIZE);
-#endif
-
-    packet[MAX_PACKET_SIZE - 1] = _end;
+    buffer[MAX_PACKET_SIZE - 1] = _end;
     //Calculate and add checksum
-#if defined(USE_CRC16)
-    checksum_t cs = crc_16(packet, MAX_PACKET_SIZE);
-    packet[3] = cs & 0x00FF;
-    packet[4] = (cs & 0xFF00) >> 8;
-#elif defined(USE_CRC8)
-    checksum_t cs = crc_8(packet, MAX_PACKET_SIZE);
-    packet[3] = cs;
-#endif
-    return packet;
+    checksum_t cs = crc_16(buffer, MAX_PACKET_SIZE);
+    buffer[3] = cs & 0x00FF;
+    buffer[4] = (cs & 0xFF00) >> 8;
 }
 
-#if defined(USE_CRC16)
 bool Packet::verify(byte* packet) {
     checksum_t packet_cs = (packet[4] << 8) | packet[3];
     packet[3] = 0; //checksum to be updated later
@@ -103,18 +84,4 @@ bool Packet::verify(byte* packet) {
     packet[4] = (cs & 0xFF00) >> 8;
     return result;
 }
-#elif defined(USE_CRC8)
-bool verify_packet(byte* packet) {
-    checksum packet_cs = packet[3];
-    packet[3] = 0; //checksum to be updated later
-    checksum cs = crc_8(packet, MAX_PACKET_SIZE);
-    bool result = cs == packet_cs;
-    packet[3] = packet_cs;
-    return result;
-}
-#else
-bool verify_packet(byte* packet) {
-    return true;
-}
-#endif
 

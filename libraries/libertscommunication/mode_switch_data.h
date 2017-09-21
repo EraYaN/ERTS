@@ -6,7 +6,7 @@ class ModeSwitchData : public PacketData {
     modeSwitchData_t *_data;
 
 public:
-    explicit ModeSwitchData(byte *data);
+    explicit ModeSwitchData(const uint8_t *data);
 
     ~ModeSwitchData() override { delete _data; }
 
@@ -22,7 +22,8 @@ public:
 
     bool is_valid() override;
 
-    byte *to_byte_array() override;
+    void to_buffer(uint8_t *buffer) override;
+
 };
 
 

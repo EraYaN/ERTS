@@ -17,7 +17,7 @@ public:
 
     bool is_valid() override;
 
-    byte *to_byte_array() override;
+    void to_buffer(uint8_t *buffer) override;
 };
 
 

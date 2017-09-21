@@ -14,5 +14,5 @@ public:
 
     virtual uint32_t get_ack_number() = 0;
 
-    virtual byte* to_byte_array() = 0;
+    virtual void to_buffer(uint8_t *buffer) = 0;
 };
