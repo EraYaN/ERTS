@@ -1,4 +1,5 @@
 ﻿using ERTS.Dashboard.Communication;
+using ERTS.Dashboard.Configuration;
 using CRCLib;
 using ERTS.Dashboard.Input;
 using ERTS.Dashboard.Control;
@@ -67,7 +68,7 @@ namespace ERTS.Dashboard
                 }
                 else
                 {
-                    Debug.WriteLine("COM Port or Baud Rate not valid. OPen Settings and restart.");
+                    Debug.WriteLine("COM Port or Baud Rate not valid. OPen Configuration and restart.");
                     return false;
                 }
             }
@@ -123,11 +124,7 @@ namespace ERTS.Dashboard
                 return false;
             }
         }
-        /// <summary>
-        /// Misc data bindings structure used for visualization
-        /// </summary>
-        //public static Databindings db = new Databindings();
-        static public void Init()
+        static public void InitStageOne(IntPtr WindowHandle)
         {
             if (InitConfiguration())
                 Debug.WriteLine("Started Configuration.");
@@ -136,19 +133,29 @@ namespace ERTS.Dashboard
             if (InitCRCLib())
                 Debug.WriteLine("Started CRCLib.");
             else
-                Debug.WriteLine("Starting CRCLib failed.");
-            if (InitCommunicationInterface())
-                Debug.WriteLine("Started CommunicationInterface.");
-            else
-                Debug.WriteLine("Starting CommunicationInterface failed.");
+                Debug.WriteLine("Starting CRCLib failed.");           
             if (InitInputManager())
                 Debug.WriteLine("Started InputManager.");
             else
                 Debug.WriteLine("Starting InputManager failed.");
             if (InitPatchBox())
+            {
+                input.AquireDevices(patchbox.DeviceGuids, WindowHandle);
                 Debug.WriteLine("Started PatchBox.");
+            }
             else
+            {
                 Debug.WriteLine("Starting PatchBox failed.");
+            }
+            return;
+        }
+        static public void InitStageTwo()
+        {
+            
+            if (InitCommunicationInterface())
+                Debug.WriteLine("Started CommunicationInterface.");
+            else
+                Debug.WriteLine("Starting CommunicationInterface failed.");            
             if (InitController())
                 Debug.WriteLine("Started Controller.");
             else

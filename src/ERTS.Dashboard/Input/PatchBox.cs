@@ -10,13 +10,22 @@ namespace ERTS.Dashboard.Input
     public class PatchBox
     {
         //axis
-        InputBinding LiftInputBinding;
+        /*InputBinding LiftInputBinding;
         InputBinding RollInputBinding;
         InputBinding PitchInputBinding;
-        InputBinding YawInputBinding;
+        InputBinding YawInputBinding;*/
 
         //buttons
-        InputBinding AbortInputBinding;
+        /*InputBinding AbortInputBinding;*/
+
+        //collection
+        Dictionary<string, InputBinding> InputBindings = new Dictionary<string, InputBinding>();
+
+        public IEnumerable<Guid> DeviceGuids {
+            get {
+                return InputBindings.Values.SelectMany(ca => ca.Controls).Select(control => control.DeviceGuid).Distinct();
+            }
+        }
 
         public PatchBox()
         {
@@ -26,20 +35,27 @@ namespace ERTS.Dashboard.Input
             ControlActuator joyPadRotX = new ControlActuator() { DeviceGuid = new Guid("f211f8e0-8dc4-11e7-800f-444553540000"), ControlDisplayName = "Xbox 360 - RotationX", RawOffset = 12 };
             ControlActuator joyPadRotY = new ControlActuator() { DeviceGuid = new Guid("f211f8e0-8dc4-11e7-800f-444553540000"), ControlDisplayName = "Xbox 360 - RotationY", RawOffset = 16 };
 
-            LiftInputBinding = new InputBinding(new ControlActuator[] { joyPadY }, "Lift");
+           
+
+            InputBinding LiftInputBinding = new InputBinding(new ControlActuator[] { joyPadY }, "Lift");
             LiftInputBinding.BindingActuatedEvent += LiftInputBinding_BindingActuatedEvent;
+            InputBindings.Add("Lift", LiftInputBinding);
 
-            RollInputBinding = new InputBinding(new ControlActuator[] { joyPadRotX }, "RollRate");
+            InputBinding RollInputBinding = new InputBinding(new ControlActuator[] { joyPadRotX }, "RollRate");
             RollInputBinding.BindingActuatedEvent += RollInputBinding_BindingActuatedEvent;
+            InputBindings.Add("Roll", RollInputBinding);
 
-            PitchInputBinding = new InputBinding(new ControlActuator[] { joyPadRotY }, "PitchRate");
+            InputBinding PitchInputBinding = new InputBinding(new ControlActuator[] { joyPadRotY }, "PitchRate");
             PitchInputBinding.BindingActuatedEvent += PitchInputBinding_BindingActuatedEvent;
+            InputBindings.Add("Pitch", PitchInputBinding);
 
-            YawInputBinding = new InputBinding(new ControlActuator[] { joyPadX }, "YawRate");
+            InputBinding YawInputBinding = new InputBinding(new ControlActuator[] { joyPadX }, "YawRate");
             YawInputBinding.BindingActuatedEvent += YawInputBinding_BindingActuatedEvent;
+            InputBindings.Add("Yaw", YawInputBinding);
 
-            AbortInputBinding = new InputBinding(new ControlActuator[] { keyboardEsc }, "Abort");
+            InputBinding AbortInputBinding = new InputBinding(new ControlActuator[] { keyboardEsc }, "Abort");
             AbortInputBinding.BindingActuatedEvent += AbortInputBinding_BindingActuatedEvent;
+            InputBindings.Add("Abort", AbortInputBinding);
 
         }
         private void LiftInputBinding_BindingActuatedEvent(object sender, BindingActuatedEventArgs e)

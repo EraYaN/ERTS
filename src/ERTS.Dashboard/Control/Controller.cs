@@ -19,7 +19,9 @@ namespace ERTS.Dashboard.Control
 
         Timer RCTimer;
         public FlightMode Mode { get; set; }
-        public int Voltage { get; set; }
+        public double BatteryVoltage { get; set; }
+
+        public double LoopTime { get; set; }
 
         public double Lift { get; set; }
 
@@ -79,8 +81,10 @@ namespace ERTS.Dashboard.Control
         {
             Debug.WriteLine("Processing Telemetry....");
             Debug.WriteLine(data.ToString());
-            Voltage = data.BatteryVoltage;
-            RaisePropertyChanged("Voltage");
+            BatteryVoltage = data.BatteryVoltage / 100.0;
+            RaisePropertyChanged("BatteryVoltage");
+            LoopTime = data.LoopTime / 1000.0;
+            RaisePropertyChanged("LoopTime");
             Mode = data.FlightMode;
             RaisePropertyChanged("Mode");
 

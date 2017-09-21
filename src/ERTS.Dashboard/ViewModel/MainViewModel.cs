@@ -6,11 +6,13 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
+using System.Windows.Media;
 
 namespace ERTS.Dashboard.ViewModel
 {
@@ -53,7 +55,7 @@ namespace ERTS.Dashboard.ViewModel
         public double Voltage {
             get {
                 if (GlobalData.ctr != null)
-                    return GlobalData.ctr.Voltage;
+                    return GlobalData.ctr.BatteryVoltage;
                 else
                     return -1;
             }
@@ -131,16 +133,133 @@ namespace ERTS.Dashboard.ViewModel
             }
         }
 
-
-
-        public MainViewModel()
-        {
-            
-
-            
+        public string WindowTitle {
+            get {
+                Assembly currAss = Assembly.GetExecutingAssembly();
+                string fileVersion = FileVersionInfo.GetVersionInfo(currAss.Location).FileVersion;
+                string processorArchitecture = currAss.GetName().ProcessorArchitecture.ToString();
+#if DEBUG
+                string Branch = "Debug";
+#else
+                string Branch = "Release";
+#endif
+                return String.Format("{3} Director v{0} {1} {2} by Erwin de Haan, Robin Hes & Casper van Wezel", fileVersion, processorArchitecture, Branch, currAss.FullName);
+            }
         }
 
-        public void Init()
+        public string DebugInfo {
+            get {
+                return VersionInfo;
+            }
+        }
+
+        public string VersionInfo {
+            get {
+                StringBuilder sb = new StringBuilder();
+                Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
+                foreach (Assembly a in assemblies)
+                {
+                    AssemblyName an = a.GetName();
+                    if (a.GlobalAssemblyCache == false)
+                        sb.AppendLine(String.Format("{0} v{1} {2}", an.Name, an.Version, an.ProcessorArchitecture));
+                }
+
+                return sb.ToString();
+            }
+        }
+        public string SerialPortStatus {
+            get {
+                if (GlobalData.com == null)
+                    return "NULL";
+                if (GlobalData.com.IsOpen)
+                {
+                    return GlobalData.com.BytesInRBuffer + "|" + GlobalData.com.BytesInTBuffer;
+                }
+                else
+                {
+                    return "NC";
+                }
+            }
+        }
+
+        public Brush SerialPortStatusColor {
+            get {
+                if (GlobalData.com == null)
+                    return Brushes.Red;
+                if (GlobalData.com.IsOpen)
+                {
+                    int b = GlobalData.com.BytesInRBuffer + GlobalData.com.BytesInTBuffer;
+                    if (b == 0)
+                    {
+                        return Brushes.Green;
+                    }
+                    else if (b > 0 && b <= 2)
+                    {
+                        return Brushes.LightGreen;
+                    }
+                    else
+                    {
+                        return Brushes.Orange;
+                    }
+                }
+                else
+                {
+                    return Brushes.OrangeRed;
+                }
+            }
+        }
+
+        public string LoopTimeString {
+            get {
+                if (GlobalData.ctr != null)
+                {
+                    if (GlobalData.ctr.LoopTime == -1)
+                        return "xx ms";
+                    else
+                        return string.Format("{0:f1} ms", GlobalData.ctr.LoopTime);
+                }
+                else
+                {
+                    return "ctr is null";
+                }
+            }
+        }
+
+        public string InputStatus {
+            get {
+                if (GlobalData.input != null)
+                {
+                    if (GlobalData.input.IsInputEngaged)
+                        return "Engaged";
+                    else
+                        return "Disengaged";
+                }
+                else
+                {
+                    return "input is null";
+                }
+            }
+        }
+        public string InputDevicesStatus {
+            get {
+                if (GlobalData.input != null)
+                {
+                    return string.Format("{0} devices bound", GlobalData.input.BoundDevices);
+                }
+                else
+                {
+                    return "input is null";
+                }
+            }
+        }
+        public MainViewModel()
+        {
+
+
+
+        }
+
+        public void InitStageOne()
         {
             if (GlobalData.input != null)
                 Devices = GlobalData.input.EnumerateControllers();
@@ -148,8 +267,48 @@ namespace ERTS.Dashboard.ViewModel
                 Devices = new List<DeviceInstance>();
             SelectedDevice = null;
 
+            if (GlobalData.input != null)
+                GlobalData.input.PropertyChanged += Input_PropertyChanged;
+        }
+
+        public void InitStageTwo()
+        {
             if (GlobalData.ctr != null)
                 GlobalData.ctr.PropertyChanged += Ctr_PropertyChanged;
+            if (GlobalData.com != null)
+                GlobalData.com.PropertyChanged += Com_PropertyChanged;
+        }
+
+        private void Input_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "IsInputEngaged")
+            {
+                RaisePropertyChanged("InputStatus");
+                return;
+            }
+            else if (e.PropertyName == "BoundDevices")
+            {
+                RaisePropertyChanged("InputDevicesStatus");
+                return;
+            }
+            else
+            {
+                Debug.WriteLine("Got unsupported binding name from InputManager " + e.PropertyName + ".");
+            }
+        }
+
+        private void Com_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "IsOpen" || e.PropertyName == "BytesInRBuffer" || e.PropertyName == "BytesInTBuffer")
+            {
+                RaisePropertyChanged("SerialPortStatus");
+                RaisePropertyChanged("SerialPortStatusColor");
+                return;
+            }
+            else
+            {
+                Debug.WriteLine("Got unsupported binding name from InputManager " + e.PropertyName + ".");
+            }
         }
 
         private void Ctr_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -184,14 +343,18 @@ namespace ERTS.Dashboard.ViewModel
                 RaisePropertyChanged("ModeDescriptionString");
                 return;
             }
-            else if (e.PropertyName == "Voltage")
+            else if (e.PropertyName == "BatteryVoltage")
             {
                 RaisePropertyChanged("VoltageString");
                 return;
             }
+            else if (e.PropertyName == "LoopTime")
+            {
+                RaisePropertyChanged("LoopTimeString");
+            }
             else
             {
-                Debug.WriteLine("Got unsupported binding name from Controller "+ e.PropertyName + ".");
+                Debug.WriteLine("Got unsupported binding name from Controller " + e.PropertyName + ".");
             }
 
         }
@@ -200,7 +363,7 @@ namespace ERTS.Dashboard.ViewModel
         {
             if (SelectedDevice != null)
             {
-                GlobalData.input.BindDevice((DeviceInstance)SelectedDevice, new WindowInteropHelper(obj as Window).Handle);
+                GlobalData.input.AquireDevice((DeviceInstance)SelectedDevice, new WindowInteropHelper(obj as Window).Handle);
             }
         }
 

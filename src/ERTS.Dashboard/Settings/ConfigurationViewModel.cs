@@ -7,9 +7,9 @@ using System.Text;
 using System.Threading.Tasks;
 using MicroMvvm;
 
-namespace ERTS.Dashboard {
+namespace ERTS.Dashboard.Configuration {
     /// <summary>
-    /// The ViewModel for the Settings Dialog
+    /// The ViewModel for the Configuration Dialog
     /// </summary>
     public class ConfigurationViewModel : ObservableObject {
         #region Construction
@@ -77,6 +77,72 @@ namespace ERTS.Dashboard {
             }
         }
 
+        public int TargetLoopTime {
+            get {
+                if (GlobalData.cfg != null)
+                {
+                    return GlobalData.cfg.TargetLoopTime;
+                }
+                return 0;
+            }
+            set {
+                if (GlobalData.cfg != null)
+                {
+                    if (GlobalData.cfg.TargetLoopTime != value)
+                    {
+                        GlobalData.cfg.TargetLoopTime = value;
+                        RaisePropertyChanged("TargetLoopTime");
+                    }
+                }
+            }
+        }
+
+        public int RCInterval {
+            get {
+                if (GlobalData.cfg != null)
+                {
+                    return GlobalData.cfg.RCInterval;
+                }
+                return 0;
+            }
+            set {
+                if (GlobalData.cfg != null)
+                {
+                    if (GlobalData.cfg.RCInterval != value)
+                    {
+                        GlobalData.cfg.RCInterval = value;
+                        RaisePropertyChanged("RCInterval");
+                    }
+                }
+            }
+        }
+
+        public int TelemetryInterval {
+            get {
+                if (GlobalData.cfg != null)
+                {
+                    return GlobalData.cfg.TelemetryInterval;
+                }
+                return 0;
+            }
+            set {
+                if (GlobalData.cfg != null)
+                {
+                    if (GlobalData.cfg.TelemetryInterval != value)
+                    {
+                        GlobalData.cfg.TelemetryInterval = value;
+                        RaisePropertyChanged("TelemetryInterval");
+                    }
+                }
+            }
+        }
+
+        public string KillControlPrimaryString {
+            get {
+                return "test";
+            }
+        }
+
         /*public bool InterpolateOnSave {
             get {
                 if (GlobalData.cfg != null) {
@@ -126,7 +192,7 @@ namespace ERTS.Dashboard {
                 }
             }
         }*/
-        
+
         #endregion
 
     }

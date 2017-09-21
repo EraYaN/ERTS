@@ -21,78 +21,6 @@ namespace ERTS.Dashboard
         //TODO move all code to MainViewModel
         /*
 		
-
-        public string WindowTitle {
-            get {
-                Assembly currAss = Assembly.GetExecutingAssembly();
-                string fileVersion = FileVersionInfo.GetVersionInfo(currAss.Location).FileVersion;
-                string processorArchitecture = currAss.GetName().ProcessorArchitecture.ToString();
-#if DEBUG
-                string Branch = "Debug";
-#else
-                string Branch = "Release";
-#endif
-                return String.Format("SoCeBa Director v{0} {1} {2} by Erwin de Haan", fileVersion, processorArchitecture, Branch);
-            }
-        }
-
-        public string DebugInfo {
-            get {
-                return VersionInfo;
-            }
-        }
-
-        public string VersionInfo
-		{
-			get
-			{
-				StringBuilder sb = new StringBuilder();
-				Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
-				foreach (Assembly a in assemblies)
-				{
-					AssemblyName an = a.GetName();
-					if(a.GlobalAssemblyCache==false)
-						sb.AppendLine(String.Format("{0} v{1} {2}", an.Name, an.Version, an.ProcessorArchitecture));					
-				}
-				
-				return sb.ToString();
-			}
-		}
-		public string SerialPortStatus
-		{
-			get
-			{
-				if (GlobalData.com == null)
-					return "NULL";
-				if (GlobalData.com.IsOpen)
-				{
-					return GlobalData.com.BytesInRBuffer + "|" + GlobalData.com.BytesInTBuffer;
-				}
-				else
-				{
-					return "NC";
-				}
-			}
-		}
-
-		public string LastPing
-		{
-			get
-			{
-				if (GlobalData.ctr != null)
-				{
-					if (GlobalData.ctr.LastPing == -1)
-						return "xx ms";
-					else
-						return string.Format("{0:f1} ms", GlobalData.ctr.LastPing);
-				}
-				else
-				{
-					return "ctr is null";
-				}
-			}
-		}
-
         public string AlgorithmRate {
             get {
                 if (GlobalData.ctr != null) {
@@ -106,34 +34,7 @@ namespace ERTS.Dashboard
             }
         }
 
-        public Brush SerialPortStatusColor
-		{
-			get
-			{
-				if (GlobalData.com == null)
-					return Brushes.Red;
-				if (GlobalData.com.IsOpen)
-				{
-					int b = GlobalData.com.BytesInRBuffer + GlobalData.com.BytesInTBuffer;
-					if (b == 0)
-					{
-						return Brushes.Green;
-					}
-					else if (b > 0 && b <= 2)
-					{
-						return Brushes.LightGreen;
-					}
-					else
-					{
-						return Brushes.Orange;
-					}
-				}
-				else
-				{
-					return Brushes.OrangeRed;
-				}
-			}
-		}
+        
 		
 		public double PowerGraphMaxTime
 		{

@@ -14,7 +14,7 @@
     <Grid Margin="5">
         <StackPanel>
             <TextBlock HorizontalAlignment="Left" Margin="10,2" TextWrapping="Wrap" Text="ERTS Dashboard" VerticalAlignment="Top" Height="35" FontSize="24"/>
-            <TextBlock Margin="10,2" TextWrapping="Wrap"><Run Text="2016 © Erwin de Haan, Robin Hes, Casper van Wezel"/></TextBlock>
+            <TextBlock Margin="10,2" TextWrapping="Wrap"><Run Text="2017 © Erwin de Haan, Robin Hes, Casper van Wezel"/></TextBlock>
             <TextBlock Margin="10,2" TextWrapping="Wrap" Text="{Binding VersionInfo}" FontWeight="Light" FontSize="11"/>            
         </StackPanel>
     </Grid>

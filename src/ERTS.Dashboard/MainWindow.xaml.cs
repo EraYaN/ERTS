@@ -21,6 +21,7 @@ using ERTS.Dashboard.Utility;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
+using ERTS.Dashboard.Configuration;
 
 namespace ERTS.Dashboard
 {
@@ -36,7 +37,7 @@ namespace ERTS.Dashboard
             Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
             Thread.CurrentThread.Priority = ThreadPriority.Highest;
             
-            settingsWindow = new SettingsWindow();            
+            settingsWindow = new SettingsWindow(new WindowInteropHelper(this).Handle);            
 
             InitializeComponent();
         }
@@ -53,8 +54,9 @@ namespace ERTS.Dashboard
             /*TextBoxTraceListener tbtl = new TextBoxTraceListener(DebugTraceTextBox);
             Debug.Listeners.Add(tbtl);
             Debug.WriteLine("Welcome, Debug redirection enabled.");*/
+            GlobalData.InitStageOne(new WindowInteropHelper(this).Handle);
 
-            
+            ((MainViewModel)DataContext).InitStageOne();
         }
         private void SettingsMenuItem_Click(object sender, RoutedEventArgs e)
         {
@@ -74,9 +76,9 @@ namespace ERTS.Dashboard
         }
         private void StartAllButton_Click(object sender, RoutedEventArgs e)
         {
-            GlobalData.Init();
+            GlobalData.InitStageTwo();
 
-            ((MainViewModel)DataContext).Init();
+            ((MainViewModel)DataContext).InitStageTwo();
 
         }
 

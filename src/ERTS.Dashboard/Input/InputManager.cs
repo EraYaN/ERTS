@@ -1,5 +1,6 @@
 ﻿using SharpDX;
 using SharpDX.DirectInput;
+using MicroMvvm;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ERTS.Dashboard.Input
 {
-    public class InputManager : IDisposable
+    public class InputManager : ObservableObject, IDisposable
     {
         public event EventHandler<InputEventArgs> InputEvent;
 
@@ -17,15 +18,17 @@ namespace ERTS.Dashboard.Input
         List<Device> UsedDevices = new List<Device>();
         List<WaitHandle> WaitHandles = new List<WaitHandle>();
 
-        bool IsInputEngaged = true;
+        bool isInputEngaged = true;
+
+        public bool IsInputEngaged {
+            get { return isInputEngaged; }
+        }
+
+        public int BoundDevices {
+            get { return UsedDevices.Count; }
+        }
 
         Task threadTask;
-
-        //Set for mode 1 RC control
-        JoystickOffset Pitch = JoystickOffset.RotationY; //XB360 Right Stick Vertical
-        JoystickOffset Yaw = JoystickOffset.X; //XB360 Left Stick Horizontal
-        JoystickOffset Roll = JoystickOffset.RotationX; //XB360 Right Stick Horizontal
-        JoystickOffset Lift = JoystickOffset.Y; //XB360 Left Stick Vertical
 
         CancellationTokenSource cancelTokenSource;
 
@@ -33,6 +36,8 @@ namespace ERTS.Dashboard.Input
         {
             directInput = new DirectInput();
             StartThread();
+            RaisePropertyChanged("IsInputEngaged");
+            RaisePropertyChanged("BoundDevices");
         }
 
         public List<DeviceInstance> EnumerateControllers()
@@ -60,20 +65,101 @@ namespace ERTS.Dashboard.Input
             else
                 return false;
         }
+        public bool IsDeviceInUse(Guid guid)
+        {
+            if (UsedDevices != null)
+                return UsedDevices.Exists(d => d.Information.InstanceGuid == guid);
+            else
+                return false;
+        }
 
         public void DisengageInput()
         {
             Debug.WriteLine("Disengaged Input.");
-            IsInputEngaged = false;
+            isInputEngaged = false;
+            RaisePropertyChanged("IsInputEngaged");
         }
 
         public void EngageInput()
         {
             Debug.WriteLine("Engaged Input.");
-            IsInputEngaged = true;
+            isInputEngaged = true;
+            RaisePropertyChanged("IsInputEngaged");
         }
 
-        public bool BindDevice(DeviceInstance device, IntPtr WindowHandle)
+        //TODO make WindowHandle a class member
+        public bool AquireAllDevices(IntPtr WindowHandle)
+        {
+            List<DeviceInstance> devices = EnumerateControllers();
+            return AquireDevices(devices, WindowHandle);
+        }
+
+        public bool AquireDevices(IEnumerable<Guid> deviceGuids, IntPtr WindowHandle)
+        {
+            List<DeviceInstance> devices = EnumerateControllers();
+            bool result = true;
+            foreach (Guid guid in deviceGuids)
+            {
+                DeviceInstance di = devices.Find(d => d.InstanceGuid == guid);
+                if (di != null)
+                {
+                    if (!IsDeviceInUse(di))
+                    {
+                        result &= AquireDevice(di, WindowHandle);
+                    }
+                }
+                else
+                {
+                    result = false;
+                }
+            }
+            return result;
+        }
+
+        public bool AquireDevices(IEnumerable<DeviceInstance> devices, IntPtr WindowHandle)
+        {
+            bool result = true;
+            foreach (DeviceInstance di in devices)
+            {
+                if (!IsDeviceInUse(di))
+                {
+                    result &= AquireDevice(di, WindowHandle);
+                }
+            }
+            return result;
+        }
+
+        public void UnaquireDevicesNotInList(List<DeviceInstance> devices)
+        {
+            List<Device> removedDevices = new List<Device>();
+            lock (usedDeviceLock)
+            {
+                foreach (Device dev in UsedDevices)
+                {
+                    if (!devices.Exists(d => d.InstanceGuid == dev.Information.InstanceGuid))
+                    {
+                        dev.Unacquire();
+                        removedDevices.Add(dev);
+                    }
+                }
+                foreach (Device dev in removedDevices)
+                {
+                    UsedDevices.Remove(dev);
+                }
+            }
+            RaisePropertyChanged("BoundDevices");
+        }
+        public void UnaquireAllDevices()
+        {            
+            foreach (Device dev in UsedDevices)
+            {
+                dev.Unacquire();
+            }
+            UsedDevices.Clear();
+            RaisePropertyChanged("BoundDevices");
+        }
+
+        public bool AquireDevice(DeviceInstance device, IntPtr WindowHandle)
         {
             if (IsDeviceInUse(device))
             {
@@ -116,7 +202,7 @@ namespace ERTS.Dashboard.Input
                 WaitHandles.Add(handle);
                 UsedDevices.Add(boundDevice);
             }
-
+            RaisePropertyChanged("BoundDevices");
             return true;
         }
 
@@ -159,9 +245,9 @@ namespace ERTS.Dashboard.Input
                     {
                         WaitHandle.WaitAny(WaitHandles.ToArray(), 1000);
                     }
-                    foreach (Device d in UsedDevices)
+                    try
                     {
-                        try
+                        foreach (Device d in UsedDevices)
                         {
                             if (!d.IsDisposed)
                             {
@@ -171,7 +257,7 @@ namespace ERTS.Dashboard.Input
                                     var updates = ((Keyboard)d).GetBufferedData();
                                     foreach (KeyboardUpdate state in updates)
                                     {
-                                       
+
                                         Debug.Write(state);
                                         Debug.WriteLine(String.Format("; Raw: {0}; Key: {1}", state.RawOffset, state.Key));
                                         SendInputEvent(state, d.Information.InstanceGuid);
@@ -199,10 +285,12 @@ namespace ERTS.Dashboard.Input
                                 }
 
                             }
-                        } catch(SharpDXException e)
-                        {
-                            //shutdown artifact.
+
                         }
+                    }
+                    catch (SharpDXException e)
+                    {
+                        //shutdown artifact.
                     }
                 }
 
@@ -251,7 +339,7 @@ namespace ERTS.Dashboard.Input
         #region Event Source
         void SendInputEvent(IStateUpdate StateUpdate, Guid DeviceGuid)
         {
-            OnInput(new InputEventArgs(StateUpdate, DeviceGuid, IsInputEngaged));
+            OnInput(new InputEventArgs(StateUpdate, DeviceGuid, isInputEngaged));
         }
 
         protected virtual void OnInput(InputEventArgs e)

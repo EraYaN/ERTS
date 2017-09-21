@@ -1,13 +1,14 @@
 ﻿using EraYaN.Serial;
 using ERTS.Dashboard.Communication.Data;
 using ERTS.Dashboard.Communication.Enumerations;
+using MicroMvvm;
 using System;
 using System.Diagnostics;
 using System.Linq;
 
 namespace ERTS.Dashboard.Communication
 {
-    public class CommunicationInterface : IDisposable
+    public class CommunicationInterface : ObservableObject, IDisposable
     {
         SerialInterface serial;
         string serialPort;
@@ -43,10 +44,12 @@ namespace ERTS.Dashboard.Communication
             {
                 Debug.WriteLine(serial.lastError);
             }
+            RaisePropertyChanged("IsOpen");
         }
 
         void com_SerialDataEvent(object sender, SerialDataEventArgs e)
         {
+            RaisePropertyChanged("BytesInRBuffer");
             //Debug.WriteLine(e.Data,"COMMBYTE");
             lastTwoBytes = (ushort)(lastTwoBytes << 8 | e.Data);
             if (isReceivingPacket == false)
@@ -127,11 +130,12 @@ namespace ERTS.Dashboard.Communication
         }
 
         public void SendPacket(Packet p)
-        {
+        {            
             if (serial.IsOpen && p.IsGoodToSend())
             {
                 serial.SendByteArray(p.ToByteArray());
             }
+            RaisePropertyChanged("BytesInTBuffer");
         }
 
         #region Protocol Methods
