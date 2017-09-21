@@ -29,21 +29,25 @@ Quadrupel::Quadrupel() {
 
 void Quadrupel::receive() {
     while (rx_queue.count) {
-        comm_buffer[comm_buffer_index] = dequeue(&rx_queue);
+		uint8_t currentByte = dequeue(&rx_queue);
 
+		printf("Got Byte %X\n", currentByte);
+		lastTwoBytes = lastTwoBytes << 8 | currentByte;
+		
         if (!_receiving) {
-            _start_sequence = (_start_sequence << 8 | comm_buffer[0]);
-
-            if (_start_sequence == START_SEQUENCE) {
+            if (lastTwoBytes == START_SEQUENCE) {
+				comm_buffer[0] = ((START_SEQUENCE & 0xFF00) >> 8);
+				comm_buffer[1] = (START_SEQUENCE & 0x00FF);
                 _receiving = true;
-                comm_buffer_index = 0;
+                comm_buffer_index = 2;
             }
-
         }
         else {
+			comm_buffer[comm_buffer_index] = currentByte;
+			comm_buffer_index++;
             // Received 5 bytes, check message type.
-            if (comm_buffer_index == 4) {
-                switch (comm_buffer[4]) {
+            if (comm_buffer_index == 3) {
+                switch (comm_buffer[2]) {
                     case Unknown:
                     case ModeSwitch:
                     case Acknowledge:
@@ -62,36 +66,41 @@ void Quadrupel::receive() {
                     default:
                         // Message type unrecognized.
                         // TODO: Send exception.
+						printf("Exception: Unknown packet type %X.\n", comm_buffer[2]);
                         _receiving = false;
+						comm_buffer_index = 0;
                         break;
                 }
-            }
-
-            // Received all 20 bytes, process message.
-            if (comm_buffer_index == MAX_PACKET_SIZE - 1) {
+            } else if (comm_buffer_index == MAX_PACKET_SIZE) {
                 if (comm_buffer[MAX_PACKET_SIZE - 1] == END_SEQUENCE) {
                     if (Packet::verify((byte *) comm_buffer)) {
-                        auto *packet = new Packet((byte *) comm_buffer);
+						printf("Handling packet.\n");
+                        /*auto *packet = new Packet((byte *) comm_buffer);
                         bool handled = handle_packet(packet);
                         // TODO: Send exception if not handled.
-
+						
                         if (handled && packet->get_data()->get_expects_acknowledgement())
                             acknowledge(packet->get_data()->get_ack_number());
 
-                        delete packet;
+                        delete packet;*/
                     }
                     else {
+						nrf_gpio_pin_toggle(YELLOW);
+						printf("Exception: Packet did not verify.\n");
+
                         // TODO: Send exception.
                     }
+					_receiving = false;
+					comm_buffer_index = 0;
                 }
                 else {
+					nrf_gpio_pin_toggle(GREEN);
                     // TODO: handle this?
+					printf("Exception: Last byte was %X\n", comm_buffer[MAX_PACKET_SIZE - 1]);
+					_receiving = false;
+					comm_buffer_index = 0;
                 }
-
-                _receiving = false;
             }
-
-            comm_buffer_index++;
         }
     }
 }
@@ -117,19 +126,21 @@ void Quadrupel::acknowledge(uint32_t ack_number) {
 
 void Quadrupel::heartbeat() {
     // Calculate loop time.
-    auto loop_time = (uint16_t)_accum_loop_time;
+    /*auto loop_time = (uint16_t)_accum_loop_time;
 
     auto packet = new Packet(Telemetry);
     auto data = new TelemetryData(bat_volt, phi, theta, sp, sq, sr, loop_time, _mode);
     packet->set_data(data);
 
-    send(packet);
+    send(packet);*/
 }
 
 bool Quadrupel::handle_packet(Packet *packet) {
     // TODO: static_casts should suffice as we check for type already and are faster, but are potentially dangerous, replace?
+	
     switch (packet->get_type()) {
         case ModeSwitch: {
+			//nrf_gpio_pin_toggle(YELLOW);
             auto *data = dynamic_cast<ModeSwitchData *>(packet->get_data());
             if (set_mode(data->get_new_mode()) != MODE_SWITCH_OK) {
                 // TODO: Send exception.
@@ -138,6 +149,7 @@ bool Quadrupel::handle_packet(Packet *packet) {
             break;
         }
         case RemoteControl: {
+			//nrf_gpio_pin_toggle(GREEN);
             auto *data = dynamic_cast<RemoteControlData *>(packet->get_data());
             remote_control(data->get_lift(), data->get_roll(), data->get_pitch(), data->get_yaw());
             break;

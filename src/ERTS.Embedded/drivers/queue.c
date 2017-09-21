@@ -17,16 +17,16 @@ void init_queue(queue *q){
     q->count = 0;
 }
 
-void enqueue(queue *q,char x){
+void enqueue(queue *q,uint8_t x){
 
     q->last = (q->last + 1) % QUEUE_SIZE;
     q->Data[ q->last ] = x;
     q->count += 1;
 }
 
-char dequeue(queue *q){
+uint8_t dequeue(queue *q){
 
-    char x = q->Data[ q->first ];
+	uint8_t x = q->Data[ q->first ];
     q->first = (q->first + 1) % QUEUE_SIZE;
     q->count -= 1;
     return x;

@@ -26,6 +26,7 @@ class Quadrupel {
     bool _is_calibrated;
     uint32_t _accum_loop_time;
     uint32_t counter = 0;
+	uint16_t lastTwoBytes = 0;
     bool _receiving = false;
     uint16_t _start_sequence = 0;
     char comm_buffer[MAX_PACKET_SIZE];

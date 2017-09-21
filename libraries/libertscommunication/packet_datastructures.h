@@ -11,7 +11,7 @@
 //#define USE_CRC8
 
 #define START_SEQUENCE 0xFEFF
-#define END_SEQUENCE EOF
+#define END_SEQUENCE 0xFF
 #define MAX_PACKET_SIZE 20
 #if defined(USE_CRC16)
 #define HEADER_SIZE 5
