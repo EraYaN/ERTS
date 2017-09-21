@@ -2,6 +2,7 @@
 using ERTS.Dashboard.Communication.Enumerations;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,7 +27,7 @@ namespace ERTS.Dashboard.Communication {
             Array.Clear(packed, 0, DATA_SIZE);
 
             packed[0] = (byte)((StartSequence & 0xFF00) >> 8);
-            packed[1] = (byte)(StartSequence & 0x00FF);
+            packed[1] = (byte)(StartSequence & 0x00FF);                      
             packed[2] = (byte)Type;
             packed[3] = 0;
             packed[4] = 0;
@@ -34,9 +35,8 @@ namespace ERTS.Dashboard.Communication {
             packed[MAX_PACKET_SIZE - 1] = EndSequence;
             if (SetChecksum)
             {
-                Checksum = GlobalData.crc.calculate_crc16(packed, MAX_PACKET_SIZE);                
-                packed[3] = (byte)(Checksum & 0x00FF);
-                packed[4] = (byte)((Checksum & 0xFF00) >> 8);
+                Checksum = GlobalData.crc.calculate_crc16(packed, MAX_PACKET_SIZE);
+                Buffer.BlockCopy(BitConverter.GetBytes(Checksum), 0, packed, 3, sizeof(ushort));
             }
 
             return packed;
@@ -63,7 +63,7 @@ namespace ERTS.Dashboard.Communication {
             StartSequence = BitConverter.ToUInt16(PacketData, 0);
             Type = (MessageType)(PacketData[2]);
             Checksum = BitConverter.ToUInt16(PacketData, 3);
-            byte[] dataSegment = new ArraySegment<byte>(PacketData,HEADER_SIZE,DATA_SIZE).ToArray();
+            byte[] dataSegment = new ArraySegment<byte>(PacketData,HEADER_SIZE+1,DATA_SIZE).ToArray();
             switch (Type)
             {
                 case MessageType.ModeSwitch:
@@ -117,9 +117,11 @@ namespace ERTS.Dashboard.Communication {
         {
             byte[] PacketData = ToByteArray(false);
             ushort cs = GlobalData.crc.calculate_crc16(PacketData, MAX_PACKET_SIZE);
+            
             return cs == Checksum;
         }
-        public static bool Validate(byte[] PacketData) {
+        public static bool Validate(byte[] OriginalPacketData) {
+            byte[] PacketData = OriginalPacketData.ToArray();
             ushort packet_cs = BitConverter.ToUInt16(PacketData,3);
             PacketData[3] = 0; //checksum to be updated later
             PacketData[4] = 0; //checksum to be updated later
@@ -131,8 +133,10 @@ namespace ERTS.Dashboard.Communication {
             sb.AppendFormat("Packet Type: {0}\n", Type.ToString());
             sb.AppendFormat("Checksum: {0:X04}\n", Checksum);
             sb.AppendFormat("Is Valid: {0}\n",Validate()? "Yes" : "No");
-            sb.Append("Data: \n");
-            foreach(byte b in Data.ToByteArray()) {
+            sb.Append(Data.ToString());
+            sb.Append("Raw Data:\n");
+            foreach (byte b in Data.ToByteArray())
+            {
                 sb.Append(b.ToString("X2"));
             }
             sb.AppendLine();

@@ -47,7 +47,7 @@ namespace ERTS.Dashboard.Communication
 
         void com_SerialDataEvent(object sender, SerialDataEventArgs e)
         {
-            Debug.WriteLine(e.Data,"COMMBYTE");
+            //Debug.WriteLine(e.Data,"COMMBYTE");
             lastTwoBytes = (ushort)(lastTwoBytes << 8 | e.Data);
             if (isReceivingPacket == false)
             {
@@ -60,7 +60,8 @@ namespace ERTS.Dashboard.Communication
                 }
                 else
                 {
-                    Debug.WriteLine(String.Format("Looking for packet start wiht {0:X4}", lastTwoBytes));
+                    if(e.Data != 0xFE)
+                        Debug.WriteLine(String.Format("Looking for packet start with {0:X4}", lastTwoBytes));
                 }
             }
             else
@@ -103,7 +104,7 @@ namespace ERTS.Dashboard.Communication
                             if (Packet.Validate(packetBuffer))
                             {
                                 Packet p = new Packet(packetBuffer.ToArray());
-                                Debug.WriteLine(p.ToString());
+                                //Debug.WriteLine(p.ToString());
                                 PacketReceived(p);
                             }
                             else

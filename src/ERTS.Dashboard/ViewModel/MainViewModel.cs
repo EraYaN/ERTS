@@ -135,6 +135,13 @@ namespace ERTS.Dashboard.ViewModel
 
         public MainViewModel()
         {
+            
+
+            
+        }
+
+        public void Init()
+        {
             if (GlobalData.input != null)
                 Devices = GlobalData.input.EnumerateControllers();
             else
@@ -182,7 +189,10 @@ namespace ERTS.Dashboard.ViewModel
                 RaisePropertyChanged("VoltageString");
                 return;
             }
-
+            else
+            {
+                Debug.WriteLine("Got unsupported binding name from Controller "+ e.PropertyName + ".");
+            }
 
         }
 

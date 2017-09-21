@@ -159,13 +159,22 @@ namespace ERTS.Dashboard
         {
 
             if (ctr != null)
+            {
                 ctr.Dispose();
+                ctr = null;
+            }
             if (com != null)
+            {
                 com.Dispose();
+                com = null;
+            }
             if (patchbox != null)
                 patchbox = null;
             if (input != null)
-                input.Dispose();            
+            {
+                input.Dispose();
+                input = null;
+            }
             if (crc != null)
                 crc = null;
             if (cfg != null)

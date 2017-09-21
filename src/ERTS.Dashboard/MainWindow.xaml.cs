@@ -50,11 +50,11 @@ namespace ERTS.Dashboard
 
         private void Window_Initialized(object sender, EventArgs e)
         {
-            TextBoxTraceListener tbtl = new TextBoxTraceListener(DebugTraceTextBox);
+            /*TextBoxTraceListener tbtl = new TextBoxTraceListener(DebugTraceTextBox);
             Debug.Listeners.Add(tbtl);
-            Debug.WriteLine("Welcome, Debug redirection enabled.");
+            Debug.WriteLine("Welcome, Debug redirection enabled.");*/
 
-            GlobalData.Init();
+            
         }
         private void SettingsMenuItem_Click(object sender, RoutedEventArgs e)
         {
@@ -71,6 +71,13 @@ namespace ERTS.Dashboard
         {
             settingsWindow.Close();
             GlobalData.Dispose();
+        }
+        private void StartAllButton_Click(object sender, RoutedEventArgs e)
+        {
+            GlobalData.Init();
+
+            ((MainViewModel)DataContext).Init();
+
         }
 
         #endregion

@@ -110,7 +110,7 @@ void Quadrupel::acknowledge(uint32_t ack_number) {
 
 void Quadrupel::heartbeat() {
     // Calculate loop time.
-    uint16_t loop_time = _accum_loop_time / QUADRUPEL_TIMER_PERIOD;
+    uint16_t loop_time = _accum_loop_time;
 
     auto packet = new Packet(Telemetry);
     auto data = new TelemetryData(bat_volt, phi, theta, sp, sq, sr, loop_time, _mode);

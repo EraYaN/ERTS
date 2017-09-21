@@ -16,7 +16,7 @@ namespace ERTS.Dashboard.Utility
             //allows tBox to be updated from different thread
             try {
                 tBox.Dispatcher.Invoke((delegate () {
-                    tBox.AppendText(msg);
+                    tBox.AppendText(DateTime.Now.ToLongTimeString()+": "+msg);
                     tBox.ScrollToEnd();
                 }));
             } catch (TaskCanceledException e) {

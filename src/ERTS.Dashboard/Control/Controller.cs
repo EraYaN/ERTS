@@ -78,6 +78,11 @@ namespace ERTS.Dashboard.Control
         public void HandleTelemetry(TelemetryData data)
         {
             Debug.WriteLine("Processing Telemetry....");
+            Debug.WriteLine(data.ToString());
+            Voltage = data.BatteryVoltage;
+            RaisePropertyChanged("Voltage");
+            Mode = data.FlightMode;
+            RaisePropertyChanged("Mode");
 
         }
         public void HandleAcknowledge(AcknowledgeData data)
