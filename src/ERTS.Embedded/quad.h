@@ -13,6 +13,17 @@ extern "C"
 #define MODE_SWITCH_OK 0
 #define MODE_SWITCH_UNSUPPORTED 1
 
+#define CONT_YAW_P1 5
+#define CONT_YAW_P2 5
+
+typedef struct {
+    uint16_t  lift;
+    uint16_t  yaw;
+    uint16_t  pitch;
+    uint16_t  roll;
+} userstate_t;
+
+
 class Quadrupel {
     const uint16_t MOTOR_MIN = 0;
     const uint16_t MOTOR_MAX = 1500;
@@ -32,6 +43,7 @@ class Quadrupel {
     char comm_buffer[MAX_PACKET_SIZE];
     uint8_t comm_buffer_index = 0;
 
+    userstate_t user_state;
 
     void receive();
 

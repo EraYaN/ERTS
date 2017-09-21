@@ -154,7 +154,14 @@ bool Quadrupel::handle_packet(Packet *packet) {
         case RemoteControl: {
 			//nrf_gpio_pin_toggle(GREEN);
             auto *data = dynamic_cast<RemoteControlData *>(packet->get_data());
-            remote_control(data->get_lift(), data->get_roll(), data->get_pitch(), data->get_yaw());
+            // remote_control(data->get_lift(), data->get_roll(), data->get_pitch(), data->get_yaw());
+                if (_mode != Manual)
+                    break;
+                //save the new control setpoints
+                user_state.lift = data->get_lift();
+                user_state.roll = data->get_roll();
+                user_state.pitch = data->get_pitch();
+                user_state.yaw = data->get_yaw();
             break;
         }
         case Kill: {
@@ -296,28 +303,11 @@ int Quadrupel::set_mode(flightMode_t new_mode) {
     return result;
 }
 
+//TODO:deprecated
 void Quadrupel::remote_control(uint16_t lift, int16_t roll, int16_t pitch, int16_t yaw) {
     if (_mode != Manual)
         return;
 
-	// Equations to get desired lift, roll rate, pitch rate and yaw rate.
-	int32_t oo1, oo2, oo3, oo4;
-
-	oo1 = lift / (2 * b) + pitch / b - yaw / d;
-	oo2 = lift / (2 * b) - roll  / b + yaw / d;
-	oo3 = lift / (2 * b) - pitch / b - yaw / d;
-	oo4 = lift / (2 * b) + roll  / b + yaw / d;
-
-	// with ai = oi it follows
-//	ae[0] = (int16_t)sqrt(oo1);
-//	ae[1] = (int16_t)sqrt(oo2);
-//	ae[2] = (int16_t)sqrt(oo3);
-//	ae[3] = (int16_t)sqrt(oo4);
-
-    ae[0] = scale_motor(oo1);
-    ae[1] = scale_motor(oo2);
-    ae[2] = scale_motor(oo3);
-    ae[3] = scale_motor(oo4);
 }
 
 void Quadrupel::update_motors() {
@@ -328,7 +318,46 @@ void Quadrupel::update_motors() {
 }
 
 void Quadrupel::control() {
+    // Equations to get desired lift, roll rate, pitch rate and yaw rate.
+    int32_t oo1, oo2, oo3, oo4;
+    uint16_t lift, roll, pitch, yaw;
+    uint16_t setpoint_temp;
 
+    if(_mode == Manual) {
+        lift  = user_state.lift;
+        roll  = user_state.roll;
+        pitch = user_state.pitch;
+        yaw   = user_state.yaw;
+    } else if(_mode == YawControl) {
+        lift  = user_state.lift;
+        roll  = user_state.roll;
+        pitch = user_state.pitch;
+        //Yaw Controller:
+        setpoint_temp = CONT_YAW_P1 * user_state.yaw; // setpoint is angular rate
+        yaw = CONT_YAW_P2 * (setpoint_temp - sr);
+    // } else if(_mode == Panic) {
+    } else {
+        lift  = 0;
+        roll  = 0;
+        pitch = 0;
+        yaw   = 0;
+    }
+
+    oo1 = lift / (2 * b) + pitch / b - yaw / d;
+    oo2 = lift / (2 * b) - roll  / b + yaw / d;
+    oo3 = lift / (2 * b) - pitch / b - yaw / d;
+    oo4 = lift / (2 * b) + roll  / b + yaw / d;
+
+    // with ai = oi it follows
+//  ae[0] = (int16_t)sqrt(oo1);
+//  ae[1] = (int16_t)sqrt(oo2);
+//  ae[2] = (int16_t)sqrt(oo3);
+//  ae[3] = (int16_t)sqrt(oo4);
+
+    ae[0] = scale_motor(oo1);
+    ae[1] = scale_motor(oo2);
+    ae[2] = scale_motor(oo3);
+    ae[3] = scale_motor(oo4);
 }
 
 void Quadrupel::init_divider() {
