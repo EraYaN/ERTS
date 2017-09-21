@@ -19,6 +19,7 @@
         SetControllerYawPID = 0x42, ///Expects Acknowledgement
         SetControllerHeightPID = 0x43, ///Expects Acknowledgement
         SetMessageFrequencies = 0x44, ///Expects Acknowledgement. TelemetryFrequency, RemoteControlFrequency and LoopFreqency
+        Parameters = 0x45, ///Expects Acknowledgement
 
         //Reserved for future use (0xA0-0xDF)
 

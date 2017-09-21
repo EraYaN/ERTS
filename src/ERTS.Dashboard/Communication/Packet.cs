@@ -78,6 +78,9 @@ namespace ERTS.Dashboard.Communication {
                 case MessageType.RemoteControl:
                     Data = new RemoteControlData(dataSegment);
                     break;
+                case MessageType.Parameters:
+                    Data = new ParameterData(dataSegment);
+                    break;
                 case MessageType.SetControllerRollPID:
                     throw new NotImplementedException();
                     break;

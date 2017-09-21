@@ -75,6 +75,7 @@
     <Compile Include="Communication\Data\AcknowledgeData.cs" />
     <Compile Include="Communication\Data\ExceptionData.cs" />
     <Compile Include="Communication\Data\ModeSwitchData.cs" />
+    <Compile Include="Communication\Data\ParameterData.cs" />
     <Compile Include="Communication\Data\RemoteControlData.cs" />
     <Compile Include="Communication\Data\TelemeteryData.cs" />
     <Compile Include="Communication\Enumerations\ExceptionType.cs" />
