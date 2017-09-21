@@ -1,13 +1,13 @@
 #pragma once
 #include <cstdint>
 #include <cstdio>
-#if defined(__GNUC__)
+/*#if defined(__GNUC__)
 #define PACK __attribute__((packed))
 #else
 #define PACK
-#endif
-
-#define USE_CRC16
+#endif*/
+#define PACK
+//#define USE_CRC16
 //#define USE_CRC8
 
 #define START_SEQUENCE 0xFEFF
@@ -25,11 +25,7 @@
 
 typedef uint8_t byte;
 typedef uint16_t startSequence_t;
-#if defined(USE_CRC16)
 typedef uint16_t checksum_t;
-#elif defined(USE_CRC8)
-typedef uint8_t checksum_t;
-#endif
 typedef int8_t endSequence_t;
 
 enum messageType_t : byte {

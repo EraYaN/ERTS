@@ -26,15 +26,9 @@ Packet::Packet(const byte* packet)
 {
     _start = (packet[0]) << 8 | packet[1];
     _type = static_cast<messageType_t>(packet[2]);
-#if defined(USE_CRC16)
-    checksum = (packet[4]) << 8 | packet[3]; //checksum to be updated later
-#elif defined(USE_CRC8)
-    checksum = packet[3]; //checksum to be updated later
-    memcpy(data_segment, &packet[3], DATA_SIZE);
-#else
-    memcpy(data_segment, &packet[3], DATA_SIZE);
-#endif
 
+    checksum = (packet[4]) << 8 | packet[3]; //checksum to be updated later
+    
     switch (_type) {
         case ModeSwitch:
             _data = new ModeSwitchData(&packet[5]);
@@ -64,7 +58,7 @@ void Packet::to_buffer(uint8_t *buffer) {
     buffer[2] = _type;
     buffer[3] = 0; //checksum to be updated later
     buffer[4] = 0; //checksum to be updated later
-//    memset(&buffer[5], 0, DATA_SIZE);
+    //memset(&buffer[5], 0, DATA_SIZE);
     _data->to_buffer(&buffer[5]);
 
     buffer[MAX_PACKET_SIZE - 1] = _end;

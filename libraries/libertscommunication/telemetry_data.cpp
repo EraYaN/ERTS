@@ -30,12 +30,12 @@ bool TelemetryData::is_valid() {
     return _data->flightMode != None;
 }
 
-void TelemetryData::to_buffer(uint8_t *buffer) {
-    *(reinterpret_cast<uint16_t*>(buffer[0])) = static_cast<uint16_t>(((_data->batteryVoltage & 0x0FFFu) << 4) | (_data->flightMode & 0x000Fu));
-    *(reinterpret_cast<int16_t*>(buffer[2])) = _data->phi;
-    *(reinterpret_cast<int16_t*>(buffer[4])) = _data->theta;
-    *(reinterpret_cast<int16_t*>(buffer[6])) = _data->p;
-    *(reinterpret_cast<int16_t*>(buffer[8])) = _data->q;
-    *(reinterpret_cast<int16_t*>(buffer[10])) = _data->r;
-    *(reinterpret_cast<uint16_t*>(buffer[12])) = _data->loopTime;
+void TelemetryData::to_buffer(uint8_t *buffer) {    
+    *(reinterpret_cast<uint16_t*>(&buffer[0])) = static_cast<uint16_t>(((_data->batteryVoltage & 0x0FFFu) << 4) | (_data->flightMode & 0x000Fu));
+    *(reinterpret_cast<int16_t*>(&buffer[2])) = _data->phi;
+    *(reinterpret_cast<int16_t*>(&buffer[4])) = _data->theta;
+    *(reinterpret_cast<int16_t*>(&buffer[6])) = _data->p;
+    *(reinterpret_cast<int16_t*>(&buffer[8])) = _data->q;
+    *(reinterpret_cast<int16_t*>(&buffer[10])) = _data->r;
+    *(reinterpret_cast<uint16_t*>(&buffer[12])) = _data->loopTime;
 }
