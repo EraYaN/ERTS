@@ -46,7 +46,7 @@ namespace ERTS.Dashboard.Communication.Data
 
         public override int Length => 2 * sizeof(ushort);
 
-        public override bool ExpectsAcknowledgement => (false);
+        public override bool ExpectsAcknowledgement => (true);
 
         public override bool IsValid()
         {

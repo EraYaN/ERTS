@@ -5,6 +5,7 @@ using MicroMvvm;
 using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Text;
 
 namespace ERTS.Dashboard.Communication
 {
@@ -70,17 +71,7 @@ namespace ERTS.Dashboard.Communication
             else
             {
                 packetBuffer[bufferIndex] = e.Data;
-                bufferIndex++;
-                if (bufferIndex == 2) // Received two bytes, check starting sequence
-                {
-                    if (packetBuffer[0] != ((Packet.START_SEQUENCE & 0xFF00) >> 8) || packetBuffer[1] != ((Packet.START_SEQUENCE & 0x00FF)))
-                    {
-                        //TODO Send exception
-                        Debug.WriteLine("Packet did not have correct header.");
-                        isReceivingPacket = false;
-                        bufferIndex = 0;
-                    }
-                }
+                bufferIndex++;                
                 if (bufferIndex == 3) // Received three bytes, check MessageType
                 {
                     if (!Enum.IsDefined(typeof(MessageType), packetBuffer[2]))
@@ -90,8 +81,7 @@ namespace ERTS.Dashboard.Communication
                         isReceivingPacket = false;
                         bufferIndex = 0;
                     }
-                }
-                if (bufferIndex == Packet.MAX_PACKET_SIZE) // Received twenty bytes, check endsequence
+                } else if (bufferIndex == Packet.MAX_PACKET_SIZE) // Received twenty bytes, check endsequence
                 {
                     if (packetBuffer[Packet.MAX_PACKET_SIZE - 1] != Packet.END_SEQUENCE)
                     {
@@ -133,8 +123,17 @@ namespace ERTS.Dashboard.Communication
         {            
             if (serial.IsOpen && p.IsGoodToSend())
             {
+                StringBuilder sb = new StringBuilder();
+                foreach (byte b in p.ToByteArray())
+                {
+                    sb.Append("0x");
+                    sb.Append(b.ToString("X2"));
+                    sb.Append(" ");
+                }
+                Debug.WriteLine(String.Format("Sending Packet: {0}",sb.ToString()));
                 serial.SendByteArray(p.ToByteArray());
             }
+            
             RaisePropertyChanged("BytesInTBuffer");
         }
 
