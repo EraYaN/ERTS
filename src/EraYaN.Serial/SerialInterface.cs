@@ -92,6 +92,7 @@ namespace EraYaN.Serial
                     kickoffRead();
                 } catch (InvalidOperationException exc) {
                     //port closed? race condition
+                    Debug.WriteLine("Error closed?: " + exc.Message, "SerialInterface");
                 }
                 return 0;
             } catch (IOException e) {

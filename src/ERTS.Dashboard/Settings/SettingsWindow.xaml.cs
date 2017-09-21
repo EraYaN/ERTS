@@ -93,9 +93,11 @@ namespace ERTS.Dashboard.Configuration
                 if (GlobalData.input.IsInputEngaged)
                 {
                     GlobalData.input.DisengageInput();
-                }
-                GlobalData.input.InputEvent += Input_InputEvent;
-                GlobalData.input.AquireAllDevices(MainWindowHandle);
+                    GlobalData.input.InputEvent += Input_InputEvent;
+                    Debug.WriteLine("Aquire all devices.");
+                    GlobalData.input.AquireAllDevices(MainWindowHandle);
+                }                
+                
             }
         }
 
@@ -112,12 +114,14 @@ namespace ERTS.Dashboard.Configuration
                 if (!GlobalData.input.IsInputEngaged)
                 {
                     GlobalData.input.EngageInput();
+                    if (GlobalData.patchbox != null)
+                    {
+                        Debug.WriteLine("Unaquire all devices and aquire required devices.");
+                        GlobalData.input.UnaquireAllDevices();
+                        GlobalData.input.AquireDevices(GlobalData.patchbox.DeviceGuids, MainWindowHandle);
+                    }
                 }
-                if (GlobalData.patchbox != null)
-                {
-                    GlobalData.input.UnaquireAllDevices();
-                    GlobalData.input.AquireDevices(GlobalData.patchbox.DeviceGuids, MainWindowHandle);
-                }
+                
             }
         }
     }

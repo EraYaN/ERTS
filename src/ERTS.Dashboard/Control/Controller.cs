@@ -71,9 +71,12 @@ namespace ERTS.Dashboard.Control
 
         private void RCTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            //Scaling factors are -4, just for overflow safety, and no averse effect.
-            GlobalData.com.RemoteControl(Convert.ToUInt16(Math.Round(Lift * 65532.0)), Convert.ToInt16(Math.Round(RollRate * 32764)),
-                Convert.ToInt16(Math.Round(PitchRate * 32764)), Convert.ToInt16(Math.Round(YawRate * 32764)));
+            if (GlobalData.com != null)
+            {
+                //Scaling factors are -4, just for overflow safety, and no averse effect.
+                GlobalData.com.RemoteControl(Convert.ToUInt16(Math.Round(Lift * 65532.0)), Convert.ToInt16(Math.Round(RollRate * 32764.0)),
+                    Convert.ToInt16(Math.Round(PitchRate * 32764.0)), Convert.ToInt16(Math.Round(YawRate * 32764.0)));
+            }
         }
 
         #region Communication Methods
@@ -104,6 +107,7 @@ namespace ERTS.Dashboard.Control
         public void Abort()
         {
             Debug.WriteLine("Aborting....");
+            GlobalData.com.ModeSwitch(FlightMode.Panic);
         }
         public void SetLift(double _Lift)
         {
