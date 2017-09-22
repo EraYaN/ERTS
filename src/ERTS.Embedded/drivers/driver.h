@@ -3,6 +3,10 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <math.h>
+
+#ifdef FAKE_DRIVERS
+#include <stdbool.h>
+#else
 #include "app_timer.h"
 #include "nrf_gpio.h"
 #include "nrf_delay.h"
@@ -11,6 +15,7 @@
 #include "invensense/inv_mpu_dmp_motion_driver.h"
 #include "invensense/ml.h"
 #include "app_util_platform.h"
+#endif
 
 #define NUM_MOTORS  4
 
@@ -19,6 +24,13 @@
 #define GREEN       28
 #define BLUE        30
 #define INT_PIN     5
+
+// Spoof some device functions.
+#ifdef FAKE_DRIVERS
+void nrf_gpio_pin_toggle(uint32_t pin_number);
+void NVIC_SystemReset();
+void nrf_delay_ms(uint32_t volatile number_of_ms);
+#endif
 
 // Control
 extern int16_t motor[NUM_MOTORS], ae[NUM_MOTORS];

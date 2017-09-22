@@ -30,22 +30,22 @@ Quadrupel::Quadrupel() {
 
 void Quadrupel::receive() {
     while (rx_queue.count) {
-		uint8_t currentByte = dequeue(&rx_queue);
+        uint8_t currentByte = dequeue(&rx_queue);
 
-		printf("Got Byte %X\n", currentByte);
-		lastTwoBytes = lastTwoBytes << 8 | currentByte;
-		
+        printf("Got Byte %X\n", currentByte);
+        lastTwoBytes = lastTwoBytes << 8 | currentByte;
+
         if (!_receiving) {
             if (lastTwoBytes == START_SEQUENCE) {
-				comm_buffer[0] = ((START_SEQUENCE & 0xFF00) >> 8);
-				comm_buffer[1] = (START_SEQUENCE & 0x00FF);
+                comm_buffer[0] = ((START_SEQUENCE & 0xFF00) >> 8);
+                comm_buffer[1] = (START_SEQUENCE & 0x00FF);
                 _receiving = true;
                 comm_buffer_index = 2;
             }
         }
         else {
-			comm_buffer[comm_buffer_index] = currentByte;
-			comm_buffer_index++;
+            comm_buffer[comm_buffer_index] = currentByte;
+            comm_buffer_index++;
             // Received 5 bytes, check message type.
             if (comm_buffer_index == 3) {
                 switch (comm_buffer[2]) {
@@ -68,15 +68,16 @@ void Quadrupel::receive() {
                     default:
                         // Message type unrecognized.
                         // TODO: Send exception.
-						printf("Exception: Unknown packet type %X.\n", comm_buffer[2]);
+                        printf("Exception: Unknown packet type %X.\n", comm_buffer[2]);
                         _receiving = false;
-						comm_buffer_index = 0;
+                        comm_buffer_index = 0;
                         break;
                 }
-            } else if (comm_buffer_index == MAX_PACKET_SIZE) {
+            }
+            else if (comm_buffer_index == MAX_PACKET_SIZE) {
                 if (comm_buffer[MAX_PACKET_SIZE - 1] == END_SEQUENCE) {
                     if (Packet::verify((byte *) comm_buffer)) {
-						printf("Handling packet.\n");
+                        printf("Handling packet.\n");
                         /*auto *packet = new Packet((byte *) comm_buffer);
                         bool handled = handle_packet(packet);
                         // TODO: Send exception if not handled.
@@ -87,20 +88,20 @@ void Quadrupel::receive() {
                         delete packet;*/
                     }
                     else {
-						nrf_gpio_pin_toggle(YELLOW);
-						printf("Exception: Packet did not verify.\n");
+                        nrf_gpio_pin_toggle(YELLOW);
+                        printf("Exception: Packet did not verify.\n");
 
                         // TODO: Send exception.
                     }
-					_receiving = false;
-					comm_buffer_index = 0;
+                    _receiving = false;
+                    comm_buffer_index = 0;
                 }
                 else {
-					nrf_gpio_pin_toggle(GREEN);
+                    nrf_gpio_pin_toggle(GREEN);
                     // TODO: handle this?
-					printf("Exception: Last byte was %X\n", comm_buffer[MAX_PACKET_SIZE - 1]);
-					_receiving = false;
-					comm_buffer_index = 0;
+                    printf("Exception: Last byte was %X\n", comm_buffer[MAX_PACKET_SIZE - 1]);
+                    _receiving = false;
+                    comm_buffer_index = 0;
                 }
             }
         }
@@ -129,7 +130,7 @@ void Quadrupel::acknowledge(uint32_t ack_number) {
 
 void Quadrupel::heartbeat() {
     // Calculate loop time.
-    auto loop_time = (uint16_t)_accum_loop_time;
+    auto loop_time = (uint16_t) _accum_loop_time;
 
     auto packet = new Packet(Telemetry);
     auto data = new TelemetryData(bat_volt, phi, theta, sp, sq, sr, loop_time, _mode);
@@ -140,10 +141,10 @@ void Quadrupel::heartbeat() {
 
 bool Quadrupel::handle_packet(Packet *packet) {
     // TODO: static_casts should suffice as we check for type already and are faster, but are potentially dangerous, replace?
-	
+
     switch (packet->get_type()) {
         case ModeSwitch: {
-			//nrf_gpio_pin_toggle(YELLOW);
+            //nrf_gpio_pin_toggle(YELLOW);
             auto *data = dynamic_cast<ModeSwitchData *>(packet->get_data());
             if (set_mode(data->get_new_mode()) != MODE_SWITCH_OK) {
                 // TODO: Send exception.
@@ -152,16 +153,16 @@ bool Quadrupel::handle_packet(Packet *packet) {
             break;
         }
         case RemoteControl: {
-			//nrf_gpio_pin_toggle(GREEN);
+            //nrf_gpio_pin_toggle(GREEN);
             auto *data = dynamic_cast<RemoteControlData *>(packet->get_data());
             // remote_control(data->get_lift(), data->get_roll(), data->get_pitch(), data->get_yaw());
-                if (_mode != Manual)
-                    break;
-                //save the new control setpoints
-                user_state.lift = data->get_lift();
-                user_state.roll = data->get_roll();
-                user_state.pitch = data->get_pitch();
-                user_state.yaw = data->get_yaw();
+            if (_mode != Manual)
+                break;
+            //save the new control setpoints
+            user_state.lift = data->get_lift();
+            user_state.roll = data->get_roll();
+            user_state.pitch = data->get_pitch();
+            user_state.yaw = data->get_yaw();
             break;
         }
         case Kill: {
@@ -239,7 +240,7 @@ int Quadrupel::set_mode(flightMode_t new_mode) {
                 case Panic:
                 case Calibration:
                 case Manual: {
-                    result =  MODE_SWITCH_OK;
+                    result = MODE_SWITCH_OK;
                     break;
                 }
                 // Requires calibration.
@@ -265,12 +266,12 @@ int Quadrupel::set_mode(flightMode_t new_mode) {
             }
             break;
         }
-        // Never transition from panic mode.
+            // Never transition from panic mode.
         case Panic: {
             result = MODE_SWITCH_UNSUPPORTED;
             break;
         }
-        // Other modes can only transition to safe or panic mode.
+            // Other modes can only transition to safe or panic mode.
         case Calibration:
         case Manual:
         case YawControl:
@@ -323,30 +324,32 @@ void Quadrupel::control() {
     uint16_t lift, roll, pitch, yaw;
     uint16_t setpoint_temp;
 
-    if(_mode == Manual) {
-        lift  = user_state.lift;
-        roll  = user_state.roll;
+    if (_mode == Manual) {
+        lift = user_state.lift;
+        roll = user_state.roll;
         pitch = user_state.pitch;
-        yaw   = user_state.yaw;
-    } else if(_mode == YawControl) {
-        lift  = user_state.lift;
-        roll  = user_state.roll;
+        yaw = user_state.yaw;
+    }
+    else if (_mode == YawControl) {
+        lift = user_state.lift;
+        roll = user_state.roll;
         pitch = user_state.pitch;
         //Yaw Controller:
         setpoint_temp = CONT_YAW_P1 * user_state.yaw; // setpoint is angular rate
         yaw = CONT_YAW_P2 * (setpoint_temp - sr);
-    // } else if(_mode == Panic) {
-    } else {
-        lift  = 0;
-        roll  = 0;
+        // } else if(_mode == Panic) {
+    }
+    else {
+        lift = 0;
+        roll = 0;
         pitch = 0;
-        yaw   = 0;
+        yaw = 0;
     }
 
     oo1 = lift / (2 * b) + pitch / b - yaw / d;
-    oo2 = lift / (2 * b) - roll  / b + yaw / d;
+    oo2 = lift / (2 * b) - roll / b + yaw / d;
     oo3 = lift / (2 * b) - pitch / b - yaw / d;
-    oo4 = lift / (2 * b) + roll  / b + yaw / d;
+    oo4 = lift / (2 * b) + roll / b + yaw / d;
 
     // with ai = oi it follows
 //  ae[0] = (int16_t)sqrt(oo1);
@@ -362,9 +365,9 @@ void Quadrupel::control() {
 
 void Quadrupel::init_divider() {
     uint32_t min = 0;
-    auto max = (uint32_t)(UINT16_MAX / (2 * b) + INT16_MAX / b + INT16_MAX / d);
+    auto max = (uint32_t) (UINT16_MAX / (2 * b) + INT16_MAX / b + INT16_MAX / d);
 
-    divider = (uint16_t)((max - min) / (MOTOR_MAX - MOTOR_MIN));
+    divider = (uint16_t) ((max - min) / (MOTOR_MAX - MOTOR_MIN));
 }
 
 uint16_t Quadrupel::scale_motor(int32_t value) {
@@ -377,7 +380,7 @@ uint16_t Quadrupel::scale_motor(int32_t value) {
     // Offset
     value += MOTOR_MIN;
 
-    return (uint16_t)value;
+    return (uint16_t) value;
 }
 
 void Quadrupel::set_parameters(uint16_t b, uint16_t d) {

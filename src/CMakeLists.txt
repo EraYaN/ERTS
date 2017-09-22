@@ -3,6 +3,43 @@ project(src)
 
 set(CMAKE_CXX_STANDARD 11)
 
+set(FAKE_SOURCE_FILES
+        ERTS.Embedded/drivers/driver.h
+        ERTS.Embedded/drivers/fake_driver.cpp
+        ERTS.Embedded/drivers/queue.c
+        ERTS.Embedded/erts-quad.cpp
+        ERTS.Embedded/quad.cpp
+        ERTS.Embedded/quad.h
+        ../libraries/libcrc-2.0/src/crc16.c
+        ../libraries/libcrc-2.0/src/crcccitt.c
+        ../libraries/libcrc-2.0/src/crcdnp.c
+        ../libraries/libcrc-2.0/src/crckrmit.c
+        ../libraries/libcrc-2.0/src/crcsick.c
+        ../libraries/libcrc-2.0/src/nmea-chk.c
+        ../libraries/libertscommunication/packet.h
+        ../libraries/libertscommunication/packet.cpp
+        ../libraries/libertscommunication/packet_data.h
+        ../libraries/libertscommunication/packet_datastructures.h
+        ../libraries/libertscommunication/acknowledge_data.h
+        ../libraries/libertscommunication/acknowledge_data.cpp
+        ../libraries/libertscommunication/mode_switch_data.h
+        ../libraries/libertscommunication/mode_switch_data.cpp
+        ../libraries/libertscommunication/remote_control_data.h
+        ../libraries/libertscommunication/remote_control_data.cpp
+        ../libraries/libertscommunication/telemetry_data.h
+        ../libraries/libertscommunication/telemetry_data.cpp
+        ../libraries/libertscommunication/parameter_data.cpp
+        ../libraries/libertscommunication/parameter_data.h
+)
+
+add_executable(fake_quad ${FAKE_SOURCE_FILES})
+target_compile_definitions(fake_quad PUBLIC -DFAKE_DRIVERS)
+target_include_directories(fake_quad PUBLIC
+        ../libraries/libcrc-2.0/include
+        ../libraries/libertscommunication
+        ERTS.Embedded/drivers)
+
+
 set(SOURCE_FILES
         ERTS.Embedded/drivers/config/nrf_drv_config.h
         ERTS.Embedded/drivers/config/pstorage_platform.h
@@ -40,9 +77,12 @@ set(SOURCE_FILES
         ../libraries/libertscommunication/remote_control_data.cpp
         ../libraries/libertscommunication/telemetry_data.h
         ../libraries/libertscommunication/telemetry_data.cpp
-        ../libraries/libertscommunication/parameter_data.cpp ../libraries/libertscommunication/parameter_data.h)
+        ../libraries/libertscommunication/parameter_data.cpp
+        ../libraries/libertscommunication/parameter_data.h
+)
 
-include_directories(
+add_executable(quad ${SOURCE_FILES})
+target_include_directories(quad PUBLIC
         ../libraries/libcrc-2.0/include
         ../libraries/libertscommunication
         ../libraries/nRF51_SDK_10.0.0_dc26b5e/components/libraries/util
@@ -59,5 +99,3 @@ include_directories(
         ../libraries/nRF51_SDK_10.0.0_dc26b5e/components/softdevice/common/softdevice_handler
         ERTS.Embedded/drivers
 )
-
-add_executable(src ${SOURCE_FILES})

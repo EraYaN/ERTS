@@ -40,7 +40,7 @@ class Quadrupel {
 	uint16_t lastTwoBytes = 0;
     bool _receiving = false;
     uint16_t _start_sequence = 0;
-    char comm_buffer[MAX_PACKET_SIZE];
+    uint8_t comm_buffer[MAX_PACKET_SIZE];
     uint8_t comm_buffer_index = 0;
 
     userstate_t user_state;
