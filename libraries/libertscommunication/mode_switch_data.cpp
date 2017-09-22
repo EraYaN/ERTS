@@ -2,6 +2,7 @@
 #include "mode_switch_data.h"
 
 ModeSwitchData::ModeSwitchData(const uint8_t *data) {
+    _data = new modeSwitchData_t;
     memcpy(&_data, data, get_length());
 }
 

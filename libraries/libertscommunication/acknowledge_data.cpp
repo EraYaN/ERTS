@@ -1,6 +1,7 @@
 #include "acknowledge_data.h"
 
 AcknowledgeData::AcknowledgeData(uint32_t number) {
+    _data = new acknowledgeData_t;
     _data->number = number;
 }
 

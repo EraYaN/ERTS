@@ -4,6 +4,7 @@
 TelemetryData::TelemetryData(uint16_t battery_voltage, int16_t phi, int16_t theta,
                              int16_t p, int16_t q, int16_t r,
                              uint16_t loop_time, flightMode_t flight_mode) {
+    _data = new telemetryData_t;
     _data->batteryVoltage = battery_voltage;
     _data->flightMode = flight_mode;
     _data->phi = phi;

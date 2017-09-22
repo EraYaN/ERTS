@@ -18,7 +18,7 @@ public:
 
     flightMode_t get_fallback_mode() { return _data->fallBackmode; };
 
-    uint32_t get_ack_number() { return _data->ackNumber; };
+    uint32_t get_ack_number() override { return _data->ackNumber; };
 
     bool is_valid() override;
 

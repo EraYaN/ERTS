@@ -2,6 +2,7 @@
 #include "parameter_data.h"
 
 ParameterData::ParameterData(const uint8_t *data) {
+    _data = new parameterData_t;
     memcpy(&_data, data, get_length());
 }
 
