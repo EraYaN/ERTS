@@ -21,6 +21,5 @@ public:
 
     int get_length() override;
 
-private:
     void to_buffer(uint8_t *buffer) override;
 };

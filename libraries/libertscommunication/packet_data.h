@@ -1,5 +1,5 @@
 #pragma once
-
+#include <cstring>
 #include "packet_datastructures.h"
 
 class PacketData {

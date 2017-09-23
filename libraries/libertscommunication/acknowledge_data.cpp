@@ -22,5 +22,5 @@ bool AcknowledgeData::is_valid() {
 }
 
 void AcknowledgeData::to_buffer(uint8_t *buffer) {
-
+    memcpy(buffer, _data, get_length());
 }

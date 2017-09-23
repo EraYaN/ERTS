@@ -116,6 +116,10 @@ void Quadrupel::send(Packet *packet) {
         uart_put(buffer[i]);
     }
 
+#ifdef FAKE_DRIVERS
+    uart_put('\n');
+#endif
+
     delete[] buffer;
     delete packet;
 }

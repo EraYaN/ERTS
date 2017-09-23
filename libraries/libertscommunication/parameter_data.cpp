@@ -23,5 +23,5 @@ bool ParameterData::is_valid() {
 }
 
 void ParameterData::to_buffer(uint8_t *buffer) {
-
+    memcpy(buffer, _data, get_length());
 }

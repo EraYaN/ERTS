@@ -23,8 +23,4 @@ public:
     bool is_valid() override;
 
     void to_buffer(uint8_t *buffer) override;
-
 };
-
-
-

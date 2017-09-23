@@ -1,4 +1,3 @@
-#include <cstring>
 #include "remote_control_data.h"
 
 RemoteControlData::RemoteControlData(const uint8_t *data) {
@@ -23,5 +22,5 @@ bool RemoteControlData::is_valid() {
 }
 
 void RemoteControlData::to_buffer(uint8_t *buffer) {
-
+    memcpy(buffer, _data, get_length());
 }

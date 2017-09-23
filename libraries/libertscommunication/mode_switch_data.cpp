@@ -19,5 +19,5 @@ bool ModeSwitchData::is_valid() {
 }
 
 void ModeSwitchData::to_buffer(uint8_t *buffer) {
-
+    memcpy(buffer, _data, get_length());
 }

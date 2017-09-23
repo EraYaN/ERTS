@@ -19,6 +19,3 @@ public:
 
     void to_buffer(uint8_t *buffer) override;
 };
-
-
-
