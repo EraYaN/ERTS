@@ -29,8 +29,8 @@ Quadrupel::Quadrupel() {
 }
 
 void Quadrupel::receive() {
-    while (rx_queue.count) {
-        uint8_t currentByte = dequeue(&rx_queue);
+    while (uart_available()) {
+        uint8_t currentByte = uart_get();
 
         printf("Got Byte %X\n", currentByte);
         lastTwoBytes = lastTwoBytes << 8 | currentByte;
@@ -115,10 +115,6 @@ void Quadrupel::send(Packet *packet) {
     for (int i = 0; i < MAX_PACKET_SIZE; ++i) {
         uart_put(buffer[i]);
     }
-
-#ifdef FAKE_DRIVERS
-    uart_put('\n');
-#endif
 
     delete[] buffer;
     delete packet;

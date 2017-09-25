@@ -15,6 +15,13 @@ queue rx_queue;
 queue tx_queue;
 uint32_t last_correct_checksum_time;
 
+bool uart_available() {
+    return rx_queue.count > 0;
+}
+
+uint8_t uart_get() {
+    return dequeue(&rx_queue);
+}
 
 void uart_put(uint8_t byte) {
     NVIC_DisableIRQ(UART0_IRQn);

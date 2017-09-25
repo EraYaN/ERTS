@@ -30,6 +30,8 @@
 void nrf_gpio_pin_toggle(uint32_t pin_number);
 void NVIC_SystemReset();
 void nrf_delay_ms(uint32_t volatile number_of_ms);
+
+extern const char *serial_port;
 #endif
 
 // Control
@@ -74,6 +76,10 @@ extern queue tx_queue;
 extern uint32_t last_correct_checksum_time;
 
 void uart_init(void);
+
+bool uart_available();
+
+uint8_t uart_get();
 
 void uart_put(uint8_t);
 

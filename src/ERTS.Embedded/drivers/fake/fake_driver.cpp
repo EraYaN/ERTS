@@ -1,14 +1,18 @@
 #include <fstream>
 #include <iostream>
 #include <thread>
+#include <packet_datastructures.h>
+
 extern "C"
 {
 #include "driver.h"
 }
 
+#include "serial.h"
+
 // Device
 void NVIC_SystemReset() {
-
+    std::cout << "System reset." << std::endl;
 }
 
 void nrf_delay_ms(uint32_t number_of_ms) {
@@ -61,15 +65,49 @@ void nrf_gpio_pin_toggle(uint32_t pin_number) {
 }
 
 // UART
+const char *serial_port;
 queue rx_queue;
-queue tx_queue;
+Serial *serial;
+unsigned int put_count = 0;
 
 void uart_init() {
+    serial =  new Serial(serial_port);
     std::cout << "UART initialized." << std::endl;
 }
 
+bool uart_available() {
+    uint8_t c;
+
+    if (serial->getchar_nb((char *)&c)) {
+        enqueue(&rx_queue, c);
+
+        return true;
+    }
+
+    return false;
+}
+
+uint8_t uart_get() {
+    if (rx_queue.count > 0)
+        return dequeue(&rx_queue);
+
+    auto c = (uint8_t)serial->getchar();
+
+    return c;
+}
+
 void uart_put(uint8_t byte) {
-    std::cout << byte;
+    serial->putchar(byte);
+
+    std::cout << std::hex << (int)byte;
+
+    if (put_count == MAX_PACKET_SIZE - 1) {
+        std::cout << std::endl;
+
+        put_count = 0;
+    }
+    else
+        put_count++;
 }
 
 // TWI
@@ -195,7 +233,7 @@ bool flash_read_bytes(uint32_t address, uint8_t *buffer, uint32_t count) {
 
 // BLE
 void ble_init() {
-    std::cout << "SPI flash initialized." << std::endl;
+    std::cout << "Bluetooth initialized." << std::endl;
 }
 
 void ble_send() {

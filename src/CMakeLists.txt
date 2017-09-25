@@ -5,7 +5,8 @@ set(CMAKE_CXX_STANDARD 11)
 
 set(FAKE_SOURCE_FILES
         ERTS.Embedded/drivers/driver.h
-        ERTS.Embedded/drivers/fake_driver.cpp
+        ERTS.Embedded/drivers/fake/fake_driver.cpp
+        ERTS.Embedded/drivers/fake/serial.cpp
         ERTS.Embedded/drivers/queue.c
         ERTS.Embedded/erts-quad.cpp
         ERTS.Embedded/quad.cpp
@@ -30,7 +31,7 @@ set(FAKE_SOURCE_FILES
         ../libraries/libertscommunication/telemetry_data.cpp
         ../libraries/libertscommunication/parameter_data.cpp
         ../libraries/libertscommunication/parameter_data.h
-)
+        ERTS.Embedded/drivers/fake/serial.h)
 
 add_executable(fake_quad ${FAKE_SOURCE_FILES})
 target_compile_definitions(fake_quad PUBLIC -DFAKE_DRIVERS)
