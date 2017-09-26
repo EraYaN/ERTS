@@ -8,9 +8,6 @@ export OUTPUT_FILENAME
 MAKEFILE_NAME := $(MAKEFILE_LIST)
 MAKEFILE_DIR := $(dir $(MAKEFILE_NAME) )
 
-
-
-
 #source common to all targets
 C_SOURCE_FILES += \
 $(abspath ./drivers/gpio.c) \
@@ -46,9 +43,16 @@ INC_PATHS += $(HW_SDK_INC_PATHS) # from Shared.mk
 
 LD_PATHS += $(EXT_DEPS_LD_PATHS) # from Shared.mk
 
-OBJECT_DIRECTORY = obj
+ifeq ($(OS),Windows_NT)
+OBJECT_DIRECTORY = obj\\
 LISTING_DIRECTORY = $(OBJECT_DIRECTORY)
-OUTPUT_BINARY_DIRECTORY = bin
+OUTPUT_BINARY_DIRECTORY = bin\\ARM\\
+
+else
+OBJECT_DIRECTORY = obj/
+LISTING_DIRECTORY = $(OBJECT_DIRECTORY)
+OUTPUT_BINARY_DIRECTORY = bin/
+endif
 
 # Sorting removes duplicates
 BUILD_DIRECTORIES := $(sort $(OBJECT_DIRECTORY) $(OUTPUT_BINARY_DIRECTORY) $(LISTING_DIRECTORY) )
@@ -90,19 +94,19 @@ help:
 
 # SDK_C_SOURCE_FILE_NAMES = $(notdir $(SDK_C_SOURCE_FILES))
 # SDK_C_PATHS = $(call remduplicates, $(dir $(SDK_C_SOURCE_FILES) ) )
-# SDK_C_OBJECTS = $(addprefix $(OBJECT_DIRECTORY)/, $(SDK_C_SOURCE_FILE_NAMES:.c=.o) )
+# SDK_C_OBJECTS = $(addprefix $(OBJECT_DIRECTORY), $(SDK_C_SOURCE_FILE_NAMES:.c=.o) )
 
 C_SOURCE_FILE_NAMES = $(notdir $(C_SOURCE_FILES))
 C_PATHS = $(call remduplicates, $(dir $(C_SOURCE_FILES) ) )
-C_OBJECTS = $(addprefix $(OBJECT_DIRECTORY)/, $(C_SOURCE_FILE_NAMES:.c=.o) )
+C_OBJECTS = $(addprefix $(OBJECT_DIRECTORY), $(C_SOURCE_FILE_NAMES:.c=.o) )
 
 CPP_SOURCE_FILE_NAMES = $(notdir $(CPP_SOURCE_FILES))
 CPP_PATHS = $(call remduplicates, $(dir $(CPP_SOURCE_FILES) ) )
-CPP_OBJECTS = $(addprefix $(OBJECT_DIRECTORY)/, $(CPP_SOURCE_FILE_NAMES:.cpp=.o) )
+CPP_OBJECTS = $(addprefix $(OBJECT_DIRECTORY), $(CPP_SOURCE_FILE_NAMES:.cpp=.o) )
 
 ASM_SOURCE_FILE_NAMES = $(notdir $(ASM_SOURCE_FILES))
 ASM_PATHS = $(call remduplicates, $(dir $(ASM_SOURCE_FILES) ))
-ASM_OBJECTS = $(addprefix $(OBJECT_DIRECTORY)/, $(ASM_SOURCE_FILE_NAMES:.s=.o) )
+ASM_OBJECTS = $(addprefix $(OBJECT_DIRECTORY), $(ASM_SOURCE_FILE_NAMES:.s=.o) )
 
 vpath %.c $(C_PATHS)
 vpath %.cpp $(CPP_PATHS)
@@ -112,10 +116,29 @@ OBJECTS = $(C_OBJECTS) $(CPP_OBJECTS) $(ASM_OBJECTS)
 
 OUTPUT_FILENAME := $(PROJECT_NAME)
 
+# Create objects from C SRC files
+$(OBJECT_DIRECTORY)%.o: %.c
+	@echo Compiling file: $(notdir $<)
+	$(NO_ECHO)$(CC) $(CFLAGS) $(INC_PATHS) -c -o $@ $<
+	
+$(OBJECT_DIRECTORY)%.o: %.c
+	@echo Compiling file: $(notdir $<)
+	$(NO_ECHO)$(CC) $(CFLAGS) $(INC_PATHS) -c -o $@ $<
+
+$(OBJECT_DIRECTORY)%.o: %.cpp
+	@echo Compiling file: $(notdir $<)
+	$(NO_ECHO)$(CPP) $(CXXFLAGS) $(INC_PATHS) -c -o $@ $<
+
+# Assemble files
+$(OBJECT_DIRECTORY)%.o: %.s
+	@echo Compiling file: $(notdir $<)
+	$(NO_ECHO)$(CC) $(ASMFLAGS) $(INC_PATHS) -c -o $@ $<
+
 $(PROJECT_NAME): LINKER_SCRIPT=$(abspath ../../libraries/shared.ld)
 $(PROJECT_NAME): $(EXT_DEPS_COMM_LIB) $(EXT_DEPS_CRC_LIB) $(BUILD_DIRECTORIES) $(OBJECTS)
+	
 	@echo Linking target: $(OUTPUT_FILENAME).out
-	$(NO_ECHO)$(CPP) $(LDFLAGS) $(LD_PATHS) $(C_OBJECTS) $(CPP_OBJECTS) $(ASM_OBJECTS) $(LIBS) -o $(OUTPUT_BINARY_DIRECTORY)/$(OUTPUT_FILENAME).out
+	$(NO_ECHO)$(CPP) $(LDFLAGS) $(LD_PATHS) $(C_OBJECTS) $(CPP_OBJECTS) $(ASM_OBJECTS) $(LIBS) -o $(OUTPUT_BINARY_DIRECTORY)$(OUTPUT_FILENAME).out
 	$(NO_ECHO)$(MAKE) -f $(MAKEFILE_NAME) -C $(MAKEFILE_DIR) -e finalize
 
 ## Create build directories
@@ -123,51 +146,42 @@ $(BUILD_DIRECTORIES):
 #	echo $(MAKEFILE_NAME)
 	$(MK) $@
 
-# Create objects from C SRC files
-$(OBJECT_DIRECTORY)/%.o: %.c
-	@echo Compiling file: $(notdir $<)
-	$(NO_ECHO)$(CC) $(CFLAGS) $(INC_PATHS) -c -o $@ $<
-
-$(OBJECT_DIRECTORY)/%.o: %.cpp
-	@echo Compiling file: $(notdir $<)
-	$(NO_ECHO)$(CPP) $(CXXFLAGS) $(INC_PATHS) -c -o $@ $<
-
-# Assemble files
-$(OBJECT_DIRECTORY)/%.o: %.s
-	@echo Compiling file: $(notdir $<)
-	$(NO_ECHO)$(CC) $(ASMFLAGS) $(INC_PATHS) -c -o $@ $<
-
 
 # Link
-$(OUTPUT_BINARY_DIRECTORY)/$(OUTPUT_FILENAME).out: $(BUILD_DIRECTORIES) $(OBJECTS)
+$(OUTPUT_BINARY_DIRECTORY)$(OUTPUT_FILENAME).out: $(BUILD_DIRECTORIES) $(OBJECTS)
 	@echo Linking target: $(OUTPUT_FILENAME).out
-	$(NO_ECHO)$(CPP) $(LDFLAGS) $(LD_PATHS) $(OBJECTS) $(LIBS) -o $(OUTPUT_BINARY_DIRECTORY)/$(OUTPUT_FILENAME).out
+	$(NO_ECHO)$(CPP) $(LDFLAGS) $(LD_PATHS) $(OBJECTS) $(LIBS) -o $(OUTPUT_BINARY_DIRECTORY)$(OUTPUT_FILENAME).out
 
 
 ## Create binary .bin file from the .out file
-$(OUTPUT_BINARY_DIRECTORY)/$(OUTPUT_FILENAME).bin: $(OUTPUT_BINARY_DIRECTORY)/$(OUTPUT_FILENAME).out
+$(OUTPUT_BINARY_DIRECTORY)$(OUTPUT_FILENAME).bin: $(OUTPUT_BINARY_DIRECTORY)$(OUTPUT_FILENAME).out
 	@echo Preparing: $(OUTPUT_FILENAME).bin
-	$(NO_ECHO)$(OBJCOPY) -O binary $(OUTPUT_BINARY_DIRECTORY)/$(OUTPUT_FILENAME).out $(OUTPUT_BINARY_DIRECTORY)/$(OUTPUT_FILENAME).bin
+	$(NO_ECHO)$(OBJCOPY) -O binary $(OUTPUT_BINARY_DIRECTORY)$(OUTPUT_FILENAME).out $(OUTPUT_BINARY_DIRECTORY)$(OUTPUT_FILENAME).bin
 
 ## Create binary .hex file from the .out file
-$(OUTPUT_BINARY_DIRECTORY)/$(OUTPUT_FILENAME).hex: $(OUTPUT_BINARY_DIRECTORY)/$(OUTPUT_FILENAME).out
+$(OUTPUT_BINARY_DIRECTORY)$(OUTPUT_FILENAME).hex: $(OUTPUT_BINARY_DIRECTORY)/$(OUTPUT_FILENAME).out
 	@echo Preparing: $(OUTPUT_FILENAME).hex
-	$(NO_ECHO)$(OBJCOPY) -O ihex $(OUTPUT_BINARY_DIRECTORY)/$(OUTPUT_FILENAME).out $(OUTPUT_BINARY_DIRECTORY)/$(OUTPUT_FILENAME).hex
+	$(NO_ECHO)$(OBJCOPY) -O ihex $(OUTPUT_BINARY_DIRECTORY)$(OUTPUT_FILENAME).out $(OUTPUT_BINARY_DIRECTORY)$(OUTPUT_FILENAME).hex
 
+echovars:
+	@echo $(OBJECT_DIRECTORY)
+	@echo $(C_OBJECTS)
+	@echo $(C_SOURCE_FILES)	
+	
 finalize: genbin genhex echosize
 
 genbin:
 	@echo Preparing: $(OUTPUT_FILENAME).bin
-	$(NO_ECHO)$(OBJCOPY) -O binary $(OUTPUT_BINARY_DIRECTORY)/$(OUTPUT_FILENAME).out $(OUTPUT_BINARY_DIRECTORY)/$(OUTPUT_FILENAME).bin
+	$(NO_ECHO)$(OBJCOPY) -O binary $(OUTPUT_BINARY_DIRECTORY)$(OUTPUT_FILENAME).out $(OUTPUT_BINARY_DIRECTORY)$(OUTPUT_FILENAME).bin
 
 ## Create binary .hex file from the .out file
 genhex:
 	@echo Preparing: $(OUTPUT_FILENAME).hex
-	$(NO_ECHO)$(OBJCOPY) -O ihex $(OUTPUT_BINARY_DIRECTORY)/$(OUTPUT_FILENAME).out $(OUTPUT_BINARY_DIRECTORY)/$(OUTPUT_FILENAME).hex
+	$(NO_ECHO)$(OBJCOPY) -O ihex $(OUTPUT_BINARY_DIRECTORY)$(OUTPUT_FILENAME).out $(OUTPUT_BINARY_DIRECTORY)$(OUTPUT_FILENAME).hex
 
 echosize:
 	-@echo ''
-	$(NO_ECHO)$(SIZE) $(OUTPUT_BINARY_DIRECTORY)/$(OUTPUT_FILENAME).out
+	$(NO_ECHO)$(SIZE) $(OUTPUT_BINARY_DIRECTORY)$(OUTPUT_FILENAME).out
 	-@echo ''
 
 clean: $(addsuffix clean, $(EXT_DEPS_CRC_LIB) $(EXT_DEPS_COMM_LIB))
@@ -175,11 +189,11 @@ clean: $(addsuffix clean, $(EXT_DEPS_CRC_LIB) $(EXT_DEPS_COMM_LIB))
 
 
 cleanobj:
-	$(RM) $(BUILD_DIRECTORIES)/*.o
+	$(RM) $(BUILD_DIRECTORIES)*.o
 
 # Upload should not build.
 upload:
-	$(DFU_TOOL) $(OUTPUT_BINARY_DIRECTORY)/$(OUTPUT_FILENAME).bin
+	$(DFU_TOOL) $(OUTPUT_BINARY_DIRECTORY)$(OUTPUT_FILENAME).bin
 
 upload_mac:
-	python $(DFU_TOOL) -p "/dev/tty.usbserial-DN00P2TZ" $(OUTPUT_BINARY_DIRECTORY)/$(OUTPUT_FILENAME).bin
+	python $(DFU_TOOL) -p "/dev/tty.usbserial-DN00P2TZ" $(OUTPUT_BINARY_DIRECTORY)$(OUTPUT_FILENAME).bin

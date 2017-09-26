@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.1
+VisualStudioVersion = 15.0.26906.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ERTS.Dashboard", "ERTS.Dashboard\ERTS.Dashboard.csproj", "{FDDDD840-D8EC-4D5A-BC44-CB11CE8C2CDB}"
 EndProject
@@ -37,6 +37,12 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ERTS.Embedded", "ERTS.Embedded\ERTS.Embedded.vcxproj", "{44912A9E-17D7-4CBF-B802-D14889A5DF51}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "protocol-test2", "protocol-test2\protocol-test2.vcxproj", "{AE721F56-8E1A-4FF2-86AE-6DAACC9704A7}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ERTS.Embedded.Fake", "ERTS.Embedded.Fake\ERTS.Embedded.Fake.vcxproj", "{D55F8C7C-C2BD-4109-B414-7F5A0F644483}"
+	ProjectSection(ProjectDependencies) = postProject
+		{2371E72E-2D3F-4979-9A76-B7180500B4C6} = {2371E72E-2D3F-4979-9A76-B7180500B4C6}
+		{8DCB8AA5-E743-4399-A294-5C3C1E61EF6F} = {8DCB8AA5-E743-4399-A294-5C3C1E61EF6F}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -83,6 +89,10 @@ Global
 		{AE721F56-8E1A-4FF2-86AE-6DAACC9704A7}.Debug|Main.Build.0 = Debug|x64
 		{AE721F56-8E1A-4FF2-86AE-6DAACC9704A7}.Release|Main.ActiveCfg = Release|x64
 		{AE721F56-8E1A-4FF2-86AE-6DAACC9704A7}.Release|Main.Build.0 = Release|x64
+		{D55F8C7C-C2BD-4109-B414-7F5A0F644483}.Debug|Main.ActiveCfg = Debug|x64
+		{D55F8C7C-C2BD-4109-B414-7F5A0F644483}.Debug|Main.Build.0 = Debug|x64
+		{D55F8C7C-C2BD-4109-B414-7F5A0F644483}.Release|Main.ActiveCfg = Release|x64
+		{D55F8C7C-C2BD-4109-B414-7F5A0F644483}.Release|Main.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

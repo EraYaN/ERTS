@@ -156,18 +156,9 @@ libcrc_build :			\
 	${OBJDIR}crcsick${OBJEXT}		\
 	${OBJDIR}nmea-chk${OBJEXT}		\
 	Makefile
-		${RM}        ${LIBDIR}libcrc${LIBEXT}
+		${RM} "${LIBDIR}libcrc${LIBEXT}"
 		@echo "Packing ${LIBDIR}libcrc${LIBEXT}"
 		$(NO_ECHO)${AR}cvs ${LIBDIR}libcrc${LIBEXT} ${OBJDIR}*${OBJEXT}
-		#$(NO_ECHO)${AR}c ${LIBDIR}libcrc${LIBEXT} ${OBJDIR}crc16${OBJEXT}
-		#$(NO_ECHO)${AR} ${LIBDIR}libcrc${LIBEXT} ${OBJDIR}crc32${OBJEXT}
-		#$(NO_ECHO)${AR} ${LIBDIR}libcrc${LIBEXT} ${OBJDIR}crc8${OBJEXT}
-		#$(NO_ECHO)${AR} ${LIBDIR}libcrc${LIBEXT} ${OBJDIR}crcccitt${OBJEXT}
-		#$(NO_ECHO)${AR} ${LIBDIR}libcrc${LIBEXT} ${OBJDIR}crcdnp${OBJEXT}
-		#$(NO_ECHO)${AR} ${LIBDIR}libcrc${LIBEXT} ${OBJDIR}crckrmit${OBJEXT}
-		#$(NO_ECHO)${AR} ${LIBDIR}libcrc${LIBEXT} ${OBJDIR}crcsick${OBJEXT}
-		#$(NO_ECHO)${AR} ${LIBDIR}libcrc${LIBEXT} ${OBJDIR}nmea-chk${OBJEXT}
-		#$(NO_ECHO)${RANLIB}    ${LIBDIR}libcrc${LIBEXT}
 
 #
 # Individual source files with their header file dependencies
