@@ -13,7 +13,6 @@
 
 // TODO: Perhaps make the drone (almost) entirely interrupt-driven.
 // TODO: Tick on interrupt.
-// TODO: Fix loop time.
 // TODO: Implement exceptions.
 // TODO: Implement flash write/dump.
 // TODO: Implement parameter (b/d) change messages.
@@ -151,7 +150,7 @@ void Quadrupel::acknowledge(uint32_t ack_number) {
 void Quadrupel::heartbeat() {
     // Calculate loop time.
     auto loop_time = (uint16_t) _accum_loop_time;
-
+    _accum_loop_time = 0;
     auto packet = new Packet(Telemetry);
     auto data = new TelemetryData(bat_volt, phi, theta, sp, sq, sr, loop_time, _mode);
     packet->set_data(data);
@@ -217,13 +216,13 @@ void Quadrupel::tick() {
     if (_mode != Panic) {
         if (bat_volt < BATTERY_THRESHOLD) {
             // Battery low
-            std::cout << "Battery low, entering panic mode." << std::endl;
+            printf("Battery low, entering panic mode.\n");
             set_mode(Panic);
         }
 
         if ((get_time_us() - last_received) > comm_timeout) {
             // Time-out
-            std::cout << "Timed out, entering panic mode." << std::endl;
+            printf("Timed out, entering panic mode.\n");
             set_mode(Panic);
         }
     }

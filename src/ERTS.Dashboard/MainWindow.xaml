@@ -41,6 +41,7 @@
                         <ColumnDefinition Width="5*"/>
                         <ColumnDefinition Width="39*"/>
                         <ColumnDefinition Width="39*"/>
+                        <ColumnDefinition Width="39*"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="1*"/>
@@ -48,9 +49,11 @@
                     </Grid.RowDefinitions>
                     <Label Content="Mode" Grid.Column="0" Grid.Row="0" Width="100" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Center" Grid.ColumnSpan="2"/>
                     <Label Content="Battery voltage" Grid.Column="2" Grid.Row="0" Width="100" HorizontalAlignment="Left" VerticalAlignment="Top" HorizontalContentAlignment="Center"/>
+                    <Label Content="Loop time" Grid.Column="3" Grid.Row="0" Width="100" HorizontalAlignment="Left" VerticalAlignment="Top" HorizontalContentAlignment="Center"/>
                     <Label Content="{Binding ModeString}" Grid.Column="0" Grid.Row="1" HorizontalContentAlignment="Center" Margin="0,2,0,0" VerticalAlignment="Top" FontSize="18" Grid.ColumnSpan="2"/>
                     <Label Content="{Binding ModeDescriptionString}" Grid.Column="0" Grid.Row="1" HorizontalContentAlignment="Center" Margin="0,27,0,0" VerticalAlignment="Top" FontSize="12" Foreground="#FFA4A4A4" Grid.ColumnSpan="2"/>
                     <Label Content="{Binding VoltageString}" Grid.Column="2" Grid.Row="1" HorizontalContentAlignment="Center" Margin="0,2,0,0" VerticalAlignment="Top" FontSize="18"/>
+                    <Label Content="{Binding LoopTimeString}" Grid.Column="3" Grid.Row="1" HorizontalContentAlignment="Center" Margin="0,2,0,0" VerticalAlignment="Top" FontSize="18"/>
                 </Grid>
             </GroupBox>
 
@@ -67,7 +70,7 @@
 
                     <!-- TODO: Bind all the stuff below when joystick data becomes available. -->
                     <Canvas HorizontalAlignment="Left" Grid.Column="0" Height="100" Margin="10,10,10,10" VerticalAlignment="Top" Width="115">
-                        <Ellipse Height="100" StrokeThickness="1" Stroke="Black" Width="100"/>
+                        <Rectangle Height="100" StrokeThickness="1" Stroke="Black" Width="100"/>
                         <Polyline 
                           Points="10,10 0,20 10,30 20,20 10,10 10,0" 
                           Stroke="Blue" StrokeThickness="2"
@@ -88,8 +91,7 @@
                         <Label Content="Yaw:"/>
                         <Label Content="Lift:"/>
                     </StackPanel>
-
-                    <!-- TODO: Fix the sources of these bindings when joystick data becomes available. -->
+                    
                     <StackPanel Grid.Column="2" VerticalAlignment="Center">
                         <Label Content="{Binding RollString}"/>
                         <Label Content="{Binding PitchString}"/>
