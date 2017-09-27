@@ -14,15 +14,25 @@ extern "C" {
         uint32_t *sp = (uint32_t *)__get_MSP(); // Get stack pointer
         uint32_t ia = sp[12]; // Get instruction address from stack
 
-	nrf_delay_ms(1000);
-	nrf_gpio_pin_toggle(YELLOW);
-        printf("Hard Fault at address: 0x%08x\r\n", (unsigned int)ia); 
-	nrf_delay_ms(1000);  
-	nrf_gpio_pin_toggle(GREEN);     
+        nrf_delay_ms(1000);
+        nrf_gpio_pin_toggle(YELLOW);
+        printf("Hard Fault at address: 0x%08x\r\n", (unsigned int)ia);
+        nrf_delay_ms(100);
+        nrf_gpio_pin_toggle(GREEN);
         while (1)
-            {nrf_gpio_pin_toggle(YELLOW);nrf_delay_ms(250);}
+        {
+            if (NRF_UART0->EVENTS_TXDRDY != 0) {
+                NRF_UART0->EVENTS_TXDRDY = 0;
+                if (tx_queue.count) {
+                    NRF_UART0->TXD = dequeue(&tx_queue);
+                    nrf_gpio_pin_toggle(YELLOW);
+                }
+            }
+            
+            nrf_delay_ms(100);
+        }
     }
-    
+
 }
 
 int16_t motor[4], ae[4];

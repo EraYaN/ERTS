@@ -123,19 +123,20 @@ void Quadrupel::receive() {
 }
 
 void Quadrupel::send(Packet *packet) {
-    auto buffer = new uint8_t[MAX_PACKET_SIZE];
-    packet->to_buffer(buffer);
+    auto buffer = new uint8_t[MAX_PACKET_SIZE+3];
+    packet->to_buffer(&buffer[3]);
 
 #ifdef FAKE_DRIVERS
     std::cout << "TX:\t\t";
     packet_print(buffer);
 #endif
 
-    for (int i = 0; i < MAX_PACKET_SIZE; ++i) {
+    for (int i = 3; i < MAX_PACKET_SIZE+3; ++i) {
         uart_put(buffer[i]);
     }
 
-    delete[] buffer;
+    //delete[] buffer;
+    free(buffer);
     delete packet;
 }
 
