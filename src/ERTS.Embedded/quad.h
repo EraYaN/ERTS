@@ -18,10 +18,10 @@ extern "C"
 
 typedef struct {
     uint16_t  lift;
-    uint16_t  yaw;
-    uint16_t  pitch;
-    uint16_t  roll;
-} userstate_t;
+    int16_t  yaw;
+    int16_t  pitch;
+    int16_t  roll;
+} quad_state_t;
 
 
 class Quadrupel {
@@ -43,7 +43,7 @@ class Quadrupel {
     uint8_t comm_buffer[MAX_PACKET_SIZE];
     uint8_t comm_buffer_index = 0;
 
-    userstate_t user_state;
+    quad_state_t target_state, current_state;
 
     void receive();
 

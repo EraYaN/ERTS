@@ -5,6 +5,10 @@
 #include "remote_control_data.h"
 #include "telemetry_data.h"
 
+#ifdef FAKE_DRIVERS
+#include <iostream>
+#endif
+
 // TODO: Perhaps make the drone (almost) entirely interrupt-driven.
 // TODO: Handle connection loss.
 // TODO: Tick on interrupt.
@@ -32,7 +36,6 @@ void Quadrupel::receive() {
     while (uart_available()) {
         uint8_t currentByte = uart_get();
 
-        printf("Got Byte %X\n", currentByte);
         lastTwoBytes = lastTwoBytes << 8 | currentByte;
 
         if (!_receiving) {
@@ -78,14 +81,18 @@ void Quadrupel::receive() {
                 if (comm_buffer[MAX_PACKET_SIZE - 1] == END_SEQUENCE) {
                     if (Packet::verify((byte *) comm_buffer)) {
                         printf("Handling packet.\n");
-                        /*auto *packet = new Packet((byte *) comm_buffer);
+                        auto *packet = new Packet((byte *) comm_buffer);
+#ifdef FAKE_DRIVERS
+                        std::cout << "RX:\t\t";
+                        packet_print(comm_buffer);
+#endif
                         bool handled = handle_packet(packet);
-                        // TODO: Send exception if not handled.
-						
+//                        // TODO: Send exception if not handled.
+
                         if (handled && packet->get_data()->get_expects_acknowledgement())
                             acknowledge(packet->get_data()->get_ack_number());
 
-                        delete packet;*/
+                        delete packet;
                     }
                     else {
                         nrf_gpio_pin_toggle(YELLOW);
@@ -111,6 +118,11 @@ void Quadrupel::receive() {
 void Quadrupel::send(Packet *packet) {
     auto buffer = new uint8_t[MAX_PACKET_SIZE];
     packet->to_buffer(buffer);
+
+#ifdef FAKE_DRIVERS
+    std::cout << "TX:\t\t";
+    packet_print(buffer);
+#endif
 
     for (int i = 0; i < MAX_PACKET_SIZE; ++i) {
         uart_put(buffer[i]);
@@ -153,16 +165,11 @@ bool Quadrupel::handle_packet(Packet *packet) {
             break;
         }
         case RemoteControl: {
-            //nrf_gpio_pin_toggle(GREEN);
             auto *data = dynamic_cast<RemoteControlData *>(packet->get_data());
-            // remote_control(data->get_lift(), data->get_roll(), data->get_pitch(), data->get_yaw());
-            if (_mode != Manual)
-                break;
-            //save the new control setpoints
-            user_state.lift = data->get_lift();
-            user_state.roll = data->get_roll();
-            user_state.pitch = data->get_pitch();
-            user_state.yaw = data->get_yaw();
+            target_state.lift   = data->get_lift();
+            target_state.roll   = data->get_roll();
+            target_state.pitch  = data->get_pitch();
+            target_state.yaw    = data->get_yaw();
             break;
         }
         case Kill: {
@@ -325,17 +332,17 @@ void Quadrupel::control() {
     uint16_t setpoint_temp;
 
     if (_mode == Manual) {
-        lift = user_state.lift;
-        roll = user_state.roll;
-        pitch = user_state.pitch;
-        yaw = user_state.yaw;
+        lift = target_state.lift;
+        roll = target_state.roll;
+        pitch = target_state.pitch;
+        yaw = target_state.yaw;
     }
     else if (_mode == YawControl) {
-        lift = user_state.lift;
-        roll = user_state.roll;
-        pitch = user_state.pitch;
+        lift = target_state.lift;
+        roll = target_state.roll;
+        pitch = target_state.pitch;
         //Yaw Controller:
-        setpoint_temp = CONT_YAW_P1 * user_state.yaw; // setpoint is angular rate
+        setpoint_temp = CONT_YAW_P1 * target_state.yaw; // setpoint is angular rate
         yaw = CONT_YAW_P2 * (setpoint_temp - sr);
         // } else if(_mode == Panic) {
     }
