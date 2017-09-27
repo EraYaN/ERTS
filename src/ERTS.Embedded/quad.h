@@ -23,11 +23,13 @@ typedef struct {
 
 
 class Quadrupel {
+    // Various constants
     const uint16_t MOTOR_MIN = 0;
     const uint16_t MOTOR_MAX = 1500;
 
     const uint16_t BATTERY_THRESHOLD = 1050;
 
+    // Parameter settings
     uint16_t b = 1;
     uint16_t d = 1;
     uint16_t divider = 1;
@@ -36,21 +38,26 @@ class Quadrupel {
     uint16_t yaw_p2 = 5;
 
     uint16_t panic_rate = 100;
-    bool _initial_panic = false;
 
+    uint32_t comm_timeout = 2000000;
+
+    // State
+    bool _initial_panic = false;
     flightMode_t _mode = Safe;
     flightMode_t _new_mode = Safe;
     bool _is_calibrated;
     uint32_t _accum_loop_time;
-    uint32_t counter = 0;
-	uint16_t lastTwoBytes = 0;
-    bool _receiving = false;
-    uint16_t _start_sequence = 0;
-    uint8_t comm_buffer[MAX_PACKET_SIZE];
-    uint8_t comm_buffer_index = 0;
-
     quad_state_t target_state, current_state;
 
+    // Comm
+    uint32_t counter = 0;
+	uint16_t last_two_bytes = 0;
+    bool _receiving = false;
+    uint8_t comm_buffer[MAX_PACKET_SIZE];
+    uint8_t comm_buffer_index = 0;
+    uint32_t last_received;
+
+    // Private methods
     void receive();
 
     void send(Packet *packet);

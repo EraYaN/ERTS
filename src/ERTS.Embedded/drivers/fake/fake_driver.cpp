@@ -21,15 +21,13 @@ void nrf_delay_ms(uint32_t number_of_ms) {
 }
 
 // Timers
-std::chrono::high_resolution_clock::time_point start;
-
 void timers_init() {
-    start = std::chrono::high_resolution_clock::now();
     std::cout << "Timers initialized." << std::endl;
 };
 
 uint32_t get_time_us() {
-    return (uint32_t)std::chrono::duration_cast<std::chrono::microseconds>(start.time_since_epoch()).count();
+    auto now = std::chrono::high_resolution_clock::now();
+    return (uint32_t)std::chrono::duration_cast<std::chrono::microseconds>(now.time_since_epoch()).count();
 }
 
 bool check_timer_flag() {
