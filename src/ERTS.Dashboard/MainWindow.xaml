@@ -79,6 +79,7 @@
                         </Polyline>
                         <Rectangle Stroke="Black" StrokeThickness="1" Fill="Transparent" Height="100" Width="7" Canvas.Left="109"/>
                         <Rectangle Fill="Blue" Height="{Binding Lift}" Width="5" Canvas.Bottom="1" Canvas.Left="110"/>
+                        <Rectangle Fill="Red" Height="{Binding LiftTrimSize}" Width="5" Canvas.Bottom="{Binding LiftTrimOffset}" Canvas.Left="110"/>
                     </Canvas>
 
                     <StackPanel Grid.Column="1" VerticalAlignment="Center">

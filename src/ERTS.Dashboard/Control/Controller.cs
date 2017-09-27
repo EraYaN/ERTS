@@ -16,7 +16,7 @@ namespace ERTS.Dashboard.Control
     {
         const double RC_EXPO = 0.5;
         const double RC_RATE = 1;
-        const double TRIM_STEP = 1;
+        const double TRIM_STEP = 0.01;
         const double TRIM_MAX = 0.5;
         const double TRIM_MIN = -0.5;
 
@@ -32,10 +32,10 @@ namespace ERTS.Dashboard.Control
         public double PitchRate { get; set; }
         public double YawRate { get; set; }
 
-        double LiftTrim { get; set; }
-        double RollTrim { get; set; }
-        double PitchTrim { get; set; }
-        double YawTrim { get; set; }
+        public double LiftTrim { get; set; }
+        public double RollTrim { get; set; }
+        public double PitchTrim { get; set; }
+        public double YawTrim { get; set; }
 
         public Controller()
         {
@@ -148,13 +148,14 @@ namespace ERTS.Dashboard.Control
                 LiftTrim = 0;
             }
             else if (Direction == true) {
-                LiftTrim = Math.Max(TRIM_MAX, LiftTrim + TRIM_STEP);
+                LiftTrim = Math.Min(TRIM_MAX, LiftTrim + TRIM_STEP);
             }
             else if (Direction == false)
             {
-                LiftTrim = Math.Min(TRIM_MIN, LiftTrim - TRIM_STEP);
+                LiftTrim = Math.Max(TRIM_MIN, LiftTrim - TRIM_STEP);
             }
             RaisePropertyChanged("LiftTrim");
+            Debug.WriteLine(String.Format("Set LiftTrim to {0}",LiftTrim));
         }
         public void AdjustRollTrim(bool? Direction)
         {
@@ -164,13 +165,14 @@ namespace ERTS.Dashboard.Control
             }
             else if (Direction == true)
             {
-                RollTrim = Math.Max(TRIM_MAX, RollTrim + TRIM_STEP);
+                RollTrim = Math.Min(TRIM_MAX, RollTrim + TRIM_STEP);
             }
             else if (Direction == false)
             {
-                RollTrim = Math.Min(TRIM_MIN, RollTrim - TRIM_STEP);
+                RollTrim = Math.Max(TRIM_MIN, RollTrim - TRIM_STEP);
             }
             RaisePropertyChanged("RollTrim");
+            Debug.WriteLine(String.Format("Set RollTrim to {0}", RollTrim));
         }
         public void AdjustPitchTrim(bool? Direction)
         {
@@ -180,13 +182,14 @@ namespace ERTS.Dashboard.Control
             }
             else if (Direction == true)
             {
-                PitchTrim = Math.Max(TRIM_MAX, PitchTrim + TRIM_STEP);
+                PitchTrim = Math.Min(TRIM_MAX, PitchTrim + TRIM_STEP);
             }
             else if (Direction == false)
             {
-                PitchTrim = Math.Min(TRIM_MIN, PitchTrim - TRIM_STEP);
+                PitchTrim = Math.Max(TRIM_MIN, PitchTrim - TRIM_STEP);
             }
             RaisePropertyChanged("PitchTrim");
+            Debug.WriteLine(String.Format("Set PitchTrim to {0}", PitchTrim));
         }
         public void AdjustYawTrim(bool? Direction)
         {
@@ -196,13 +199,14 @@ namespace ERTS.Dashboard.Control
             }
             else if (Direction == true)
             {
-                YawTrim = Math.Max(TRIM_MAX, YawTrim + TRIM_STEP);
+                YawTrim = Math.Min(TRIM_MAX, YawTrim + TRIM_STEP);
             }
             else if (Direction == false)
             {
-                YawTrim = Math.Min(TRIM_MIN, YawTrim - TRIM_STEP);
+                YawTrim = Math.Max(TRIM_MIN, YawTrim - TRIM_STEP);
             }
             RaisePropertyChanged("YawTrim");
+            Debug.WriteLine(String.Format("Set YawTrim to {0}", YawTrim));
         }
 
         #endregion

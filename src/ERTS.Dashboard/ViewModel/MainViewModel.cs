@@ -68,7 +68,7 @@ namespace ERTS.Dashboard.ViewModel
         public string LiftString {
             get {
                 if (GlobalData.ctr != null)
-                    return GlobalData.ctr.Lift.ToString("N2");
+                    return String.Format("{0:N2} ({1:+0.00;-0.00;+0})", GlobalData.ctr.Lift, GlobalData.ctr.LiftTrim);
                 else
                     return "-";
             }
@@ -77,7 +77,7 @@ namespace ERTS.Dashboard.ViewModel
         public string RollString {
             get {
                 if (GlobalData.ctr != null)
-                    return GlobalData.ctr.RollRate.ToString("N2") + " 1/s";
+                    return String.Format("{0:N2} ({1:+0.00;-0.00;+0}) 1/s", GlobalData.ctr.RollRate, GlobalData.ctr.RollTrim);
                 else
                     return "-";
             }
@@ -85,7 +85,7 @@ namespace ERTS.Dashboard.ViewModel
         public string PitchString {
             get {
                 if (GlobalData.ctr != null)
-                    return GlobalData.ctr.PitchRate.ToString("N2") + " 1/s";
+                    return String.Format("{0:N2} ({1:+0.00;-0.00;+0}) 1/s", GlobalData.ctr.PitchRate, GlobalData.ctr.PitchTrim);
                 else
                     return "-";
             }
@@ -94,7 +94,7 @@ namespace ERTS.Dashboard.ViewModel
         public string YawString {
             get {
                 if (GlobalData.ctr != null)
-                    return GlobalData.ctr.YawRate.ToString("N2") + " 1/s";
+                    return String.Format("{0:N2} ({1:+0.00;-0.00;+0}) 1/s", GlobalData.ctr.YawRate, GlobalData.ctr.YawTrim);
                 else
                     return "-";
             }
@@ -128,6 +128,56 @@ namespace ERTS.Dashboard.ViewModel
             get {
                 if (GlobalData.ctr != null)
                     return GlobalData.ctr.YawRate * 180;
+                else
+                    return 0;
+            }
+        }
+
+        public double LiftTrimSize {
+            get {
+                if (GlobalData.ctr != null)
+                    return Math.Min(0,Math.Abs(GlobalData.ctr.LiftTrim) * 98);
+                else
+                    return 0;
+            }
+        }
+        public double LiftTrimOffset {
+            get {
+                if (GlobalData.ctr != null)
+                {
+                    if (GlobalData.ctr.LiftTrim > 0)
+                    {
+                        return (GlobalData.ctr.Lift) * 98 + 1;
+                    }
+                    else
+                    {
+                        return Math.Min(0, Math.Abs(GlobalData.ctr.Lift-GlobalData.ctr.LiftTrim) * 98) + 1;
+                    }
+                }
+                else
+                    return 0;
+            }
+        }
+        public double RollTrim {
+            get {
+                if (GlobalData.ctr != null)
+                    return GlobalData.ctr.RollTrim * 40 + 40;
+                else
+                    return 40;
+            }
+        }
+        public double PitchTrim {
+            get {
+                if (GlobalData.ctr != null)
+                    return GlobalData.ctr.PitchTrim * 35 + 35;
+                else
+                    return 35;
+            }
+        }
+        public double YawTrim {
+            get {
+                if (GlobalData.ctr != null)
+                    return GlobalData.ctr.YawTrim * 180;
                 else
                     return 0;
             }
@@ -254,9 +304,7 @@ namespace ERTS.Dashboard.ViewModel
         }
         public MainViewModel()
         {
-
-
-
+            
         }
 
         public void InitStageOne()
@@ -351,6 +399,27 @@ namespace ERTS.Dashboard.ViewModel
             else if (e.PropertyName == "LoopTime")
             {
                 RaisePropertyChanged("LoopTimeString");
+            }
+            else if (e.PropertyName == "LiftTrim")
+            {
+                RaisePropertyChanged("LiftTrimSize");
+                RaisePropertyChanged("LiftTrimOffset");
+                RaisePropertyChanged("LiftString");
+            }
+            else if (e.PropertyName == "RollTrim")
+            {
+                RaisePropertyChanged("RollTrim");
+                RaisePropertyChanged("RollString");
+            }
+            else if (e.PropertyName == "PitchTrim")
+            {
+                RaisePropertyChanged("PitchTrim");
+                RaisePropertyChanged("PitchString");
+            }
+            else if (e.PropertyName == "YawTrim")
+            {
+                RaisePropertyChanged("YawTrim");
+                RaisePropertyChanged("YawString");
             }
             else
             {

@@ -30,9 +30,7 @@ namespace ERTS.Dashboard.Input
         {
             if (!e.InputEngaged)
                 return;
-            if(!controlActuators.Any(cA => cA.DeviceGuid == e.DeviceGuid))
-                return;
-            if (!controlActuators.Any(cA => cA.RawOffset == e.StateUpdate.RawOffset))
+            if (!controlActuators.Any(cA => cA.DeviceGuid == e.DeviceGuid && cA.RawOffset == e.StateUpdate.RawOffset))
                 return;
 
             ControlActuator activatedKey = controlActuators.First(cA => cA.DeviceGuid == e.DeviceGuid && cA.RawOffset == e.StateUpdate.RawOffset);

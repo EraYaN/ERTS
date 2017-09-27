@@ -90,32 +90,32 @@ namespace ERTS.Dashboard.Input
             InputBindings.Add("LiftTrimUp", LiftTrimUpBinding);
 
             InputBinding LiftTrimDownBinding = new InputBinding(new ControlActuator[] { keyboardZ }, "LiftTrimDown");
-            LiftTrimUpBinding.BindingActuatedEvent += LiftTrimDownBinding_BindingActuatedEvent;
-            InputBindings.Add("LiftTrimDown", LiftTrimUpBinding);
+            LiftTrimDownBinding.BindingActuatedEvent += LiftTrimDownBinding_BindingActuatedEvent;
+            InputBindings.Add("LiftTrimDown", LiftTrimDownBinding);
 
             InputBinding RollTrimUpBinding = new InputBinding(new ControlActuator[] { keyboardLeftArrow }, "RollTrimUp");
             RollTrimUpBinding.BindingActuatedEvent += RollTrimUpBinding_BindingActuatedEvent;
             InputBindings.Add("RollTrimUp", RollTrimUpBinding);
 
             InputBinding RollTrimDownBinding = new InputBinding(new ControlActuator[] { keyboardRightArrow }, "RollTrimDown");
-            RollTrimUpBinding.BindingActuatedEvent += RollTrimDownBinding_BindingActuatedEvent;
-            InputBindings.Add("RollTrimDown", RollTrimUpBinding);
+            RollTrimDownBinding.BindingActuatedEvent += RollTrimDownBinding_BindingActuatedEvent;
+            InputBindings.Add("RollTrimDown", RollTrimDownBinding);
 
             InputBinding PitchTrimUpBinding = new InputBinding(new ControlActuator[] { keyboardDownArrow }, "PitchTrimUp");
             PitchTrimUpBinding.BindingActuatedEvent += PitchTrimUpBinding_BindingActuatedEvent;
             InputBindings.Add("PitchTrimUp", PitchTrimUpBinding);
 
             InputBinding PitchTrimDownBinding = new InputBinding(new ControlActuator[] { keyboardUpArrow }, "PitchTrimDown");
-            PitchTrimUpBinding.BindingActuatedEvent += PitchTrimDownBinding_BindingActuatedEvent;
-            InputBindings.Add("PitchTrimDown", PitchTrimUpBinding);
+            PitchTrimDownBinding.BindingActuatedEvent += PitchTrimDownBinding_BindingActuatedEvent;
+            InputBindings.Add("PitchTrimDown", PitchTrimDownBinding);
 
             InputBinding YawTrimUpBinding = new InputBinding(new ControlActuator[] { keyboardW }, "YawTrimUp");
             YawTrimUpBinding.BindingActuatedEvent += YawTrimUpBinding_BindingActuatedEvent;
             InputBindings.Add("YawTrimUp", YawTrimUpBinding);
 
             InputBinding YawTrimDownBinding = new InputBinding(new ControlActuator[] { keyboardQ }, "YawTrimDown");
-            YawTrimUpBinding.BindingActuatedEvent += YawTrimDownBinding_BindingActuatedEvent;
-            InputBindings.Add("YawTrimDown", YawTrimUpBinding);
+            YawTrimDownBinding.BindingActuatedEvent += YawTrimDownBinding_BindingActuatedEvent;
+            InputBindings.Add("YawTrimDown", YawTrimDownBinding);
 
             InputBinding ModeSafeBinding = new InputBinding(new ControlActuator[] { keyboard0 }, "ModeSafe");
             ModeSafeBinding.BindingActuatedEvent += ModeSafeBinding_BindingActuatedEvent;
@@ -129,7 +129,7 @@ namespace ERTS.Dashboard.Input
             ModeManualBinding.BindingActuatedEvent += ModeManualBinding_BindingActuatedEvent;
             InputBindings.Add("ModeManual", ModeManualBinding);
 
-            InputBinding ModeCalibrationBinding = new InputBinding(new ControlActuator[] { keyboard4 }, "ModeCalibration");
+            InputBinding ModeCalibrationBinding = new InputBinding(new ControlActuator[] { keyboard3 }, "ModeCalibration");
             ModeCalibrationBinding.BindingActuatedEvent += ModeCalibrationBinding_BindingActuatedEvent;
             InputBindings.Add("ModeCalibration", ModeCalibrationBinding);
 

@@ -35,7 +35,6 @@ namespace ERTS.Dashboard.Input
         public InputManager()
         {
             directInput = new DirectInput();
-            StartThread();
             RaisePropertyChanged("IsInputEngaged");
             RaisePropertyChanged("BoundDevices");
         }
@@ -214,12 +213,17 @@ namespace ERTS.Dashboard.Input
 
         public void StartThread()
         {
-            cancelTokenSource = new CancellationTokenSource();
-            threadTask = Task.Factory.StartNew(() => ThreadLoop(cancelTokenSource.Token));
+            if (cancelTokenSource == null)
+            {
+                cancelTokenSource = new CancellationTokenSource();
+                Debug.WriteLine("Starting input thread.", "InputManager");
+                threadTask = Task.Factory.StartNew(() => ThreadLoop(cancelTokenSource.Token));
+            }
         }
 
         private void ThreadLoop(CancellationToken cancelToken)
         {
+            Debug.WriteLine("Started input thread.","InputManager");
             while (true)
             {
                 if (WaitHandles.Count == 0)
