@@ -1,26 +1,13 @@
 #include "acknowledge_data.h"
 
-AcknowledgeData::AcknowledgeData(uint32_t number) {
-    _data = new acknowledgeData_t;
-    _data->number = number;
+AcknowledgeData::AcknowledgeData(const uint8_t* data) {
+	_ackNumber = *(reinterpret_cast<const uint32_t*>(&data[0]));
 }
 
-int AcknowledgeData::get_length() {
-    return sizeof(acknowledgeData_t);
-}
-
-uint32_t AcknowledgeData::get_ack_number() {
-    return 0;
-}
-
-bool AcknowledgeData::get_expects_acknowledgement() {
-    return false;
-}
-
-bool AcknowledgeData::is_valid() {
-    return true;
+AcknowledgeData::AcknowledgeData(uint32_t ackNumber) {
+	_ackNumber = ackNumber;
 }
 
 void AcknowledgeData::to_buffer(uint8_t *buffer) {
-    memcpy(buffer, _data, get_length());
+	*(reinterpret_cast<uint32_t*>(&buffer[0])) = _ackNumber;
 }

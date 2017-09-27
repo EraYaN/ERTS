@@ -2,20 +2,19 @@
 #include "packet_data.h"
 
 class AcknowledgeData : public PacketData {
-    acknowledgeData_t *_data;
+	uint32_t _ackNumber;
 
 public:
-    explicit AcknowledgeData(uint32_t number);
+	AcknowledgeData(const uint8_t* data);
+    AcknowledgeData(uint32_t ackNumber);
 
-    ~AcknowledgeData() override { delete _data; }
+	int get_length() override {
+		return 4;
+	};
 
-    int get_length() override;
-
-    uint32_t get_ack_number() override;
-
-    bool get_expects_acknowledgement() override;
-
-    bool is_valid() override;
-
+	uint32_t get_ack_number() override {
+		return _ackNumber;			
+	};
+	
     void to_buffer(uint8_t *buffer) override;
 };

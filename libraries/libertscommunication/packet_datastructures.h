@@ -85,19 +85,19 @@ __pragma(pack(push, 1))
 
 
 // 6 bytes
-typedef struct PACK modeSwitchData_tag {
+/*typedef struct PACK modeSwitchData_tag {
     flightMode_t newMode;
     flightMode_t fallBackmode; //No fallback if None (0xF) is specified)
     uint32_t ackNumber; // For keeping track of acknowledgements
-} modeSwitchData_t;
+} modeSwitchData_t;*/
 
 // 4 bytes
-typedef struct PACK acknowledgeData_tag {
+/*typedef struct PACK acknowledgeData_tag {
     uint32_t number; // For keeping track of acknowledgements
-} acknowledgeData_t;
+} acknowledgeData_t;*/
 
 // 14 bytes
-typedef struct PACK telemetryData_tag {
+/*typedef struct PACK telemetryData_tag {
     uint16_t batteryVoltage : 12;
     flightMode_t flightMode : 4;
     int16_t phi;
@@ -106,29 +106,29 @@ typedef struct PACK telemetryData_tag {
     int16_t q;
     int16_t r;
     uint16_t loopTime;
-} telemetryData_t;
+} telemetryData_t;*/
 
 // 8 bytes
-typedef struct PACK remoteControlData_tag {
+/*typedef struct PACK remoteControlData_tag {
     uint16_t lift; //Throttle
     int16_t roll; //Aileron
     int16_t pitch; //Elevator
     int16_t yaw; // Rudder
-} remoteControlData_t;
+} remoteControlData_t;*/
 
 // 4 bytes
-typedef struct PACK parameterData_tag {
+/*typedef struct PACK parameterData_tag {
     uint16_t b; // Divider for lift, pitch and roll.
     uint16_t d; // Divider for yaw.
-} parameterData_t;
+} parameterData_t;*/
 
 
 #define MAX_MESSAGE_LENGTH 13
 // 14 bytes
-typedef struct PACK exceptionData_tag {
+/*typedef struct PACK exceptionData_tag {
     exceptionType_t exceptionType;
     char message[MAX_MESSAGE_LENGTH];
-} exceptionData_t;
+} exceptionData_t;*/
 
 //TODO all other data structures
 

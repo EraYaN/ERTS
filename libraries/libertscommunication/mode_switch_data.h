@@ -3,24 +3,35 @@
 #include "packet_data.h"
 
 class ModeSwitchData : public PacketData {
-    modeSwitchData_t *_data;
+	flightMode_t _newMode;
+	flightMode_t _fallBackmode; //No fallback if None (0xF) is specified)
+	uint32_t _ackNumber; // For keeping track of acknowledgements
 
 public:
-    explicit ModeSwitchData(const uint8_t *data);
+	ModeSwitchData(const uint8_t *data);
+	ModeSwitchData(flightMode_t newMode, flightMode_t fallBackmode, uint32_t ackNumber);
 
-    ~ModeSwitchData() override { delete _data; }
+	int get_length() override {
+		return 6;
+	};
 
-    int get_length() override;
+	bool get_expects_acknowledgement() override {
+		return true;
+	};
 
-    bool get_expects_acknowledgement() override;
+	flightMode_t get_new_mode() {
+		return _newMode;
+	};
 
-    flightMode_t get_new_mode() { return _data->newMode; };
+	flightMode_t get_fallback_mode() {
+		return _fallBackmode;
+	};
 
-    flightMode_t get_fallback_mode() { return _data->fallBackmode; };
+	uint32_t get_ack_number() override {
+		return _ackNumber;
+	};
 
-    uint32_t get_ack_number() override { return _data->ackNumber; };
+	bool is_valid() override;
 
-    bool is_valid() override;
-
-    void to_buffer(uint8_t *buffer) override;
+	void to_buffer(uint8_t *buffer) override;
 };

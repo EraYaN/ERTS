@@ -4,15 +4,21 @@
 
 class PacketData {
 public:
-    virtual ~PacketData() = default;
+	virtual ~PacketData() = default;
 
-    virtual int get_length() = 0;
+	virtual int get_length() = 0;
 
-    virtual bool get_expects_acknowledgement() = 0;
+	virtual bool get_expects_acknowledgement() {
+		return false;
+	};
 
-    virtual bool is_valid() = 0;
+	virtual bool is_valid() {
+		return true;
+	};
 
-    virtual uint32_t get_ack_number() = 0;
+	virtual uint32_t get_ack_number() {
+		return 0;
+	};
 
-    virtual void to_buffer(uint8_t *buffer) = 0;
+	virtual void to_buffer(uint8_t *buffer) = 0;
 };

@@ -3,25 +3,22 @@
 
 
 class RemoteControlData : public PacketData {
-    remoteControlData_t *_data;
-
+	uint16_t _lift; //Throttle
+	int16_t _roll; //Aileron
+	int16_t _pitch; //Elevator
+	int16_t _yaw; // Rudder
 public:
-    explicit RemoteControlData(const uint8_t *data);
+    RemoteControlData(uint16_t lift, int16_t roll, int16_t pitch, int16_t yaw);
+	RemoteControlData(const uint8_t *data);    
 
-    ~RemoteControlData() override { delete _data; }
+	int get_length() override {
+		return 8;
+	};
 
-    uint32_t get_ack_number() override;
-
-    bool get_expects_acknowledgement() override;
-
-    uint16_t    get_lift()  { return _data->lift;  }
-    int16_t     get_roll()  { return _data->roll;  }
-    int16_t     get_pitch() { return _data->pitch; }
-    int16_t     get_yaw()   { return _data->yaw;   }
-
-    bool is_valid() override;
-
-    int get_length() override;
-
+    uint16_t    get_lift()  { return _lift;  }
+    int16_t     get_roll()  { return _roll;  }
+    int16_t     get_pitch() { return _pitch; }
+    int16_t     get_yaw()   { return _yaw;   }
+ 
     void to_buffer(uint8_t *buffer) override;
 };

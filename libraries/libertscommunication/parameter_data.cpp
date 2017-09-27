@@ -2,26 +2,19 @@
 #include "parameter_data.h"
 
 ParameterData::ParameterData(const uint8_t *data) {
-    _data = new parameterData_t;
-    memcpy(_data, data, get_length());
+	_b = *(reinterpret_cast<const uint16_t*>(&data[0]));
+	_d = *(reinterpret_cast<const uint16_t*>(&data[2]));
+	_ackNumber = *(reinterpret_cast<const uint32_t*>(&data[4]));
 }
 
-int ParameterData::get_length() {
-    return sizeof(parameterData_t);
-}
-
-uint32_t ParameterData::get_ack_number() {
-    return 0;
-}
-
-bool ParameterData::get_expects_acknowledgement() {
-    return true;
-}
-
-bool ParameterData::is_valid() {
-    return true;
+ParameterData::ParameterData(uint16_t b, uint16_t d, uint32_t ackNumber) {
+	_b = b;
+	_d = d;
+	_ackNumber = ackNumber;
 }
 
 void ParameterData::to_buffer(uint8_t *buffer) {
-    memcpy(buffer, _data, get_length());
+	*(reinterpret_cast<uint16_t*>(&buffer[0])) = _b;
+	*(reinterpret_cast<uint16_t*>(&buffer[2])) = _d;
+	*(reinterpret_cast<uint32_t*>(&buffer[4])) = _ackNumber;
 }
