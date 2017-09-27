@@ -2,8 +2,8 @@
 #include "mode_switch_data.h"
 
 ModeSwitchData::ModeSwitchData(const uint8_t *data) {
-	_newMode = *(reinterpret_cast<const flightMode_t*>(&data[0]));
-	_fallBackmode = *(reinterpret_cast<const flightMode_t*>(&data[1]));
+    _newMode = (flightMode_t)data[0];
+	_fallBackmode = (flightMode_t)data[1];
 	_ackNumber = *(reinterpret_cast<const uint32_t*>(&data[2]));
 }
 
