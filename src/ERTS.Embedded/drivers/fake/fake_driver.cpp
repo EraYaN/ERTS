@@ -1,5 +1,6 @@
 #include <fstream>
 #include <iostream>
+#include <iomanip>
 #include <thread>
 #include <packet_datastructures.h>
 
@@ -68,7 +69,18 @@ void nrf_gpio_pin_toggle(uint32_t pin_number) {
 const char *serial_port;
 queue rx_queue;
 Serial *serial;
-unsigned int put_count = 0;
+
+void packet_print(uint8_t *packet) {
+    for (int i = 0; i < MAX_PACKET_SIZE; ++i) {
+        std::cout << std::setfill('0') << std::setw(2)<< std::uppercase << std::hex << (int)packet[i];
+
+        if (i < MAX_PACKET_SIZE - 1) {
+            std::cout << " ";
+        }
+    }
+
+    std::cout << std::endl;
+}
 
 void uart_init() {
     serial =  new Serial(serial_port);
@@ -88,26 +100,18 @@ bool uart_available() {
 }
 
 uint8_t uart_get() {
-    if (rx_queue.count > 0)
-        return dequeue(&rx_queue);
+    uint8_t c;
 
-    auto c = (uint8_t)serial->getchar();
+    if (rx_queue.count > 0)
+        c = dequeue(&rx_queue);
+    else
+        c = (uint8_t)serial->getchar();
 
     return c;
 }
 
 void uart_put(uint8_t byte) {
     serial->putchar(byte);
-
-    std::cout << std::hex << (int)byte;
-
-    if (put_count == MAX_PACKET_SIZE - 1) {
-        std::cout << std::endl;
-
-        put_count = 0;
-    }
-    else
-        put_count++;
 }
 
 // TWI

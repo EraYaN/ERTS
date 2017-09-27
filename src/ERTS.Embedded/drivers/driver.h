@@ -30,6 +30,7 @@
 void nrf_gpio_pin_toggle(uint32_t pin_number);
 void NVIC_SystemReset();
 void nrf_delay_ms(uint32_t volatile number_of_ms);
+void packet_print(uint8_t *packet);
 
 extern const char *serial_port;
 #endif
