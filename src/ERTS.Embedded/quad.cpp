@@ -76,8 +76,10 @@ void Quadrupel::receive() {
                     break;
                 default:
                     // Message type unrecognized.
-                    // TODO: Send exception.
-                    printf("Exception: Unknown packet type %X.\n", comm_buffer[2]);
+                    exception(BadMessageTypeException,"Bad MessageT");
+#ifdef FAKE_DRIVERS
+                    std::cout << "Exception: Unknown packet type " << std::hex << comm_buffer[2] << std::endl;
+#endif
                     _receiving = false;
                     comm_buffer_index = 0;
                     break;
@@ -104,16 +106,19 @@ void Quadrupel::receive() {
                         delete packet;
                     }
                     else {
-                        printf("Exception: Packet did not verify.\n");
-
-                        // TODO: Send exception.
+#ifdef FAKE_DRIVERS
+                        std::cout << "Exception: Packet did not verify." << std::endl;
+#endif
+                        exception(MessageValidationException, "No Verify");
                     }
                     _receiving = false;
                     comm_buffer_index = 0;
                 }
                 else {
                     // TODO: handle this?
-                    printf("Exception: Last byte was %X\n", comm_buffer[MAX_PACKET_SIZE - 1]);
+#ifdef FAKE_DRIVERS
+                    std::cout << "Exception: Last byte was " << std::hex << comm_buffer[MAX_PACKET_SIZE-1] << std::endl;
+#endif
                     _receiving = false;
                     comm_buffer_index = 0;
                 }

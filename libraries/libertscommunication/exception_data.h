@@ -1,5 +1,6 @@
 #pragma once
 #include "packet_data.h"
+#include <algorithm>
 
 class ExceptionData : public PacketData {
     exceptionType_t _type;
@@ -7,7 +8,7 @@ class ExceptionData : public PacketData {
 
 public:
     ExceptionData(const uint8_t* data);
-    ExceptionData(exceptionType_t type, const char* message);
+    ExceptionData(exceptionType_t type, const char(&message)[MAX_MESSAGE_LENGTH]);
 
     int get_length() override {
         return 14;
