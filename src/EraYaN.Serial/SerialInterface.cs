@@ -5,7 +5,8 @@ using System.IO.Ports;
 
 namespace EraYaN.Serial
 {
-    public class SerialInterface : ISerial, IDisposable {
+    public class SerialInterface : ISerial, IDisposable
+    {
         const int blockLimit = 256;
         Action kickoffRead = null;
         string port;
@@ -28,48 +29,63 @@ namespace EraYaN.Serial
                 return serialPort.BytesToRead;
             }
         }
-        public SerialInterface(string _port, int _baudrate) {
+        public SerialInterface(string _port, int _baudrate)
+        {
             port = _port;
             baudrate = _baudrate;
-            serialPort = new SerialPort();
-            serialPort.PortName = port;
-            serialPort.BaudRate = baudrate;
-            serialPort.Parity = Parity.None;
-            serialPort.DataBits = 8;
-            serialPort.StopBits = StopBits.One;
-            serialPort.Handshake = Handshake.RequestToSendXOnXOff;
-            serialPort.ReceivedBytesThreshold = 1;
-            serialPort.ReadTimeout = 500;
-            serialPort.WriteTimeout = 500;
+            serialPort = new SerialPort
+            {
+                PortName = port,
+                BaudRate = baudrate,
+                Parity = Parity.None,
+                DataBits = 8,
+                StopBits = StopBits.One,
+                Handshake = Handshake.RequestToSendXOnXOff,
+                ReceivedBytesThreshold = 1,
+                ReadTimeout = 500,
+                WriteTimeout = 500
+            };
             //serialPort.DataReceived += serialPort_DataReceived;
             serialPort.ErrorReceived += serialPort_ErrorReceived;
             serialPort.PinChanged += serialPort_PinChanged;
 
         }
-        public void Dispose() {
+        public void Dispose()
+        {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
 
-        protected virtual void Dispose(bool disposing) {
-            if (disposing) {
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
                 // free managed resources
-                if (serialPort != null) {
+                if (serialPort != null)
+                {
                     serialPort.Close();
                     serialPort.Dispose();
                 }
             }
         }
 
-        public int OpenPort() {
-            try {
+        public int OpenPort()
+        {
+            try
+            {
+                Debug.WriteLine(String.Format("Opening port {0} at {1} baud.", port,baudrate), "SerialInterface");
                 serialPort.Open();
                 byte[] buffer = new byte[blockLimit];
-                try {
-                    kickoffRead = delegate {
-                        try {
-                            serialPort.BaseStream.BeginRead(buffer, 0, buffer.Length, delegate (IAsyncResult ar) {
-                                try {
+                try
+                {
+                    kickoffRead = delegate
+                    {
+                        try
+                        {
+                            serialPort.BaseStream.BeginRead(buffer, 0, buffer.Length, delegate (IAsyncResult ar)
+                            {
+                                try
+                                {
                                     if (!serialPort.IsOpen)
                                         return;
                                     int actualLength = serialPort.BaseStream.EndRead(ar);
@@ -77,64 +93,97 @@ namespace EraYaN.Serial
                                     Buffer.BlockCopy(buffer, 0, received, 0, actualLength);
                                     handleSerialData(received);
 
-                                } catch (IOException exc) {
+                                }
+                                catch (IOException exc)
+                                {
                                     //handleAppSerialError(exc);
-                                } catch (InvalidOperationException exc) {
+                                    Debug.WriteLine(exc, "SerialInterface");
+                                }
+                                catch (InvalidOperationException exc)
+                                {
                                     //port closed? race condition
+                                    Debug.WriteLine(exc, "SerialInterface");
                                 }
 
                                 kickoffRead();
                             }, null);
-                        } catch (InvalidOperationException exc) {
+                        }
+                        catch (InvalidOperationException exc)
+                        {
                             //port closed? cable disconnect
+                            Debug.WriteLine(exc, "SerialInterface");
                         }
                     };
                     kickoffRead();
-                } catch (InvalidOperationException exc) {
+                }
+                catch (InvalidOperationException exc)
+                {
                     //port closed? race condition
                     Debug.WriteLine("Error closed?: " + exc.Message, "SerialInterface");
                 }
                 return 0;
-            } catch (IOException e) {
-                Debug.WriteLine("Error: " + e.Message, "SerialInterface");
+            }
+            catch (IOException e)
+            {
+                Debug.WriteLine("IOException: " + e.Message, "SerialInterface");
                 lastError = e.Message;
                 return -1;
-            } catch (ArgumentException e) {
-                Debug.WriteLine("Error: " + e.Message, "SerialInterface");
+            }
+            catch (ArgumentException e)
+            {
+                Debug.WriteLine("ArgumentException: " + e.Message, "SerialInterface");
                 lastError = e.Message;
                 return -2;
-            } catch (InvalidOperationException e) {
-                Debug.WriteLine("Error: " + e.Message, "SerialInterface");
+            }
+            catch (InvalidOperationException e)
+            {
+                Debug.WriteLine("InvalidOperationException: " + e.Message, "SerialInterface");
                 lastError = e.Message;
                 return -3;
-            } catch (UnauthorizedAccessException e) {
-                Debug.WriteLine("Error: " + e.Message, "SerialInterface");
+            }
+            catch (UnauthorizedAccessException e)
+            {
+                Debug.WriteLine("UnauthorizedAccessException: " + e.Message, "SerialInterface");
                 lastError = e.Message;
                 return -4;
-            } catch (Exception e) {
-                Debug.WriteLine("Error: " + e.Message, "SerialInterface");
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine("Exception: " + e.Message, "SerialInterface");
                 lastError = e.Message;
                 return 1;
             }
         }
-        public void SendString(string data) {
+        public void SendString(string data)
+        {
             serialPort.WriteLine(data);
         }
-        public void SendByteArray(byte[] data) {
-            serialPort.Write(data, 0, data.Length);
+        public void SendByteArray(byte[] data)
+        {
+            try
+            {
+                serialPort.Write(data, 0, data.Length);
+            }
+            catch (TimeoutException)
+            {
+                Debug.WriteLine("TX Timedout. Cable might be disconnected.", "SerialInterface");
+            }
         }
-        public void SendByte(byte data) {
+        public void SendByte(byte data)
+        {
             byte[] buf = { data };
             serialPort.Write(buf, 0, 1);
         }
-        void serialPort_PinChanged(object sender, SerialPinChangedEventArgs e) {
+        void serialPort_PinChanged(object sender, SerialPinChangedEventArgs e)
+        {
             serialPort.Close();
             serialPort.Open();
         }
 
-        void serialPort_ErrorReceived(object sender, SerialErrorReceivedEventArgs e) {
+        void serialPort_ErrorReceived(object sender, SerialErrorReceivedEventArgs e)
+        {
             //MessageBox.Show();\
-            Debug.WriteLine(String.Format("Serial Error {0}",e.EventType));
+            Debug.WriteLine(String.Format("Serial Error {0}", e.EventType), "SerialInterface");
             //throw new NotImplementedException();
         }
 
@@ -144,18 +193,23 @@ namespace EraYaN.Serial
             DataSerial((byte)input, e);           
         }*/
 
-        void handleSerialData(byte[] data) {
-            foreach (byte b in data) {
+        void handleSerialData(byte[] data)
+        {
+            foreach (byte b in data)
+            {
                 DataSerial(b);
             }
         }
 
-        void DataSerial(byte b) {
+        void DataSerial(byte b)
+        {
             OnSerialDataChanged(new SerialDataEventArgs(b));
         }
 
-        protected virtual void OnSerialDataChanged(SerialDataEventArgs e) {
-            if (SerialDataEvent != null) {
+        protected virtual void OnSerialDataChanged(SerialDataEventArgs e)
+        {
+            if (SerialDataEvent != null)
+            {
                 SerialDataEvent(this, e);
             }
         }

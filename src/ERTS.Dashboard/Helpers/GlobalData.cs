@@ -22,18 +22,20 @@ namespace ERTS.Dashboard
         static public Settings cfg;
         static public bool InitConfiguration()
         {
-            if (File.Exists("cfg.bin"))
+            if (File.Exists(Settings.CFG_FILE))
             {
                 try
                 {
                     IFormatter formatter = new BinaryFormatter();
-                    using (Stream stream = new FileStream("cfg.bin", FileMode.Open, FileAccess.Read, FileShare.Read))
+                    using (Stream stream = new FileStream(Settings.CFG_FILE, FileMode.Open, FileAccess.Read, FileShare.Read))
                     {
                         cfg = (Settings)formatter.Deserialize(stream);
+                        Debug.WriteLine("Loaded configuration from disk.", "DATA");
                     }
                 }
-                catch
+                catch (Exception e)
                 {
+                    Debug.WriteLine("Configuration could not be read. Restored default settings.", "DATA");
                     cfg = new Settings();
                 }
                 finally
@@ -42,6 +44,7 @@ namespace ERTS.Dashboard
             }
             else
             {
+                Debug.WriteLine("Configuration not found. Restored default settings.", "DATA");
                 cfg = new Settings();
             }
             return cfg != null;
@@ -55,9 +58,9 @@ namespace ERTS.Dashboard
         {
             if (crc != null && cfg != null)
             {
-                if (!String.IsNullOrEmpty(cfg.Comport) && cfg.BaudRate > 0)
+                if (!String.IsNullOrEmpty(cfg.ComPort) && cfg.BaudRate > 0)
                 {
-                    com = new CommunicationInterface(cfg.Comport, cfg.BaudRate);
+                    com = new CommunicationInterface(cfg.ComPort, cfg.BaudRate);
                     if (!com.IsOpen)
                     {
                         com.Dispose();
@@ -68,13 +71,13 @@ namespace ERTS.Dashboard
                 }
                 else
                 {
-                    Debug.WriteLine("COM Port or Baud Rate not valid. OPen Configuration and restart.");
+                    Debug.WriteLine("COM Port or Baud Rate not valid. Open Configuration and restart.", "DATA");
                     return false;
                 }
             }
             else
             {
-                Debug.WriteLine("CRCLib and Configuration must exist before starting the CommunicationInterface.");
+                Debug.WriteLine("CRCLib and Configuration must exist before starting the CommunicationInterface.", "DATA");
                 return false;
             }
         }
@@ -120,32 +123,32 @@ namespace ERTS.Dashboard
             }
             else
             {
-                Debug.WriteLine("PatchBox, InputManager and CommunicationInterface must all exist before starting the Controller.");
+                Debug.WriteLine("PatchBox, InputManager and CommunicationInterface must all exist before starting the Controller.", "DATA");
                 return false;
             }
         }
         static public void InitStageOne(IntPtr WindowHandle)
         {
             if (InitConfiguration())
-                Debug.WriteLine("Started Configuration.");
+                Debug.WriteLine("Started Configuration.","DATA");
             else
-                Debug.WriteLine("Starting Configuration failed.");
+                Debug.WriteLine("Starting Configuration failed.", "DATA");
             if (InitCRCLib())
-                Debug.WriteLine("Started CRCLib.");
+                Debug.WriteLine("Started CRCLib.", "DATA");
             else
-                Debug.WriteLine("Starting CRCLib failed.");           
+                Debug.WriteLine("Starting CRCLib failed.", "DATA");           
             if (InitInputManager())
-                Debug.WriteLine("Started InputManager.");
+                Debug.WriteLine("Started InputManager.", "DATA");
             else
-                Debug.WriteLine("Starting InputManager failed.");
+                Debug.WriteLine("Starting InputManager failed.", "DATA");
             if (InitPatchBox())
             {
                 input.AquireDevices(patchbox.DeviceGuids, WindowHandle);
-                Debug.WriteLine("Started PatchBox.");
+                Debug.WriteLine("Started PatchBox.", "DATA");
             }
             else
             {
-                Debug.WriteLine("Starting PatchBox failed.");
+                Debug.WriteLine("Starting PatchBox failed.", "DATA");
             }
             return;
         }
@@ -153,13 +156,13 @@ namespace ERTS.Dashboard
         {
             
             if (InitCommunicationInterface())
-                Debug.WriteLine("Started CommunicationInterface.");
+                Debug.WriteLine("Started CommunicationInterface.", "DATA");
             else
-                Debug.WriteLine("Starting CommunicationInterface failed.");            
+                Debug.WriteLine("Starting CommunicationInterface failed.", "DATA");            
             if (InitController())
-                Debug.WriteLine("Started Controller.");
+                Debug.WriteLine("Started Controller.", "DATA");
             else
-                Debug.WriteLine("Starting Controller failed.");
+                Debug.WriteLine("Starting Controller failed.", "DATA");
             return;
         }
         static public void Dispose()

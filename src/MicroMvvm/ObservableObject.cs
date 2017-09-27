@@ -15,17 +15,13 @@ namespace MicroMvvm
 
         protected virtual void OnPropertyChanged(PropertyChangedEventArgs e)
         {
-            var handler = this.PropertyChanged;
-            if (handler != null)
-            {
-                handler(this, e);
-            }
+            PropertyChanged?.Invoke(this, e);
         }
 
         protected void RaisePropertyChanged<T>(Expression<Func<T>> propertyExpresssion)
         {
             var propertyName = PropertySupport.ExtractPropertyName(propertyExpresssion);
-            this.RaisePropertyChanged(propertyName);
+            RaisePropertyChanged(propertyName);
         }
 
         protected void RaisePropertyChanged(String propertyName)

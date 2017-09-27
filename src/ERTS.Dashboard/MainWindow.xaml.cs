@@ -35,9 +35,8 @@ namespace ERTS.Dashboard
         public MainWindow()
         {     
             Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
-            Thread.CurrentThread.Priority = ThreadPriority.Highest;
-            
-            settingsWindow = new SettingsWindow(new WindowInteropHelper(this).Handle);            
+            Thread.CurrentThread.Priority = ThreadPriority.Highest;           
+                      
 
             InitializeComponent();
         }
@@ -57,6 +56,7 @@ namespace ERTS.Dashboard
             GlobalData.InitStageOne(new WindowInteropHelper(this).Handle);
 
             ((MainViewModel)DataContext).InitStageOne();
+            settingsWindow = new SettingsWindow(new WindowInteropHelper(this).Handle);
         }
         private void SettingsMenuItem_Click(object sender, RoutedEventArgs e)
         {
@@ -74,6 +74,13 @@ namespace ERTS.Dashboard
             settingsWindow.Close();
             GlobalData.Dispose();
         }
+        protected override void OnClosed(EventArgs e)
+        {
+            base.OnClosed(e);
+
+            Application.Current.Shutdown();
+        }
+
         private void StartAllButton_Click(object sender, RoutedEventArgs e)
         {
             GlobalData.InitStageTwo();

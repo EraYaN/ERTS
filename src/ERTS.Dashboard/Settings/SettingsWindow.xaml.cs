@@ -20,39 +20,43 @@ using System.Windows.Shapes;
 
 namespace ERTS.Dashboard.Configuration
 {
-	/// <summary>
-	/// Interaction logic for SettingsWindow.xaml
-	/// </summary>
-	public partial class SettingsWindow : Window
-	{
+    /// <summary>
+    /// Interaction logic for SettingsWindow.xaml
+    /// </summary>
+    public partial class SettingsWindow : Window
+    {
         const int CONTROL_TAB_INDEX = 2;
         //TODO make handle class member of InputManager instead
         IntPtr MainWindowHandle;
 
         public SettingsWindow(IntPtr _MainWindowHandle)
-		{
+        {
             MainWindowHandle = _MainWindowHandle;
 
             InitializeComponent();
-			//Read out available comports 
-			string[] ports = SerialPort.GetPortNames();
-			foreach (string s in ports)
-			{				
-				((ConfigurationViewModel)DataContext).Comports.Add(s);
-			}
-			//DataContext = this;
-		}
-		private void SettingsDialogCloseButton_Click(object sender, RoutedEventArgs e)
-		{
-			this.Hide();
-		}
+            //Read out available comports 
+            string[] ports = SerialPort.GetPortNames();
+            foreach (string s in ports)
+            {
+                ((ConfigurationViewModel)DataContext).ComPorts.Add(s);
+            }
+            //DataContext = this;
+        }
+        private void SettingsDialogCloseButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.Hide();
+        }
 
-		private void Window_Closing(object sender, CancelEventArgs e)
-		{
-			e.Cancel = true;
-			this.Hide();
-		}
-        
+        private void Window_Closing(object sender, CancelEventArgs e)
+        {
+            if (GlobalData.cfg != null)
+            {
+                GlobalData.cfg.Save();
+            }
+            e.Cancel = true;
+            this.Hide();
+        }
+
         private void SettingsTabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             switch ((sender as TabControl).SelectedIndex)
@@ -79,10 +83,10 @@ namespace ERTS.Dashboard.Configuration
         }
 
         private void Window_Activated(object sender, EventArgs e)
-        {            
+        {
             if (SettingsTabControl.SelectedIndex == CONTROL_TAB_INDEX)
             {
-                StartControlsTab();                
+                StartControlsTab();
             }
         }
 
@@ -96,14 +100,14 @@ namespace ERTS.Dashboard.Configuration
                     GlobalData.input.InputEvent += Input_InputEvent;
                     Debug.WriteLine("Aquire all devices.");
                     GlobalData.input.AquireAllDevices(MainWindowHandle);
-                }                
-                
+                }
+
             }
         }
 
         private void Input_InputEvent(object sender, Input.InputEventArgs e)
         {
-            Debug.WriteLine(String.Format("Got input for binding. Device: {0}, Offset: {1}, Value: {2}",e.DeviceGuid, e.StateUpdate.RawOffset, e.StateUpdate.Value));
+            Debug.WriteLine(String.Format("Got input for binding. Device: {0}, Offset: {1}, Value: {2}", e.DeviceGuid, e.StateUpdate.RawOffset, e.StateUpdate.Value));
         }
 
         void StopControlsTab()
@@ -121,7 +125,7 @@ namespace ERTS.Dashboard.Configuration
                         GlobalData.input.AquireDevices(GlobalData.patchbox.DeviceGuids, MainWindowHandle);
                     }
                 }
-                
+
             }
         }
     }

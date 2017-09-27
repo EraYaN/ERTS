@@ -27,12 +27,13 @@ namespace ERTS.Dashboard.Configuration {
         #endregion
 
         #region Properties
-        public ObservableCollection<string> Comports {
+        public ObservableCollection<string> ComPorts {
             get {
                 return _comPorts;
             }
             set {
                 _comPorts = value;
+                RaisePropertyChanged("ComPorts");
             }
         }
 
@@ -42,20 +43,21 @@ namespace ERTS.Dashboard.Configuration {
             }
             set {
                 _baudRates = value;
+                RaisePropertyChanged("BaudRates");
             }
         }
-        public string Comport {
+        public string ComPort {
             get {
                 if (GlobalData.cfg != null) {
-                    return GlobalData.cfg.Comport;
+                    return GlobalData.cfg.ComPort;
                 }
                 return String.Empty;
             }
             set {
                 if (GlobalData.cfg != null) {
-                    if (GlobalData.cfg.Comport != value) {
-                        GlobalData.cfg.Comport = value;
-                        RaisePropertyChanged("Comport");
+                    if (GlobalData.cfg.ComPort != value) {
+                        GlobalData.cfg.ComPort = value;
+                        RaisePropertyChanged("ComPort");
                     }
                 }
             }
@@ -136,62 +138,7 @@ namespace ERTS.Dashboard.Configuration {
                 }
             }
         }
-
-        public string KillControlPrimaryString {
-            get {
-                return "test";
-            }
-        }
-
-        /*public bool InterpolateOnSave {
-            get {
-                if (GlobalData.cfg != null) {
-                    return GlobalData.cfg.InterpolateOnSave;
-                }
-                return false;
-            }
-            set {
-                if (GlobalData.cfg != null) {
-                    if (GlobalData.cfg.InterpolateOnSave != value) {
-                        GlobalData.cfg.InterpolateOnSave = value;
-                        RaisePropertyChanged("InterpolateOnSave");
-                    }
-                }
-            }
-        }
-
-        public double TickTime {
-            get {
-                if (GlobalData.cfg != null) {
-                    return GlobalData.cfg.TickTime;
-                }
-                return 0;
-            }
-            set {
-                if (GlobalData.cfg != null) {
-                    if (GlobalData.cfg.TickTime != value) {
-                        GlobalData.cfg.TickTime = value;
-                        RaisePropertyChanged("TickTime");
-                    }
-                }
-            }
-        }
-        public int UpdateTickInterval {
-            get {
-                if (GlobalData.cfg != null) {
-                    return GlobalData.cfg.UpdateTickInterval;
-                }
-                return 0;
-            }
-            set {
-                if (GlobalData.cfg != null) {
-                    if (GlobalData.cfg.UpdateTickInterval != value) {
-                        GlobalData.cfg.UpdateTickInterval = value;
-                        RaisePropertyChanged("UpdateTickInterval");
-                    }
-                }
-            }
-        }*/
+        
 
         #endregion
 
