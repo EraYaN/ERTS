@@ -148,9 +148,9 @@ void Quadrupel::acknowledge(uint32_t ack_number) {
     send(packet);
 }
 
-void Quadrupel::exception(exceptionType_t Type, const char* message) {
+void Quadrupel::exception(exceptionType_t type, const char* message) {
     auto packet = new Packet(Exception);
-    auto data = new ExceptionData(message);
+    auto data = new ExceptionData(type, message);
     packet->set_data(data);
 
     send(packet);

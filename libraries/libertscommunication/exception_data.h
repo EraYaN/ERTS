@@ -3,7 +3,7 @@
 
 class ExceptionData : public PacketData {
     exceptionType_t _type;
-    char message[MAX_MESSAGE_LENGTH];
+    char _message[MAX_MESSAGE_LENGTH];
 
 public:
     ExceptionData(const uint8_t* data);
