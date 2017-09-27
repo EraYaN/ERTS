@@ -26,6 +26,8 @@ class Quadrupel {
     const uint16_t MOTOR_MIN = 0;
     const uint16_t MOTOR_MAX = 1500;
 
+    const uint16_t BATTERY_THRESHOLD = 1050;
+
     uint16_t b = 1;
     uint16_t d = 1;
     uint16_t divider = 1;

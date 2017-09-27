@@ -205,6 +205,9 @@ void Quadrupel::tick() {
     _new_mode = _mode;
     receive();
 
+    if (bat_volt < BATTERY_THRESHOLD)
+        set_mode(Panic);
+
 //    printf("%10ld | ", get_time_us());
 //    printf("%3d %3d %3d %3d | ", ae[0], ae[1], ae[2], ae[3]);
 //    printf("%6d %6d %6d | ", phi, theta, psi);
