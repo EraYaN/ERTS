@@ -28,6 +28,8 @@
 // Spoof some device functions.
 #ifdef FAKE_DRIVERS
 void nrf_gpio_pin_toggle(uint32_t pin_number);
+void nrf_gpio_pin_set(uint32_t pin_number);
+void nrf_gpio_pin_clear(uint32_t pin_number);
 void NVIC_SystemReset();
 void nrf_delay_ms(uint32_t volatile number_of_ms);
 void packet_print(uint8_t *packet);
@@ -39,10 +41,13 @@ extern const char *serial_port;
 extern int16_t motor[NUM_MOTORS], ae[NUM_MOTORS];
 
 // Timers
-#define TIMER_PERIOD    50 //50ms=20Hz (MAX 23bit, 4.6h)
+#define TIMER_PERIOD    10 //50ms=20Hz (MAX 23bit, 4.6h)
+#define HB_INTERVAL    100 // 1000/10
+
 #define APP_TIMER_PRESCALER             0                                           /**< Value of the RTC1 PRESCALER register. */
 #define APP_TIMER_OP_QUEUE_SIZE         4                                           /**< Size of timer operation queues. */
 #define QUADRUPEL_TIMER_PERIOD  APP_TIMER_TICKS(TIMER_PERIOD, APP_TIMER_PRESCALER)  // timer period is in ms
+//#define QUADRUPEL_TIMER_PERIOD 33000 // 33 * 1000 * 30.517 = 1007.061 ms
 
 void timers_init(void);
 

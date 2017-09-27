@@ -37,6 +37,8 @@ extern "C" {
 }
 #endif
 
+
+bool running = false;
 int16_t motor[4], ae[4];
 
 int main(int argc, char *argv[]) {
@@ -48,19 +50,22 @@ int main(int argc, char *argv[]) {
 
     // Init instance of the drone class and bind motors.
     Quadrupel quad = Quadrupel();
+    running = true;
     quad.exit = false;
     *motor = *quad.motor;
     *ae = *quad.ae;
-
     while (!quad.exit) {
-        quad.tick();
-
+        quad.busywork();
+        if (check_timer_flag()) {
+            quad.tick();
+            clear_timer_flag();
+        }
 #ifdef FAKE_DRIVERS
         nrf_delay_ms(50);
 #endif
 
     }
-
+    running = false;
     printf("\n\t Goodbye \n\n");
     nrf_delay_ms(100);
 

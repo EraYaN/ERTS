@@ -63,6 +63,46 @@ void nrf_gpio_pin_toggle(uint32_t pin_number) {
     }
 }
 
+void nrf_gpio_pin_set(uint32_t pin_number) {
+    switch (pin_number) {
+    case BLUE:
+        std::cout << "Set blue led." << std::endl;
+        break;
+    case GREEN:
+        std::cout << "Set green led." << std::endl;
+        break;
+    case RED:
+        std::cout << "Set red led." << std::endl;
+        break;
+    case YELLOW:
+        std::cout << "Set yellow led." << std::endl;
+        break;
+    default:
+        std::cout << "Set pin: " << pin_number << std::endl;
+        break;
+    }
+}
+
+void nrf_gpio_pin_clear(uint32_t pin_number) {
+    switch (pin_number) {
+    case BLUE:
+        std::cout << "Cleared blue led." << std::endl;
+        break;
+    case GREEN:
+        std::cout << "Cleared green led." << std::endl;
+        break;
+    case RED:
+        std::cout << "Cleared red led." << std::endl;
+        break;
+    case YELLOW:
+        std::cout << "Cleared yellow led." << std::endl;
+        break;
+    default:
+        std::cout << "Cleared pin: " << pin_number << std::endl;
+        break;
+    }
+}
+
 // UART
 const char *serial_port;
 queue rx_queue;
@@ -90,7 +130,6 @@ bool uart_available() {
 
     if (serial->getchar_nb((char *)&c)) {
         enqueue(&rx_queue, c);
-
         return true;
     }
 

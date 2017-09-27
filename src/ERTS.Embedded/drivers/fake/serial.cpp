@@ -76,9 +76,9 @@ Serial::~Serial() {
 
 bool Serial::getchar_nb(char *c) {
 	DWORD numRead;
-	bool ret = ReadFile(handle, &c, 1, &numRead, NULL);
+	bool ret = ReadFile(handle, c, 1, &numRead, NULL);
 	//assert(numRead == 1);
-	if (numRead != 1) {
+	if (numRead != 1 || !ret) {
 		return false;
 	}
 	else {

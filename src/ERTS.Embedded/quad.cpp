@@ -48,6 +48,15 @@ void Quadrupel::receive() {
                 comm_buffer[1] = (START_SEQUENCE & 0x00FF);
                 _receiving = true;
                 comm_buffer_index = 2;
+                nrf_gpio_pin_clear(GREEN);
+            }
+            else {                
+                if (currentByte != 0xFE) {
+#ifdef FAKE_DRIVERS
+                    std::cout << "Looking for packet in: " << std::hex << last_two_bytes << std::endl;
+#endif
+                    nrf_gpio_pin_set(GREEN);
+                }
             }
         }
         else {
@@ -56,42 +65,42 @@ void Quadrupel::receive() {
             // Received 5 bytes, check message type.
             if (comm_buffer_index == 3) {
                 switch (comm_buffer[2]) {
-                    case UnknownPacket:
-                    case ModeSwitch:
-                    case Acknowledge:
-                    case Telemetry:
-                    case RemoteControl:
-                    case SetControllerRollPID:
-                    case SetControllerPitchPID:
-                    case SetControllerYawPID:
-                    case SetControllerHeightPID:
-                    case SetMessageFrequencies:
-                    case Parameters:
-                    case Reset:
-                    case Kill:
-                    case Exception:
-                        // Message type OK.
-                        break;
-                    default:
-                        // Message type unrecognized.
-                        // TODO: Send exception.
-                        printf("Exception: Unknown packet type %X.\n", comm_buffer[2]);
-                        _receiving = false;
-                        comm_buffer_index = 0;
-                        break;
+                case UnknownPacket:
+                case ModeSwitch:
+                case Acknowledge:
+                case Telemetry:
+                case RemoteControl:
+                case SetControllerRollPID:
+                case SetControllerPitchPID:
+                case SetControllerYawPID:
+                case SetControllerHeightPID:
+                case SetMessageFrequencies:
+                case Parameters:
+                case Reset:
+                case Kill:
+                case Exception:
+                    // Message type OK.
+                    break;
+                default:
+                    // Message type unrecognized.
+                    // TODO: Send exception.
+                    printf("Exception: Unknown packet type %X.\n", comm_buffer[2]);
+                    _receiving = false;
+                    comm_buffer_index = 0;
+                    break;
                 }
             }
             else if (comm_buffer_index == MAX_PACKET_SIZE) {
                 if (comm_buffer[MAX_PACKET_SIZE - 1] == END_SEQUENCE) {
-                    if (Packet::verify((byte *) comm_buffer)) {
-                        printf("Handling packet.\n");
-                        auto *packet = new Packet((byte *) comm_buffer);
+                    if (Packet::verify((byte *)comm_buffer)) {
+                        auto *packet = new Packet((byte *)comm_buffer);
 #ifdef FAKE_DRIVERS
                         std::cout << "RX:\t\t";
                         packet_print(comm_buffer);
 #endif
+                        nrf_gpio_pin_toggle(YELLOW);
                         bool handled = handle_packet(packet);
-//                        // TODO: Send exception if not handled.
+                        //                        // TODO: Send exception if not handled.
 
                         if (handled) {
                             if (packet->get_data()->get_expects_acknowledgement()) {
@@ -102,7 +111,6 @@ void Quadrupel::receive() {
                         delete packet;
                     }
                     else {
-                        nrf_gpio_pin_toggle(YELLOW);
                         printf("Exception: Packet did not verify.\n");
 
                         // TODO: Send exception.
@@ -111,7 +119,6 @@ void Quadrupel::receive() {
                     comm_buffer_index = 0;
                 }
                 else {
-                    nrf_gpio_pin_toggle(GREEN);
                     // TODO: handle this?
                     printf("Exception: Last byte was %X\n", comm_buffer[MAX_PACKET_SIZE - 1]);
                     _receiving = false;
@@ -123,16 +130,16 @@ void Quadrupel::receive() {
 }
 
 void Quadrupel::send(Packet *packet) {
-    auto buffer = new uint8_t[MAX_PACKET_SIZE+3];   
+    auto buffer = new uint8_t[MAX_PACKET_SIZE + 3];
 
     packet->to_buffer(&buffer[3]);
 
 #ifdef FAKE_DRIVERS
     std::cout << "TX:\t\t";
-    packet_print(buffer);
+    packet_print(&buffer[3]);
 #endif
 
-    for (int i = 3; i < MAX_PACKET_SIZE+3; ++i) {
+    for (int i = 3; i < MAX_PACKET_SIZE + 3; ++i) {
         uart_put(buffer[i]);
     }
 
@@ -148,9 +155,20 @@ void Quadrupel::acknowledge(uint32_t ack_number) {
     send(packet);
 }
 
+void Quadrupel::exception(exceptionType_t Type, const char* message) {
+    auto packet = new Packet(Exception);
+    auto data = new ExceptionData(message);
+    packet->set_data(data);
+
+    send(packet);
+}
+
 void Quadrupel::heartbeat() {
     // Calculate loop time.
-    auto loop_time = (uint16_t) _accum_loop_time;
+    /*if (_accum_loop_time > UINT16_MAX)
+        printf("Loop time over run.\n");*/
+    auto loop_time = (uint16_t)_accum_loop_time;
+
     _accum_loop_time = 0;
     auto packet = new Packet(Telemetry);
     auto data = new TelemetryData(bat_volt, phi, theta, sp, sq, sr, loop_time, _mode);
@@ -163,38 +181,37 @@ bool Quadrupel::handle_packet(Packet *packet) {
     // TODO: static_casts should suffice as we check for type already and are faster, but are potentially dangerous, replace?
 
     switch (packet->get_type()) {
-        case ModeSwitch: {
-            //nrf_gpio_pin_toggle(YELLOW);
-            auto *data = dynamic_cast<ModeSwitchData *>(packet->get_data());
-            if (set_mode(data->get_new_mode()) != MODE_SWITCH_OK) {
-                // TODO: Send exception.
-                set_mode(data->get_fallback_mode());
-            }
-            break;
+    case ModeSwitch: {
+        auto *data = dynamic_cast<ModeSwitchData *>(packet->get_data());
+        if (set_mode(data->get_new_mode()) != MODE_SWITCH_OK) {
+            // TODO: Send exception.
+            set_mode(data->get_fallback_mode());
         }
-        case RemoteControl: {
-            auto *data = dynamic_cast<RemoteControlData *>(packet->get_data());
+        break;
+    }
+    case RemoteControl: {
+        auto *data = dynamic_cast<RemoteControlData *>(packet->get_data());
 
-            target_state.lift = data->get_lift();
-            target_state.roll = data->get_roll();
-            target_state.pitch = data->get_pitch();
-            target_state.yaw = data->get_yaw();
+        target_state.lift = data->get_lift();
+        target_state.roll = data->get_roll();
+        target_state.pitch = data->get_pitch();
+        target_state.yaw = data->get_yaw();
 
-            last_received = get_time_us();
-            break;
-        }
-        case Kill: {
-            kill();
-            break;
-        }
-        case Parameters: {
-            auto *data = dynamic_cast<ParameterData *>(packet->get_data());
-            set_parameters(data->get_b(), data->get_d());
-            break;
-        }
-        default:
-            // Could not handle packet.
-            return false;
+        last_received = get_time_us();
+        break;
+    }
+    case Kill: {
+        kill();
+        break;
+    }
+    case Parameters: {
+        auto *data = dynamic_cast<ParameterData *>(packet->get_data());
+        set_parameters(data->get_b(), data->get_d());
+        break;
+    }
+    default:
+        // Could not handle packet.
+        return false;
     }
 
     return true;
@@ -206,47 +223,57 @@ void Quadrupel::kill() {
     ae[1] = 0;
     ae[2] = 0;
     ae[3] = 0;
+    update_motors();
+    nrf_delay_ms(10);
     exit = true;
 }
 
-void Quadrupel::tick() {
-    uint32_t timestamp = get_time_us();
-    _new_mode = _mode;
+void Quadrupel::busywork() {
     receive();
-
-    if (_mode != Panic) {
+    if (_mode != Panic && _mode != Safe && _mode != Calibration) {
         if (bat_volt < BATTERY_THRESHOLD) {
             // Battery low
-            printf("Battery low, entering panic mode.\n");
+#ifdef FAKE_DRIVERS
+            std::cout << "Battery low, entering panic mode." << std::endl;
+#endif
             set_mode(Panic);
         }
 
         if ((get_time_us() - last_received) > comm_timeout) {
             // Time-out
-            printf("Timed out, entering panic mode.\n");
+#ifdef FAKE_DRIVERS
+            std::cout << "Timed out, entering panic mode." << std::endl;
+#endif
             set_mode(Panic);
         }
     }
-
-    if (check_timer_flag()) { // The following is executed every 50 ms (20 Hz).
-        counter++;
-
-        adc_request_sample();
-        read_baro();
-
-        clear_timer_flag();
-
-        if (counter % 20 == 0) {
-            nrf_gpio_pin_toggle(BLUE);
-            heartbeat();
-        }
-
-    }
-
     if (check_sensor_int_flag()) {
         get_dmp_data();
-        control();
     }
+}
+
+void Quadrupel::tick() {
+    uint32_t timestamp = get_time_us();
+    //_new_mode = _mode;
+
+    counter++;
+
+    adc_request_sample();
+    read_baro();
+
+
+    if (counter == HB_INTERVAL) {
+        counter = 1;
+        nrf_gpio_pin_toggle(BLUE);
+        if (_mode == Panic) {
+            nrf_gpio_pin_toggle(RED);
+        }
+        heartbeat();
+    }
+
+
+    control();
+
 
     update_motors();
     _mode = _new_mode;
@@ -260,74 +287,78 @@ int Quadrupel::set_mode(flightMode_t new_mode) {
 
     switch (_mode) {
         // Transitions from safe mode.
-        case Safe: {
-            switch (new_mode) {
-                // Always OK.
-                case Panic: {
-                    _initial_panic = true;
-                }
-                case Calibration:
-                case Manual: {
-                    result = MODE_SWITCH_OK;
-                    break;
-                }
-                    // Requires calibration.
-                case YawControl:
-                case FullControl:
-                case Raw:
-                case Height:
-                case Wireless: {
-                    if (_is_calibrated) {
-                        result = MODE_SWITCH_OK;
-                    }
-                    else {
-                        result = MODE_SWITCH_UNSUPPORTED;
-                    }
-                    break;
-                }
-                    // Unknown transition.
-                default: {
-                    result = MODE_SWITCH_UNSUPPORTED;
-                    break;
-                }
-
-            }
-            break;
-        }
-            // Never transition from panic mode.
+    case Safe: {
+        switch (new_mode) {
+            // Always OK.
         case Panic: {
-            result = MODE_SWITCH_UNSUPPORTED;
+            _initial_panic = true;
+        }
+        case Calibration:
+        case Manual: {
+            result = MODE_SWITCH_OK;
             break;
         }
-            // Other modes can only transition to safe or panic mode.
-        case Calibration:
-        case Manual:
+                     // Requires calibration.
         case YawControl:
         case FullControl:
         case Raw:
         case Height:
         case Wireless: {
-            switch (new_mode) {
-                case Safe:
-                case Panic: {
-                    result = MODE_SWITCH_OK;
-                    break;
-                }
-                default: {
-                    result = MODE_SWITCH_UNSUPPORTED;
-                    break;
-                }
+            if (_is_calibrated) {
+                result = MODE_SWITCH_OK;
             }
+            else {
+                result = MODE_SWITCH_UNSUPPORTED;
+            }
+            break;
+        }
+                       // Unknown transition.
+        default: {
+            result = MODE_SWITCH_UNSUPPORTED;
+            break;
+        }
+
+        }
+        break;
+    }
+               // Never transition from panic mode.
+    case Panic: {
+        result = MODE_SWITCH_UNSUPPORTED;
+        break;
+    }
+                // Other modes can only transition to safe or panic mode.
+    case Calibration:
+    case Manual:
+    case YawControl:
+    case FullControl:
+    case Raw:
+    case Height:
+    case Wireless: {
+        switch (new_mode) {
+        case Safe:
+        case Panic: {
+            result = MODE_SWITCH_OK;
             break;
         }
         default: {
             result = MODE_SWITCH_UNSUPPORTED;
             break;
         }
+        }
+        break;
+    }
+    default: {
+        result = MODE_SWITCH_UNSUPPORTED;
+        break;
+    }
     }
 
-    if (result == MODE_SWITCH_OK)
-        _new_mode = new_mode;
+    if (result == MODE_SWITCH_OK) {
+#ifdef FAKE_DRIVERS
+        std::cout << "Set mode "<< new_mode << " from "<< _mode  << std::endl;
+#endif
+        _mode = new_mode;      
+    }
 
     return result;
 }
@@ -396,9 +427,9 @@ void Quadrupel::control() {
 
 void Quadrupel::init_divider() {
     uint32_t min = 0;
-    auto max = (uint32_t) (UINT16_MAX / (2 * b) + INT16_MAX / b + INT16_MAX / d);
+    auto max = (uint32_t)(UINT16_MAX / (2 * b) + INT16_MAX / b + INT16_MAX / d);
 
-    divider = (uint16_t) ((max - min) / (MOTOR_MAX - MOTOR_MIN));
+    divider = (uint16_t)((max - min) / (MOTOR_MAX - MOTOR_MIN));
 }
 
 uint16_t Quadrupel::scale_motor(int32_t value) {
@@ -411,7 +442,7 @@ uint16_t Quadrupel::scale_motor(int32_t value) {
     // Offset
     value += MOTOR_MIN;
 
-    return (uint16_t) value;
+    return (uint16_t)value;
 }
 
 void Quadrupel::set_parameters(uint16_t b, uint16_t d) {

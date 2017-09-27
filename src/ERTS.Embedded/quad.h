@@ -27,8 +27,8 @@ class Quadrupel {
     const uint16_t MOTOR_MIN = 0;
     const uint16_t MOTOR_MAX = 1500;
 
-    const uint16_t BATTERY_THRESHOLD = 1050;
-
+    //const uint16_t BATTERY_THRESHOLD = 1050;
+    const uint16_t BATTERY_THRESHOLD = 500;
     // Parameter settings
     uint16_t b = 1;
     uint16_t d = 1;
@@ -50,7 +50,7 @@ class Quadrupel {
     quad_state_t target_state, current_state;
 
     // Comm
-    uint32_t counter = 0;
+    uint32_t counter = 1;
 	uint16_t last_two_bytes = 0;
     bool _receiving = false;
     uint8_t comm_buffer[MAX_PACKET_SIZE];
@@ -63,6 +63,8 @@ class Quadrupel {
     void send(Packet *packet);
 
     void acknowledge(uint32_t ack_number);
+
+    void exception(exceptionType_t Type, const char* message);
 
     void heartbeat();
 
@@ -79,6 +81,8 @@ public:
     bool exit = false;
 
     Quadrupel();
+
+    void busywork();
 
     void tick();
 

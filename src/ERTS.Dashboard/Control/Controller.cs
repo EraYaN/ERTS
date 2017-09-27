@@ -88,8 +88,8 @@ namespace ERTS.Dashboard.Control
         #region Communication Methods
         public void HandleTelemetry(TelemetryData data)
         {
-            Debug.WriteLine("Processing Telemetry....");
-            Debug.WriteLine(data.ToString());
+            //Debug.WriteLine("Processing Telemetry....");
+            //Debug.WriteLine(data.ToString());
             BatteryVoltage = data.BatteryVoltage / 100.0;
             RaisePropertyChanged("BatteryVoltage");
             LoopTime = data.LoopTime / 1000.0;
@@ -104,7 +104,7 @@ namespace ERTS.Dashboard.Control
         }
         public void HandleException(ExceptionData data)
         {
-            Debug.WriteLine(String.Format("Processing Exception of type {0}....",data.ExceptionType));
+            Debug.WriteLine(String.Format("Processing Exception of type {0} with message: {1}",data.ExceptionType, data.Message));
 
         }
         #endregion
