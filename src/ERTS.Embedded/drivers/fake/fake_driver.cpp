@@ -135,6 +135,8 @@ void imu_init(bool dmp, uint16_t interrupt_frequency) {
 }
 
 void get_dmp_data() {
+    phi = 1337;
+    theta = -1337;
     sp = sax = 1234;
     sq = say = -1234;
     sr = saz = 5678;

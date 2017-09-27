@@ -13,20 +13,14 @@
 #define START_SEQUENCE 0xFEFF
 #define END_SEQUENCE 0xFF
 #define MAX_PACKET_SIZE 20
-#if defined(USE_CRC16)
 #define HEADER_SIZE 5
-#elif defined(USE_CRC8)
-#define HEADER_SIZE 4
-#else
-#define HEADER_SIZE 3
-#endif
 #define FOOTER_SIZE 1
 #define DATA_SIZE (MAX_PACKET_SIZE - HEADER_SIZE - FOOTER_SIZE)
 
 typedef uint8_t byte;
 typedef uint16_t startSequence_t;
 typedef uint16_t checksum_t;
-typedef int8_t endSequence_t;
+typedef uint8_t endSequence_t;
 
 enum messageType_t : byte {
     //Primary commands (0x00-0x1F)

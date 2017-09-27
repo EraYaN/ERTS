@@ -53,19 +53,19 @@ Packet::~Packet()
 }
 
 void Packet::to_buffer(uint8_t *buffer) {
-    buffer[0] = (_start & 0xFF00) >> 8;
-    buffer[1] = _start & 0x00FF;
+    buffer[0] = (uint8_t)((_start & 0xFF00) >> 8);
+    buffer[1] = (uint8_t)(_start & 0x00FF);
     buffer[2] = _type;
     buffer[3] = 0; //checksum to be updated later
     buffer[4] = 0; //checksum to be updated later
-    //memset(&buffer[5], 0, DATA_SIZE);
+    memset(&buffer[5], 0, DATA_SIZE);
     _data->to_buffer(&buffer[5]);
 
     buffer[MAX_PACKET_SIZE - 1] = _end;
     //Calculate and add checksum
     checksum_t cs = crc_16(buffer, MAX_PACKET_SIZE);
-    buffer[3] = cs & 0x00FF;
-    buffer[4] = (cs & 0xFF00) >> 8;
+    buffer[3] = (uint8_t)(cs & 0x00FF);
+    buffer[4] = (uint8_t)((cs & 0xFF00) >> 8);
 }
 
 bool Packet::verify(byte* packet) {
