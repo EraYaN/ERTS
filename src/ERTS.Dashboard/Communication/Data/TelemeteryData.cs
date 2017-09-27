@@ -59,11 +59,11 @@ namespace ERTS.Dashboard.Communication.Data
                 throw new ArgumentException("Data is not long enough.", "data");
 
             ushort tmp = BitConverter.ToUInt16(data, 0);
-            batteryVoltage = (ushort)(tmp & 0xFFF);
-            if (!Enum.IsDefined(typeof(FlightMode), (byte)((tmp & 0xF000) >> 12)))
+            batteryVoltage = (ushort)((tmp & 0xFFF0) >> 4);
+            if (!Enum.IsDefined(typeof(FlightMode), (byte)(tmp & 0xF)))
                 throw new ArgumentException("Data contains unrecognized FlightMode.", "data");
 
-            flightMode = (FlightMode)((tmp & 0xF000) >> 12);
+            flightMode = (FlightMode)(tmp & 0xF);
 
             phi = BitConverter.ToInt16(data, sizeof(short));
             theta = BitConverter.ToInt16(data, sizeof(short) * 2);
