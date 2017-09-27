@@ -60,38 +60,15 @@ void Quadrupel::receive() {
             comm_buffer_index++;
             // Received 5 bytes, check message type.
             if (comm_buffer_index == 3) {
-                switch (comm_buffer[2]) {
-                    <<<<<< < HEAD
-                case UnknownPacket:
-                case ModeSwitch:
-                case Acknowledge:
-                case Telemetry:
-                case RemoteControl:
-                case SetControllerRollPID:
-                case SetControllerPitchPID:
-                case SetControllerYawPID:
-                case SetControllerHeightPID:
-                case SetMessageFrequencies:
-                case Parameters:
-                case Reset:
-                case Kill:
-                case Exception:
-                    // Message type OK.
-                    break;
-                default:
-                    // Message type unrecognized.
-                    // TODO: Send exception.
-                    printf("Exception: Unknown packet type %X.\n", comm_buffer[2]);
-                    _receiving = false;
-                    comm_buffer_index = 0;
-                    break;
-                    ====== =
+                switch (comm_buffer[2]) {                
                 case UnknownPacket:
                 case ModeSwitch:
                 case Acknowledge:
                 case Telemetry:
                 case RemoteControl:
                 case ActuationParameters:
+                case ControllerParameters:
+                case MiscParameters:
                 case Reset:
                 case Kill:
                 case Exception:
@@ -104,7 +81,6 @@ void Quadrupel::receive() {
                     _receiving = false;
                     comm_buffer_index = 0;
                     break;
-                    >>>>>> > c364dbc2e2b9cecc1dbe3e164b497e9ea6d1632c
                 }
             }
             else if (comm_buffer_index == MAX_PACKET_SIZE) {
