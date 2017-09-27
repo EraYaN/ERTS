@@ -30,14 +30,14 @@ namespace ERTS.Dashboard.Communication.Data
         {
             if(data.Length<Length)
                 throw new ArgumentException("Data is not long enough.", "data");
-            if (!Enum.IsDefined(typeof(FlightMode), data[0]))
+            if (!Enum.IsDefined(typeof(FlightMode), data[4]))
                 throw new ArgumentException("Data contains unrecognized new FlightMode.", "data");
-            if (!Enum.IsDefined(typeof(FlightMode), data[1]))
+            if (!Enum.IsDefined(typeof(FlightMode), data[5]))
                 throw new ArgumentException("Data contains unrecognized fallback FlightMode.", "data");
 
             newMode = (FlightMode)data[0];
             fallbackMode = (FlightMode)data[1];
-            ackNumber = BitConverter.ToUInt32(data, 2);
+            ackNumber = BitConverter.ToUInt32(data, 0);
         }
         public ModeSwitchData()
         {
@@ -56,9 +56,10 @@ namespace ERTS.Dashboard.Communication.Data
         public override byte[] ToByteArray()
         {
             byte[] data = new byte[Length];
-            data[0] = (byte)newMode;
-            data[1] = (byte)fallbackMode;
-            Buffer.BlockCopy(BitConverter.GetBytes(ackNumber), 0, data, sizeof(FlightMode) *2, sizeof(int));
+            
+            Buffer.BlockCopy(BitConverter.GetBytes(ackNumber), 0, data, 0, sizeof(int));
+            data[4] = (byte)newMode;
+            data[5] = (byte)fallbackMode;
             return data;
         }
 
