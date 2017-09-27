@@ -63,7 +63,7 @@ namespace ERTS.Dashboard.Communication {
             StartSequence = BitConverter.ToUInt16(PacketData, 0);
             Type = (MessageType)(PacketData[2]);
             Checksum = BitConverter.ToUInt16(PacketData, 3);
-            byte[] dataSegment = new ArraySegment<byte>(PacketData,HEADER_SIZE+1,DATA_SIZE).ToArray();
+            byte[] dataSegment = new ArraySegment<byte>(PacketData,HEADER_SIZE,DATA_SIZE).ToArray();
             switch (Type)
             {
                 case MessageType.ModeSwitch:
