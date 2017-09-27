@@ -58,7 +58,7 @@ void Packet::to_buffer(uint8_t *buffer) {
     buffer[2] = _type;
     buffer[3] = 0; //checksum to be updated later
     buffer[4] = 0; //checksum to be updated later
-    //memset(&buffer[5], 0, DATA_SIZE);
+    memset(&buffer[5], 0, DATA_SIZE);
     _data->to_buffer(&buffer[5]);
 
     buffer[MAX_PACKET_SIZE - 1] = _end;
