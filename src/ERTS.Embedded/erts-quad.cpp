@@ -7,6 +7,7 @@ extern "C"
 #include "driver.h"
 }
 
+#ifndef FAKE_DRIVERS
 extern "C" {
     void HardFault_Handler(void)
     {
@@ -34,6 +35,7 @@ extern "C" {
     }
 
 }
+#endif
 
 int16_t motor[4], ae[4];
 
