@@ -13,9 +13,6 @@ extern "C"
 #define MODE_SWITCH_OK 0
 #define MODE_SWITCH_UNSUPPORTED 1
 
-#define CONT_YAW_P1 5
-#define CONT_YAW_P2 5
-
 typedef struct {
     uint16_t  lift;
     int16_t  yaw;
@@ -31,6 +28,12 @@ class Quadrupel {
     uint16_t b = 1;
     uint16_t d = 1;
     uint16_t divider = 1;
+
+	uint16_t yaw_p1 = 5;
+    uint16_t yaw_p2 = 5;
+
+    uint16_t panic_rate = 100;
+    bool _initial_panic = false;
 
     flightMode_t _mode = Safe;
     flightMode_t _new_mode = Safe;
@@ -56,8 +59,6 @@ class Quadrupel {
     bool handle_packet(Packet *packet);
 
     void kill();
-
-    void remote_control(uint16_t lift, int16_t roll, int16_t pitch, int16_t yaw);
 
     void init_divider();
 

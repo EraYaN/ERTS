@@ -6,7 +6,9 @@
 #include "telemetry_data.h"
 
 #ifdef FAKE_DRIVERS
+
 #include <iostream>
+
 #endif
 
 // TODO: Perhaps make the drone (almost) entirely interrupt-driven.
@@ -166,10 +168,10 @@ bool Quadrupel::handle_packet(Packet *packet) {
         }
         case RemoteControl: {
             auto *data = dynamic_cast<RemoteControlData *>(packet->get_data());
-            target_state.lift   = data->get_lift();
-            target_state.roll   = data->get_roll();
-            target_state.pitch  = data->get_pitch();
-            target_state.yaw    = data->get_yaw();
+            target_state.lift = data->get_lift();
+            target_state.roll = data->get_roll();
+            target_state.pitch = data->get_pitch();
+            target_state.yaw = data->get_yaw();
             break;
         }
         case Kill: {
@@ -244,13 +246,15 @@ int Quadrupel::set_mode(flightMode_t new_mode) {
         case Safe: {
             switch (new_mode) {
                 // Always OK.
-                case Panic:
+                case Panic: {
+                    _initial_panic = true;
+                }
                 case Calibration:
                 case Manual: {
                     result = MODE_SWITCH_OK;
                     break;
                 }
-                // Requires calibration.
+                    // Requires calibration.
                 case YawControl:
                 case FullControl:
                 case Raw:
@@ -264,7 +268,7 @@ int Quadrupel::set_mode(flightMode_t new_mode) {
                     }
                     break;
                 }
-                // Unknown transition.
+                    // Unknown transition.
                 default: {
                     result = MODE_SWITCH_UNSUPPORTED;
                     break;
@@ -311,13 +315,6 @@ int Quadrupel::set_mode(flightMode_t new_mode) {
     return result;
 }
 
-//TODO:deprecated
-void Quadrupel::remote_control(uint16_t lift, int16_t roll, int16_t pitch, int16_t yaw) {
-    if (_mode != Manual)
-        return;
-
-}
-
 void Quadrupel::update_motors() {
     motor[0] = ae[0];
     motor[1] = ae[1];
@@ -328,46 +325,56 @@ void Quadrupel::update_motors() {
 void Quadrupel::control() {
     // Equations to get desired lift, roll rate, pitch rate and yaw rate.
     int32_t oo1, oo2, oo3, oo4;
-    uint16_t lift, roll, pitch, yaw;
+    uint16_t lift;
+    int16_t roll, pitch, yaw;
     uint16_t setpoint_temp;
 
-    if (_mode == Manual) {
-        lift = target_state.lift;
-        roll = target_state.roll;
-        pitch = target_state.pitch;
-        yaw = target_state.yaw;
-    }
-    else if (_mode == YawControl) {
-        lift = target_state.lift;
-        roll = target_state.roll;
-        pitch = target_state.pitch;
-        //Yaw Controller:
-        setpoint_temp = CONT_YAW_P1 * target_state.yaw; // setpoint is angular rate
-        yaw = CONT_YAW_P2 * (setpoint_temp - sr);
-        // } else if(_mode == Panic) {
+    if (_mode == Panic) {
+        if (_initial_panic) {
+            // Set all motors equal to the current minimum value.
+            ae[0] = ae[1] = ae[2] = ae[3] = std::min(std::min(ae[0], ae[1]), std::min(ae[2], ae[3]));
+            _initial_panic = false;
+        }
+
+        // Linearly decrease motor values and clamp to zero.
+        ae[0] = std::max(ae[0] - panic_rate, 0);
+        ae[1] = std::max(ae[1] - panic_rate, 0);
+        ae[3] = std::max(ae[2] - panic_rate, 0);
+        ae[3] = std::max(ae[3] - panic_rate, 0);
     }
     else {
-        lift = 0;
-        roll = 0;
-        pitch = 0;
-        yaw = 0;
+        if (_mode == Manual) {
+            lift = target_state.lift;
+            roll = target_state.roll;
+            pitch = target_state.pitch;
+            yaw = target_state.yaw;
+        }
+        else if (_mode == YawControl) {
+            lift = target_state.lift;
+            roll = target_state.roll;
+            pitch = target_state.pitch;
+
+            setpoint_temp = yaw_p1 * target_state.yaw; // setpoint is angular rate
+            yaw = yaw_p2 * (setpoint_temp - sr);
+        }
+        else {
+            lift = 0;
+            roll = 0;
+            pitch = 0;
+            yaw = 0;
+        }
+
+        oo1 = lift / (2 * b) + pitch / b - yaw / d;
+        oo2 = lift / (2 * b) - roll / b + yaw / d;
+        oo3 = lift / (2 * b) - pitch / b - yaw / d;
+        oo4 = lift / (2 * b) + roll / b + yaw / d;
+
+        // TODO: Re-introduce square-root if required.
+        ae[0] = scale_motor(oo1);
+        ae[1] = scale_motor(oo2);
+        ae[2] = scale_motor(oo3);
+        ae[3] = scale_motor(oo4);
     }
-
-    oo1 = lift / (2 * b) + pitch / b - yaw / d;
-    oo2 = lift / (2 * b) - roll / b + yaw / d;
-    oo3 = lift / (2 * b) - pitch / b - yaw / d;
-    oo4 = lift / (2 * b) + roll / b + yaw / d;
-
-    // with ai = oi it follows
-//  ae[0] = (int16_t)sqrt(oo1);
-//  ae[1] = (int16_t)sqrt(oo2);
-//  ae[2] = (int16_t)sqrt(oo3);
-//  ae[3] = (int16_t)sqrt(oo4);
-
-    ae[0] = scale_motor(oo1);
-    ae[1] = scale_motor(oo2);
-    ae[2] = scale_motor(oo3);
-    ae[3] = scale_motor(oo4);
 }
 
 void Quadrupel::init_divider() {
