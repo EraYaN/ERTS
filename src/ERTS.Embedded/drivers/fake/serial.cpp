@@ -101,25 +101,6 @@ int Serial::putchar(char c) {
 	return numWritten;
 }
 
-int Serial::read(char *buffer, int buffLen, bool nullTerminate) {
-	DWORD numRead;
-	if (nullTerminate) {
-		--buffLen;
-	}
-
-	BOOL ret = ReadFile(handle, buffer, buffLen, &numRead, NULL);
-
-	if (!ret) {
-		return 0;
-	}
-
-	if (nullTerminate) {
-		buffer[numRead] = '\0';
-	}
-
-	return numRead;
-}
-
 #else
 
 #include <termios.h>

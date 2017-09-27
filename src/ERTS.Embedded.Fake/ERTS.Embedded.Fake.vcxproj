@@ -44,11 +44,11 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LibraryPath>$(OutDir);$(LibraryPath)</LibraryPath>
-    <IncludePath>$(SolutionDir)ERTS.Embedded;$(SolutionDir)ERTS.Embedded\invensense;$(SolutionDir)ERTS.Embedded\drivers\fake;$(SolutionDir)ERTS.Embedded\drivers;$(SolutionDir)../libraries/libcrc/include;$(SolutionDir)../libraries/libertscommunication;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)ERTS.Embedded;$(SolutionDir)ERTS.Embedded\invensense;$(SolutionDir)ERTS.Embedded\drivers\fake;$(SolutionDir)ERTS.Embedded\drivers;$(SolutionDir)..\libraries\libcrc-2.0\include;$(SolutionDir)..\libraries\libertscommunication;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LibraryPath>$(OutDir);$(LibraryPath)</LibraryPath>
-    <IncludePath>$(SolutionDir)ERTS.Embedded;$(SolutionDir)ERTS.Embedded\invensense;$(SolutionDir)ERTS.Embedded\drivers\fake;$(SolutionDir)ERTS.Embedded\drivers;$(SolutionDir)../libraries/libcrc/include;$(SolutionDir)../libraries/libertscommunication;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)ERTS.Embedded;$(SolutionDir)ERTS.Embedded\invensense;$(SolutionDir)ERTS.Embedded\drivers\fake;$(SolutionDir)ERTS.Embedded\drivers;$(SolutionDir)..\libraries\libcrc-2.0\include;$(SolutionDir)..\libraries\libertscommunication;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
