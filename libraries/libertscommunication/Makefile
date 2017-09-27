@@ -8,7 +8,9 @@ $(abspath ./mode_switch_data.cpp) \
 $(abspath ./packet.cpp) \
 $(abspath ./remote_control_data.cpp) \
 $(abspath ./telemetry_data.cpp) \
-$(abspath ./parameter_data.cpp)
+$(abspath ./actuation_parameter_data.cpp) \
+$(abspath ./controller_parameter_data.cpp) \
+$(abspath ./misc_parameter_data.cpp)
 
 INC_PATHS += -I$(abspath ./)
 INC_PATHS += $(EXT_DEPS_INC_PATHS) # from Shared.mk

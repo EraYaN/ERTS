@@ -1,7 +1,6 @@
 #include "quad.h"
 #include "acknowledge_data.h"
 #include "mode_switch_data.h"
-#include "parameter_data.h"
 #include "remote_control_data.h"
 #include "telemetry_data.h"
 
@@ -15,7 +14,6 @@
 // TODO: Tick on interrupt.
 // TODO: Implement exceptions.
 // TODO: Implement flash write/dump.
-// TODO: Implement parameter (b/d) change messages.
 
 Quadrupel::Quadrupel() {
     // Initialize all drivers.
@@ -34,6 +32,7 @@ Quadrupel::Quadrupel() {
     read_baro();
 
     last_received = get_time_us();
+
 }
 
 void Quadrupel::receive() {
@@ -61,12 +60,7 @@ void Quadrupel::receive() {
                     case Acknowledge:
                     case Telemetry:
                     case RemoteControl:
-                    case SetControllerRollPID:
-                    case SetControllerPitchPID:
-                    case SetControllerYawPID:
-                    case SetControllerHeightPID:
-                    case SetMessageFrequencies:
-                    case Parameters:
+                    case ActuationParameters:
                     case Reset:
                     case Kill:
                     case Exception:
@@ -123,7 +117,7 @@ void Quadrupel::receive() {
 }
 
 void Quadrupel::send(Packet *packet) {
-    auto buffer = new uint8_t[MAX_PACKET_SIZE+3];   
+    auto buffer = new uint8_t[MAX_PACKET_SIZE + 3];
 
     packet->to_buffer(&buffer[3]);
 
@@ -132,7 +126,7 @@ void Quadrupel::send(Packet *packet) {
     packet_print(buffer);
 #endif
 
-    for (int i = 3; i < MAX_PACKET_SIZE+3; ++i) {
+    for (int i = 3; i < MAX_PACKET_SIZE + 3; ++i) {
         uart_put(buffer[i]);
     }
 
@@ -187,9 +181,19 @@ bool Quadrupel::handle_packet(Packet *packet) {
             kill();
             break;
         }
-        case Parameters: {
-            auto *data = dynamic_cast<ParameterData *>(packet->get_data());
-            set_parameters(data->get_b(), data->get_d());
+        case ActuationParameters: {
+            auto *data = dynamic_cast<ActuationParameterData *>(packet->get_data());
+            set_p_act(data);
+            break;
+        }
+        case ControllerParameters: {
+            auto *data = dynamic_cast<ControllerParameterData *>(packet->get_data());
+            set_p_ctr(data);
+            break;
+        }
+        case MiscParameters: {
+            auto *data = dynamic_cast<MiscParameterData *>(packet->get_data());
+            set_p_misc(data);
             break;
         }
         default:
@@ -215,13 +219,13 @@ void Quadrupel::tick() {
     receive();
 
     if (_mode != Panic) {
-        if (bat_volt < BATTERY_THRESHOLD) {
+        if (bat_volt < p_misc.battery_threshold) {
             // Battery low
             printf("Battery low, entering panic mode.\n");
             set_mode(Panic);
         }
 
-        if ((get_time_us() - last_received) > comm_timeout) {
+        if ((get_time_us() - last_received) > p_misc.comm_timeout) {
             // Time-out
             printf("Timed out, entering panic mode.\n");
             set_mode(Panic);
@@ -344,7 +348,7 @@ void Quadrupel::control() {
     int32_t oo1, oo2, oo3, oo4;
     uint16_t lift;
     int16_t roll, pitch, yaw;
-    uint16_t setpoint_temp;
+    // uint16_t setpoint_temp;
 
     if (_mode == Panic) {
         if (_initial_panic) {
@@ -354,10 +358,10 @@ void Quadrupel::control() {
         }
 
         // Linearly decrease motor values and clamp to zero.
-        ae[0] = std::max(ae[0] - panic_rate, 0);
-        ae[1] = std::max(ae[1] - panic_rate, 0);
-        ae[3] = std::max(ae[2] - panic_rate, 0);
-        ae[3] = std::max(ae[3] - panic_rate, 0);
+        ae[0] = std::max(ae[0] - p_misc.panic_decrement, 0);
+        ae[1] = std::max(ae[1] - p_misc.panic_decrement, 0);
+        ae[3] = std::max(ae[2] - p_misc.panic_decrement, 0);
+        ae[3] = std::max(ae[3] - p_misc.panic_decrement, 0);
     }
     else {
         if (_mode == Manual) {
@@ -371,8 +375,8 @@ void Quadrupel::control() {
             roll = target_state.roll;
             pitch = target_state.pitch;
 
-            setpoint_temp = yaw_p1 * target_state.yaw; // setpoint is angular rate
-            yaw = yaw_p2 * (setpoint_temp - sr);
+            //setpoint_temp = yaw_p1.yaw_p1 * target_state.yaw;
+            yaw = p_ctr.p_yaw * (target_state.yaw - sr);
         }
         else {
             lift = 0;
@@ -381,10 +385,10 @@ void Quadrupel::control() {
             yaw = 0;
         }
 
-        oo1 = lift / (2 * b) + pitch / b - yaw / d;
-        oo2 = lift / (2 * b) - roll / b + yaw / d;
-        oo3 = lift / (2 * b) - pitch / b - yaw / d;
-        oo4 = lift / (2 * b) + roll / b + yaw / d;
+        oo1 = lift / (2 * p_act.rate_pitch_roll_lift) + pitch / p_act.rate_pitch_roll_lift - yaw / p_act.rate_yaw;
+        oo2 = lift / (2 * p_act.rate_pitch_roll_lift) - roll / p_act.rate_pitch_roll_lift + yaw / p_act.rate_yaw;
+        oo3 = lift / (2 * p_act.rate_pitch_roll_lift) - pitch / p_act.rate_pitch_roll_lift - yaw / p_act.rate_yaw;
+        oo4 = lift / (2 * p_act.rate_pitch_roll_lift) + roll / p_act.rate_pitch_roll_lift + yaw / p_act.rate_yaw;
 
         // TODO: Re-introduce square-root if required.
         ae[0] = scale_motor(oo1);
@@ -396,9 +400,10 @@ void Quadrupel::control() {
 
 void Quadrupel::init_divider() {
     uint32_t min = 0;
-    auto max = (uint32_t) (UINT16_MAX / (2 * b) + INT16_MAX / b + INT16_MAX / d);
+    auto max = (uint32_t) (UINT16_MAX / (2 * p_act.rate_pitch_roll_lift) + INT16_MAX / p_act.rate_pitch_roll_lift +
+                           INT16_MAX / p_act.rate_yaw);
 
-    divider = (uint16_t) ((max - min) / (MOTOR_MAX - MOTOR_MIN));
+    p_act.divider = (uint16_t) ((max - min) / (p_act.motor_max - p_act.motor_min));
 }
 
 uint16_t Quadrupel::scale_motor(int32_t value) {
@@ -406,17 +411,35 @@ uint16_t Quadrupel::scale_motor(int32_t value) {
     value = value < 0 ? 0 : value;
 
     // Scale
-    value = value / divider;
+    value = value / p_act.divider;
 
     // Offset
-    value += MOTOR_MIN;
+    value += p_act.motor_min;
 
     return (uint16_t) value;
 }
 
-void Quadrupel::set_parameters(uint16_t b, uint16_t d) {
-    this->b = b;
-    this->d = d;
+void Quadrupel::set_p_act(ActuationParameterData *data) {
+    p_act.rate_pitch_roll_lift = data->get_rate_pitch_roll_lift();
+    p_act.rate_yaw = data->get_rate_yaw();
+    p_act.motor_min = data->get_motor_min();
+    p_act.motor_max = data->get_motor_max();
 
     init_divider();
+}
+
+void Quadrupel::set_p_ctr(ControllerParameterData *data) {
+    p_ctr.p_yaw = data->get_p_yaw();
+    p_ctr.p_height = data->get_p_height();
+    p_ctr.p1_pitch_roll = data->get_p1_pitch_roll();
+    p_ctr.p2_pitch_roll = data->get_p2_pitch_roll();
+}
+
+void Quadrupel::set_p_misc(MiscParameterData *data) {
+    p_misc.panic_decrement = data->get_panic_decrement();
+    p_misc.rc_interval = data->get_rc_interval();
+    p_misc.log_divider = data->get_log_divider();
+    p_misc.battery_threshold = data->get_battery_threshold();
+    p_misc.target_loop_time = data->get_target_loop_time();
+    p_misc.comm_timeout = 2u * p_misc.target_loop_time;
 }

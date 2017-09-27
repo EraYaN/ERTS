@@ -172,7 +172,7 @@ void adc_request_sample() {
 
 // Flash
 const char* file_name = "flash.dat";
-const int file_size = 256 * 1024;
+const int file_size = 128 * 1024;
 std::fstream file;
 
 bool spi_flash_init() {

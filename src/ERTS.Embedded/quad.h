@@ -2,6 +2,9 @@
 
 #include <cstdint>
 #include <algorithm>
+#include <actuation_parameter_data.h>
+#include <controller_parameter_data.h>
+#include <misc_parameter_data.h>
 
 extern "C"
 {
@@ -15,31 +18,38 @@ extern "C"
 #define MODE_SWITCH_UNSUPPORTED 1
 
 typedef struct {
-    uint16_t  lift;
-    int16_t  yaw;
-    int16_t  pitch;
-    int16_t  roll;
+    uint16_t lift;
+    int16_t yaw;
+    int16_t pitch;
+    int16_t roll;
 } quad_state_t;
 
+typedef struct {
+    uint16_t rate_yaw = 1;
+    uint16_t rate_pitch_roll_lift = 1;
+    uint16_t divider = 1;
+    uint16_t motor_min = 0, motor_max = 1500;
+} actuator_params_t;
+
+typedef struct {
+    uint16_t p_yaw = 5;
+    uint16_t p_height = 5;
+    uint16_t p1_pitch_roll = 5, p2_pitch_roll = 5;
+} controller_params_t;
+
+typedef struct {
+    uint16_t panic_decrement = 100;
+    uint16_t rc_interval = 100;
+    uint16_t log_divider = 100;
+    uint16_t battery_threshold = 1050;
+    uint16_t target_loop_time = 20000;
+} misc_params_t;
 
 class Quadrupel {
-    // Various constants
-    const uint16_t MOTOR_MIN = 0;
-    const uint16_t MOTOR_MAX = 1500;
-
-    const uint16_t BATTERY_THRESHOLD = 1050;
-
     // Parameter settings
-    uint16_t b = 1;
-    uint16_t d = 1;
-    uint16_t divider = 1;
-
-	uint16_t yaw_p1 = 5;
-    uint16_t yaw_p2 = 5;
-
-    uint16_t panic_rate = 100;
-
-    uint32_t comm_timeout = 2000000;
+    actuator_params_t p_act;
+    controller_params_t p_ctr;
+    misc_params_t p_misc;
 
     // State
     bool _initial_panic = false;
@@ -51,7 +61,7 @@ class Quadrupel {
 
     // Comm
     uint32_t counter = 0;
-	uint16_t last_two_bytes = 0;
+    uint16_t last_two_bytes = 0;
     bool _receiving = false;
     uint8_t comm_buffer[MAX_PACKET_SIZE];
     uint8_t comm_buffer_index = 0;
@@ -84,11 +94,15 @@ public:
 
     flightMode_t get_mode() { return _mode; }
 
-	int set_mode(flightMode_t new_mode);
+    int set_mode(flightMode_t new_mode);
 
     void update_motors();
 
     void control();
 
-    void set_parameters(uint16_t b, uint16_t d);
+    void set_p_act(ActuationParameterData *data);
+
+    void set_p_ctr(ControllerParameterData *data);
+
+    void set_p_misc(MiscParameterData *data);
 };

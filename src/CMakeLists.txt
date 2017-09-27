@@ -29,9 +29,9 @@ set(FAKE_SOURCE_FILES
         ../libraries/libertscommunication/remote_control_data.cpp
         ../libraries/libertscommunication/telemetry_data.h
         ../libraries/libertscommunication/telemetry_data.cpp
-        ../libraries/libertscommunication/parameter_data.cpp
-        ../libraries/libertscommunication/parameter_data.h
-        ERTS.Embedded/drivers/fake/serial.h)
+        ../libraries/libertscommunication/actuation_parameter_data.cpp
+        ../libraries/libertscommunication/actuation_parameter_data.h
+        ERTS.Embedded/drivers/fake/serial.h ../libraries/libertscommunication/controller_parameter_data.cpp ../libraries/libertscommunication/controller_parameter_data.h ../libraries/libertscommunication/misc_parameter_data.cpp ../libraries/libertscommunication/misc_parameter_data.h)
 
 add_executable(fake_quad ${FAKE_SOURCE_FILES})
 target_compile_definitions(fake_quad PUBLIC -DFAKE_DRIVERS)
@@ -78,9 +78,9 @@ set(SOURCE_FILES
         ../libraries/libertscommunication/remote_control_data.cpp
         ../libraries/libertscommunication/telemetry_data.h
         ../libraries/libertscommunication/telemetry_data.cpp
-        ../libraries/libertscommunication/parameter_data.cpp
-        ../libraries/libertscommunication/parameter_data.h
-)
+        ../libraries/libertscommunication/actuation_parameter_data.cpp
+        ../libraries/libertscommunication/actuation_parameter_data.h
+        ../libraries/libertscommunication/controller_parameter_data.cpp ../libraries/libertscommunication/controller_parameter_data.h ../libraries/libertscommunication/misc_parameter_data.cpp ../libraries/libertscommunication/misc_parameter_data.h)
 
 add_executable(quad ${SOURCE_FILES})
 target_include_directories(quad PUBLIC

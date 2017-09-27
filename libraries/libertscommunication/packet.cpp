@@ -74,8 +74,8 @@ bool Packet::verify(byte* packet) {
     packet[4] = 0; //checksum to be updated later
     checksum_t cs = crc_16(packet, MAX_PACKET_SIZE);
     bool result = cs == packet_cs;
-    packet[3] = cs & 0x00FF;
-    packet[4] = (cs & 0xFF00) >> 8;
+    packet[3] = (uint8_t)(cs & 0x00FF);
+    packet[4] = (uint8_t)((cs & 0xFF00) >> 8);
     return result;
 }
 
