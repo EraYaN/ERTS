@@ -12,7 +12,6 @@
 #endif
 
 // TODO: Perhaps make the drone (almost) entirely interrupt-driven.
-// TODO: Handle connection loss.
 // TODO: Tick on interrupt.
 // TODO: Fix loop time.
 // TODO: Implement exceptions.
@@ -32,16 +31,20 @@ Quadrupel::Quadrupel() {
     ble_init();
 
     init_divider();
+    adc_request_sample();
+    read_baro();
+
+    last_received = get_time_us();
 }
 
 void Quadrupel::receive() {
     while (uart_available()) {
         uint8_t currentByte = uart_get();
 
-        lastTwoBytes = lastTwoBytes << 8 | currentByte;
+        last_two_bytes = last_two_bytes << 8 | currentByte;
 
         if (!_receiving) {
-            if (lastTwoBytes == START_SEQUENCE) {
+            if (last_two_bytes == START_SEQUENCE) {
                 comm_buffer[0] = ((START_SEQUENCE & 0xFF00) >> 8);
                 comm_buffer[1] = (START_SEQUENCE & 0x00FF);
                 _receiving = true;
@@ -91,8 +94,11 @@ void Quadrupel::receive() {
                         bool handled = handle_packet(packet);
 //                        // TODO: Send exception if not handled.
 
-                        if (handled && packet->get_data()->get_expects_acknowledgement())
-                            acknowledge(packet->get_data()->get_ack_number());
+                        if (handled) {
+                            if (packet->get_data()->get_expects_acknowledgement()) {
+                                acknowledge(packet->get_data()->get_ack_number());
+                            }
+                        }
 
                         delete packet;
                     }
@@ -168,10 +174,13 @@ bool Quadrupel::handle_packet(Packet *packet) {
         }
         case RemoteControl: {
             auto *data = dynamic_cast<RemoteControlData *>(packet->get_data());
+
             target_state.lift = data->get_lift();
             target_state.roll = data->get_roll();
             target_state.pitch = data->get_pitch();
             target_state.yaw = data->get_yaw();
+
+            last_received = get_time_us();
             break;
         }
         case Kill: {
@@ -205,14 +214,19 @@ void Quadrupel::tick() {
     _new_mode = _mode;
     receive();
 
-    if (bat_volt < BATTERY_THRESHOLD)
-        set_mode(Panic);
+    if (_mode != Panic) {
+        if (bat_volt < BATTERY_THRESHOLD) {
+            // Battery low
+            std::cout << "Battery low, entering panic mode." << std::endl;
+            set_mode(Panic);
+        }
 
-//    printf("%10ld | ", get_time_us());
-//    printf("%3d %3d %3d %3d | ", ae[0], ae[1], ae[2], ae[3]);
-//    printf("%6d %6d %6d | ", phi, theta, psi);
-//    printf("%6d %6d %6d | ", sp, sq, sr);
-//    printf("%4d | %4ld | %6ld \n", bat_volt, temperature, pressure);
+        if ((get_time_us() - last_received) > comm_timeout) {
+            // Time-out
+            std::cout << "Timed out, entering panic mode." << std::endl;
+            set_mode(Panic);
+        }
+    }
 
     if (check_timer_flag()) { // The following is executed every 50 ms (20 Hz).
         counter++;
