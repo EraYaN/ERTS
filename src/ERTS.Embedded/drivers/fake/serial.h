@@ -24,6 +24,4 @@ public:
     bool getchar_nb(char *c);
 
     int putchar(char c);
-
-	int Serial::read(char *buffer, int buffLen, bool nullTerminate);
 };
