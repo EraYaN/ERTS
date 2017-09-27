@@ -25,7 +25,7 @@
 using namespace std;
 
 Serial::Serial(const char *address) {
-	handle = CreateFile(address, GENERIC_READ | GENERIC_WRITE, 0, NULL, OPEN_EXISTING, 0, NULL);
+	handle = CreateFile(address, GENERIC_READ | GENERIC_WRITE, 0, 0, OPEN_EXISTING, 0, 0);
 
 	cout << "Opening port: " << address << endl;
 	cout << "Handle Value: " << hex << handle << endl;
@@ -75,7 +75,15 @@ Serial::~Serial() {
 }
 
 bool Serial::getchar_nb(char *c) {
-	return ReadFile(handle, &c, 1, NULL, NULL);
+	DWORD numRead;
+	bool ret = ReadFile(handle, &c, 1, &numRead, NULL);
+	//assert(numRead == 1);
+	if (numRead != 1) {
+		return false;
+	}
+	else {
+		return true;
+	}
 }
 
 char Serial::getchar() {

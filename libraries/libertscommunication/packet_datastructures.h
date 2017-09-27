@@ -30,7 +30,7 @@ typedef int8_t endSequence_t;
 
 enum messageType_t : byte {
     //Primary commands (0x00-0x1F)
-    Unknown = 0x00, ///Default message type
+    UnknownPacket = 0x00, ///Default message type
     ModeSwitch = 0x01, ///Expects Acknowledgement
 
     //Status messages 0x20-0x2F
