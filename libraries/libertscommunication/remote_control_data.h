@@ -6,7 +6,7 @@ class RemoteControlData : public PacketData {
     remoteControlData_t *_data;
 
 public:
-    explicit RemoteControlData(byte* data);
+    explicit RemoteControlData(const uint8_t *data);
 
     ~RemoteControlData() override { delete _data; }
 
@@ -23,9 +23,5 @@ public:
 
     int get_length() override;
 
-private:
-    byte *to_byte_array() override;
+    void to_buffer(uint8_t *buffer) override;
 };
-
-
-

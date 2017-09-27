@@ -1,6 +1,7 @@
 #include "acknowledge_data.h"
 
 AcknowledgeData::AcknowledgeData(uint32_t number) {
+    _data = new acknowledgeData_t;
     _data->number = number;
 }
 
@@ -20,6 +21,6 @@ bool AcknowledgeData::is_valid() {
     return true;
 }
 
-byte *AcknowledgeData::to_byte_array() {
-    return (byte*)_data;
+void AcknowledgeData::to_buffer(uint8_t *buffer) {
+    memcpy(buffer, _data, get_length());
 }

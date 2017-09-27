@@ -210,6 +210,7 @@ namespace ERTS.Dashboard.Input
         {
             if (cancelTokenSource != null)
                 cancelTokenSource.Cancel(false);
+            threadTask.Wait();
         }
 
         public void StartThread()
@@ -258,8 +259,8 @@ namespace ERTS.Dashboard.Input
                                     foreach (KeyboardUpdate state in updates)
                                     {
 
-                                        Debug.Write(state);
-                                        Debug.WriteLine(String.Format("; Raw: {0}; Key: {1}", state.RawOffset, state.Key));
+                                        //Debug.Write(state);
+                                        //Debug.WriteLine(String.Format("; Raw: {0}; Key: {1}", state.RawOffset, state.Key));
                                         SendInputEvent(state, d.Information.InstanceGuid);
                                     }
                                 }
@@ -268,8 +269,8 @@ namespace ERTS.Dashboard.Input
                                     var updates = ((Mouse)d).GetBufferedData();
                                     foreach (MouseUpdate state in updates)
                                     {
-                                        Debug.Write(state);
-                                        Debug.WriteLine(String.Format("; Raw: {0}; IsButtom: {1}", state.RawOffset, state.IsButton));
+                                        //Debug.Write(state);
+                                        //Debug.WriteLine(String.Format("; Raw: {0}; IsButtom: {1}", state.RawOffset, state.IsButton));
                                         SendInputEvent(state, d.Information.InstanceGuid);
                                     }
                                 }
@@ -278,8 +279,8 @@ namespace ERTS.Dashboard.Input
                                     var updates = ((Joystick)d).GetBufferedData();
                                     foreach (JoystickUpdate state in updates)
                                     {
-                                        Debug.Write(state);
-                                        Debug.WriteLine(String.Format("; Raw: {0}; Key: {1}", state.RawOffset, state.Value));
+                                        //Debug.Write(state);
+                                        //Debug.WriteLine(String.Format("; Raw: {0}; Key: {1}", state.RawOffset, state.Value));
                                         SendInputEvent(state, d.Information.InstanceGuid);
                                     }
                                 }
@@ -289,6 +290,10 @@ namespace ERTS.Dashboard.Input
                         }
                     }
                     catch (SharpDXException e)
+                    {
+                        //shutdown artifact.
+                    }
+                    catch (NullReferenceException e)
                     {
                         //shutdown artifact.
                     }

@@ -104,7 +104,7 @@
             <StatusBarItem Width="40" Content="{Binding SerialPortStatus, Mode=OneWay}" Foreground="{Binding SerialPortStatusColor, Mode=OneWay}" x:Name="statusBarSerialStatus" HorizontalContentAlignment="Center" HorizontalAlignment="Left"/>            
             <StatusBarItem x:Name="statusBarInputStatus" Width="100" Content="{Binding InputStatus, Mode=OneWay}" HorizontalContentAlignment="Center" HorizontalAlignment="Right"/>
             <StatusBarItem x:Name="statusBarInputDevicesStatus" Width="120" Content="{Binding InputDevicesStatus, Mode=OneWay}" HorizontalContentAlignment="Center" HorizontalAlignment="Right"/>
-            <StatusBarItem x:Name="statusBarLoopTime" Width="80" Content="{Binding LoopTime, Mode=OneWay}" HorizontalContentAlignment="Center" HorizontalAlignment="Right"/>
+            <StatusBarItem x:Name="statusBarLoopTime" Width="80" Content="{Binding LoopTimeString, Mode=OneWay}" HorizontalContentAlignment="Center" HorizontalAlignment="Right"/>
         </StatusBar>
     </Grid>
 </Window>

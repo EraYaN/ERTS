@@ -23,8 +23,17 @@ GNU_PREFIX := arm-none-eabi
 
 TEMPLATE_PATH = $(HW_SDK_PATH)/components/toolchain/gcc
 
+ifeq ($(OS),Windows_NT)
+MK := -mkdir
+else
 MK := mkdir
+endif
+
+ifeq ($(OS),Windows_NT)
+RM := -del /S /F /Q
+else
 RM := rm -rf
+endif
 
 #echo suspend
 ifeq ("$(VERBOSE)","1")

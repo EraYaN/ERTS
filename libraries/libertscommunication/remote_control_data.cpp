@@ -1,7 +1,7 @@
-#include <cstring>
 #include "remote_control_data.h"
 
-RemoteControlData::RemoteControlData(byte *data) {
+RemoteControlData::RemoteControlData(const uint8_t *data) {
+    _data = new remoteControlData_t;
     memcpy(&_data, data, get_length());
 }
 
@@ -21,7 +21,6 @@ bool RemoteControlData::is_valid() {
     return true;
 }
 
-byte *RemoteControlData::to_byte_array() {
-    // Not implemented.
-    return nullptr;
+void RemoteControlData::to_buffer(uint8_t *buffer) {
+    memcpy(buffer, _data, get_length());
 }

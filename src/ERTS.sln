@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.12
+VisualStudioVersion = 15.0.26906.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ERTS.Dashboard", "ERTS.Dashboard\ERTS.Dashboard.csproj", "{FDDDD840-D8EC-4D5A-BC44-CB11CE8C2CDB}"
 EndProject
@@ -35,6 +35,14 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sdl-test", "sdl-test\sdl-test.vcxproj", "{8333889E-17C1-41B9-8102-BC610F528300}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ERTS.Embedded", "ERTS.Embedded\ERTS.Embedded.vcxproj", "{44912A9E-17D7-4CBF-B802-D14889A5DF51}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "protocol-test2", "protocol-test2\protocol-test2.vcxproj", "{AE721F56-8E1A-4FF2-86AE-6DAACC9704A7}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ERTS.Embedded.Fake", "ERTS.Embedded.Fake\ERTS.Embedded.Fake.vcxproj", "{D55F8C7C-C2BD-4109-B414-7F5A0F644483}"
+	ProjectSection(ProjectDependencies) = postProject
+		{2371E72E-2D3F-4979-9A76-B7180500B4C6} = {2371E72E-2D3F-4979-9A76-B7180500B4C6}
+		{8DCB8AA5-E743-4399-A294-5C3C1E61EF6F} = {8DCB8AA5-E743-4399-A294-5C3C1E61EF6F}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -70,11 +78,21 @@ Global
 		{2BFC69B8-F962-4EAE-9241-6968670BDEDF}.Debug|Main.Build.0 = Debug|x64
 		{2BFC69B8-F962-4EAE-9241-6968670BDEDF}.Release|Main.ActiveCfg = Release|x64
 		{68094529-3515-46C0-AFF2-F850575AC480}.Debug|Main.ActiveCfg = Debug|x64
+		{68094529-3515-46C0-AFF2-F850575AC480}.Debug|Main.Build.0 = Debug|x64
 		{68094529-3515-46C0-AFF2-F850575AC480}.Release|Main.ActiveCfg = Release|x64
+		{68094529-3515-46C0-AFF2-F850575AC480}.Release|Main.Build.0 = Release|x64
 		{8333889E-17C1-41B9-8102-BC610F528300}.Debug|Main.ActiveCfg = Debug|x64
 		{8333889E-17C1-41B9-8102-BC610F528300}.Release|Main.ActiveCfg = Release|x64
 		{44912A9E-17D7-4CBF-B802-D14889A5DF51}.Debug|Main.ActiveCfg = Debug|ARM
 		{44912A9E-17D7-4CBF-B802-D14889A5DF51}.Release|Main.ActiveCfg = Release|ARM
+		{AE721F56-8E1A-4FF2-86AE-6DAACC9704A7}.Debug|Main.ActiveCfg = Debug|x64
+		{AE721F56-8E1A-4FF2-86AE-6DAACC9704A7}.Debug|Main.Build.0 = Debug|x64
+		{AE721F56-8E1A-4FF2-86AE-6DAACC9704A7}.Release|Main.ActiveCfg = Release|x64
+		{AE721F56-8E1A-4FF2-86AE-6DAACC9704A7}.Release|Main.Build.0 = Release|x64
+		{D55F8C7C-C2BD-4109-B414-7F5A0F644483}.Debug|Main.ActiveCfg = Debug|x64
+		{D55F8C7C-C2BD-4109-B414-7F5A0F644483}.Debug|Main.Build.0 = Debug|x64
+		{D55F8C7C-C2BD-4109-B414-7F5A0F644483}.Release|Main.ActiveCfg = Release|x64
+		{D55F8C7C-C2BD-4109-B414-7F5A0F644483}.Release|Main.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -88,6 +106,7 @@ Global
 		{2BFC69B8-F962-4EAE-9241-6968670BDEDF} = {C47DEE4A-D976-455F-A04D-1B288E61B587}
 		{68094529-3515-46C0-AFF2-F850575AC480} = {D0005F55-092C-4ABD-83E7-F2D616C45EA2}
 		{8333889E-17C1-41B9-8102-BC610F528300} = {D0005F55-092C-4ABD-83E7-F2D616C45EA2}
+		{AE721F56-8E1A-4FF2-86AE-6DAACC9704A7} = {D0005F55-092C-4ABD-83E7-F2D616C45EA2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A3A35119-07BA-4577-956D-8C761E740CFA}

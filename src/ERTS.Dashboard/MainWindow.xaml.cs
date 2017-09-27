@@ -79,7 +79,6 @@ namespace ERTS.Dashboard
             GlobalData.InitStageTwo();
 
             ((MainViewModel)DataContext).InitStageTwo();
-
         }
 
         #endregion

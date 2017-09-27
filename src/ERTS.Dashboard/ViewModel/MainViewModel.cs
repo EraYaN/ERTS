@@ -63,7 +63,7 @@ namespace ERTS.Dashboard.ViewModel
 
         public string ModeString { get { return ((int)Mode).ToString("X"); } }
         public string ModeDescriptionString { get { return Mode.GetDescription(); } }
-        public string VoltageString { get { return Voltage.ToString() + " mV"; } }
+        public string VoltageString { get { return Voltage.ToString() + " V"; } }
 
         public string LiftString {
             get {
@@ -143,7 +143,7 @@ namespace ERTS.Dashboard.ViewModel
 #else
                 string Branch = "Release";
 #endif
-                return String.Format("{3} Director v{0} {1} {2} by Erwin de Haan, Robin Hes & Casper van Wezel", fileVersion, processorArchitecture, Branch, currAss.FullName);
+                return String.Format("{3} v{0} {1} {2} by Erwin de Haan, Robin Hes & Casper van Wezel", fileVersion, processorArchitecture, Branch, currAss.FullName);
             }
         }
 

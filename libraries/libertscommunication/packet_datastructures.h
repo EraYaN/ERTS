@@ -1,17 +1,17 @@
 #pragma once
 #include <cstdint>
 #include <cstdio>
-#if defined(__GNUC__)
+/*#if defined(__GNUC__)
 #define PACK __attribute__((packed))
 #else
 #define PACK
-#endif
-
-#define USE_CRC16
+#endif*/
+#define PACK
+//#define USE_CRC16
 //#define USE_CRC8
 
 #define START_SEQUENCE 0xFEFF
-#define END_SEQUENCE EOF
+#define END_SEQUENCE 0xFF
 #define MAX_PACKET_SIZE 20
 #if defined(USE_CRC16)
 #define HEADER_SIZE 5
@@ -25,11 +25,7 @@
 
 typedef uint8_t byte;
 typedef uint16_t startSequence_t;
-#if defined(USE_CRC16)
 typedef uint16_t checksum_t;
-#elif defined(USE_CRC8)
-typedef uint8_t checksum_t;
-#endif
 typedef int8_t endSequence_t;
 
 enum messageType_t : byte {
@@ -50,6 +46,7 @@ enum messageType_t : byte {
     SetControllerYawPID = 0x42, ///Expects Acknowledgement
     SetControllerHeightPID = 0x43, ///Expects Acknowledgement
     SetMessageFrequencies = 0x44, ///Expects Acknowledgement. TelemetryFrequency, RemoteControlFrequency and LoopFreqency
+    Parameters = 0x45, ///Expects Acknowledgement.
 
     //Reserved for future use (0xA0-0xDF)
 
@@ -103,21 +100,27 @@ typedef struct PACK acknowledgeData_tag {
 typedef struct PACK telemetryData_tag {
     uint16_t batteryVoltage : 12;
     flightMode_t flightMode : 4;
-    uint16_t phi;
-    uint16_t theta;
-    uint16_t p;
-    uint16_t q;
-    uint16_t r;
+    int16_t phi;
+    int16_t theta;
+    int16_t p;
+    int16_t q;
+    int16_t r;
     uint16_t loopTime;
 } telemetryData_t;
 
-// 12 bytes
+// 8 bytes
 typedef struct PACK remoteControlData_tag {
     uint16_t lift; //Throttle
     int16_t roll; //Aileron
     int16_t pitch; //Elevator
     int16_t yaw; // Rudder
 } remoteControlData_t;
+
+// 4 bytes
+typedef struct PACK parameterData_tag {
+    uint16_t b; // Divider for lift, pitch and roll.
+    uint16_t d; // Divider for yaw.
+} parameterData_t;
 
 
 #define MAX_MESSAGE_LENGTH 13

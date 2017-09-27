@@ -6,7 +6,7 @@ class ModeSwitchData : public PacketData {
     modeSwitchData_t *_data;
 
 public:
-    explicit ModeSwitchData(byte *data);
+    explicit ModeSwitchData(const uint8_t *data);
 
     ~ModeSwitchData() override { delete _data; }
 
@@ -18,12 +18,9 @@ public:
 
     flightMode_t get_fallback_mode() { return _data->fallBackmode; };
 
-    uint32_t get_ack_number() { return _data->ackNumber; };
+    uint32_t get_ack_number() override { return _data->ackNumber; };
 
     bool is_valid() override;
 
-    byte *to_byte_array() override;
+    void to_buffer(uint8_t *buffer) override;
 };
-
-
-
