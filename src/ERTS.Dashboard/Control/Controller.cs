@@ -16,6 +16,9 @@ namespace ERTS.Dashboard.Control
     {
         const double RC_EXPO = 0.5;
         const double RC_RATE = 1;
+        const double TRIM_STEP = 1;
+        const double TRIM_MAX = 0.5;
+        const double TRIM_MIN = -0.5;
 
         Timer RCTimer;
         public FlightMode Mode { get; set; }
@@ -29,9 +32,14 @@ namespace ERTS.Dashboard.Control
         public double PitchRate { get; set; }
         public double YawRate { get; set; }
 
+        double LiftTrim { get; set; }
+        double RollTrim { get; set; }
+        double PitchTrim { get; set; }
+        double YawTrim { get; set; }
+
         public Controller()
         {
-            RCTimer = new Timer(1000); //TODO put in Config
+            RCTimer = new Timer(GlobalData.cfg.RCInterval);
             RCTimer.Elapsed += RCTimer_Elapsed;
             RCTimer.Start();
             if (GlobalData.com != null)
@@ -64,8 +72,6 @@ namespace ERTS.Dashboard.Control
                     throw new NotSupportedException();
                 default:
                     throw new ArgumentException("Received Packet is unsupported at this time.", "Controller");
-
-
             }
         }
 
@@ -104,10 +110,15 @@ namespace ERTS.Dashboard.Control
         #endregion
 
         #region Control Methods
+        public void ModeSwitch(FlightMode mode)
+        {
+            Debug.WriteLine(String.Format("Switching mode to {0}....",mode));
+            GlobalData.com.ModeSwitch(mode);
+        }
         public void Abort()
         {
             Debug.WriteLine("Aborting....");
-            GlobalData.com.ModeSwitch(FlightMode.Panic);
+            ModeSwitch(FlightMode.Panic);
         }
         public void SetLift(double _Lift)
         {
@@ -129,6 +140,71 @@ namespace ERTS.Dashboard.Control
             YawRate = GetRcRate(_YawRate);
             RaisePropertyChanged("YawRate");
         }
+
+        public void AdjustLiftTrim(bool? Direction)
+        {
+            if (Direction == null)
+            {
+                LiftTrim = 0;
+            }
+            else if (Direction == true) {
+                LiftTrim = Math.Max(TRIM_MAX, LiftTrim + TRIM_STEP);
+            }
+            else if (Direction == false)
+            {
+                LiftTrim = Math.Min(TRIM_MIN, LiftTrim - TRIM_STEP);
+            }
+            RaisePropertyChanged("LiftTrim");
+        }
+        public void AdjustRollTrim(bool? Direction)
+        {
+            if (Direction == null)
+            {
+                RollTrim = 0;
+            }
+            else if (Direction == true)
+            {
+                RollTrim = Math.Max(TRIM_MAX, RollTrim + TRIM_STEP);
+            }
+            else if (Direction == false)
+            {
+                RollTrim = Math.Min(TRIM_MIN, RollTrim - TRIM_STEP);
+            }
+            RaisePropertyChanged("RollTrim");
+        }
+        public void AdjustPitchTrim(bool? Direction)
+        {
+            if (Direction == null)
+            {
+                PitchTrim = 0;
+            }
+            else if (Direction == true)
+            {
+                PitchTrim = Math.Max(TRIM_MAX, PitchTrim + TRIM_STEP);
+            }
+            else if (Direction == false)
+            {
+                PitchTrim = Math.Min(TRIM_MIN, PitchTrim - TRIM_STEP);
+            }
+            RaisePropertyChanged("PitchTrim");
+        }
+        public void AdjustYawTrim(bool? Direction)
+        {
+            if (Direction == null)
+            {
+                YawTrim = 0;
+            }
+            else if (Direction == true)
+            {
+                YawTrim = Math.Max(TRIM_MAX, YawTrim + TRIM_STEP);
+            }
+            else if (Direction == false)
+            {
+                YawTrim = Math.Min(TRIM_MIN, YawTrim - TRIM_STEP);
+            }
+            RaisePropertyChanged("YawTrim");
+        }
+
         #endregion
 
         double GetRcRate(double _input, double expo = RC_EXPO, double rate = RC_RATE)

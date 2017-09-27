@@ -13,7 +13,7 @@
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <AssemblyVersion>2017.9.27.213</AssemblyVersion>
+    <AssemblyVersion>2017.9.27.218</AssemblyVersion>
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
@@ -92,6 +92,7 @@
     <Compile Include="Helpers\Databindings.cs" />
     <Compile Include="Input\BindingActuatedEvent.cs" />
     <Compile Include="Input\ControlActuator.cs" />
+    <Compile Include="Input\Enumerations\DirectInputRawOffsets.cs" />
     <Compile Include="Input\InputBinding.cs" />
     <Compile Include="Input\PatchBox.cs" />
     <Compile Include="Settings\ControlActuatorToStringConverter.cs" />
