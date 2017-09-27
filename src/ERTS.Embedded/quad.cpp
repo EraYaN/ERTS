@@ -13,7 +13,6 @@
 
 // TODO: Perhaps make the drone (almost) entirely interrupt-driven.
 // TODO: Tick on interrupt.
-// TODO: Fix loop time.
 // TODO: Implement exceptions.
 // TODO: Implement flash write/dump.
 // TODO: Implement parameter (b/d) change messages.
@@ -124,19 +123,20 @@ void Quadrupel::receive() {
 }
 
 void Quadrupel::send(Packet *packet) {
-    auto buffer = new uint8_t[MAX_PACKET_SIZE];
-    packet->to_buffer(buffer);
+    auto buffer = new uint8_t[MAX_PACKET_SIZE+3];
+    packet->to_buffer(&buffer[3]);
 
 #ifdef FAKE_DRIVERS
     std::cout << "TX:\t\t";
     packet_print(buffer);
 #endif
 
-    for (int i = 0; i < MAX_PACKET_SIZE; ++i) {
+    for (int i = 3; i < MAX_PACKET_SIZE+3; ++i) {
         uart_put(buffer[i]);
     }
 
-    delete[] buffer;
+    //delete[] buffer;
+    free(buffer);
     delete packet;
 }
 
@@ -151,7 +151,7 @@ void Quadrupel::acknowledge(uint32_t ack_number) {
 void Quadrupel::heartbeat() {
     // Calculate loop time.
     auto loop_time = (uint16_t) _accum_loop_time;
-
+    _accum_loop_time = 0;
     auto packet = new Packet(Telemetry);
     auto data = new TelemetryData(bat_volt, phi, theta, sp, sq, sr, loop_time, _mode);
     packet->set_data(data);
@@ -217,13 +217,13 @@ void Quadrupel::tick() {
     if (_mode != Panic) {
         if (bat_volt < BATTERY_THRESHOLD) {
             // Battery low
-            std::cout << "Battery low, entering panic mode." << std::endl;
+            printf("Battery low, entering panic mode.\n");
             set_mode(Panic);
         }
 
         if ((get_time_us() - last_received) > comm_timeout) {
             // Time-out
-            std::cout << "Timed out, entering panic mode." << std::endl;
+            printf("Timed out, entering panic mode.\n");
             set_mode(Panic);
         }
     }
