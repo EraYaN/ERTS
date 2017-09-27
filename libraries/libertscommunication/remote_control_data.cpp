@@ -2,7 +2,7 @@
 
 RemoteControlData::RemoteControlData(const uint8_t *data) {
     _data = new remoteControlData_t;
-    memcpy(&_data, data, get_length());
+    memcpy(_data, data, get_length());
 }
 
 int RemoteControlData::get_length() {

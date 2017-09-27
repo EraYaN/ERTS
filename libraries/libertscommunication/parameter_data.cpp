@@ -3,7 +3,7 @@
 
 ParameterData::ParameterData(const uint8_t *data) {
     _data = new parameterData_t;
-    memcpy(&_data, data, get_length());
+    memcpy(_data, data, get_length());
 }
 
 int ParameterData::get_length() {

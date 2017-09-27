@@ -3,7 +3,7 @@
 
 ModeSwitchData::ModeSwitchData(const uint8_t *data) {
     _data = new modeSwitchData_t;
-    memcpy(&_data, data, get_length());
+    memcpy(_data, data, get_length());
 }
 
 int ModeSwitchData::get_length() {
