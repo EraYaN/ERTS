@@ -12,7 +12,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="acknowledge_data.h" />
+    <ClInclude Include="actuation_parameter_data.h" />
+    <ClInclude Include="controller_parameter_data.h" />
     <ClInclude Include="exception_data.h" />
+    <ClInclude Include="misc_parameter_data.h" />
     <ClInclude Include="mode_switch_data.h" />
     <ClInclude Include="packet.h" />
     <ClInclude Include="packet_data.h" />
@@ -23,7 +26,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="acknowledge_data.cpp" />
+    <ClCompile Include="actuation_parameter_data.cpp" />
+    <ClCompile Include="controller_parameter_data.cpp" />
     <ClCompile Include="exception_data.cpp" />
+    <ClCompile Include="misc_parameter_data.cpp" />
     <ClCompile Include="mode_switch_data.cpp" />
     <ClCompile Include="packet.cpp" />
     <ClCompile Include="parameter_data.cpp" />

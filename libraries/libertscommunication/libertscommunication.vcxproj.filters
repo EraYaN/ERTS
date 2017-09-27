@@ -42,6 +42,15 @@
     <ClInclude Include="exception_data.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="actuation_parameter_data.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="controller_parameter_data.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="misc_parameter_data.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="packet.cpp">
@@ -63,6 +72,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="exception_data.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="actuation_parameter_data.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="controller_parameter_data.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="misc_parameter_data.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
