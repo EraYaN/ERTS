@@ -45,7 +45,6 @@ namespace ERTS.Dashboard.Input
             List<DeviceInstance> devices = new List<DeviceInstance>();
 
             devices.AddRange(directInput.GetDevices(DeviceType.Keyboard, DeviceEnumerationFlags.AttachedOnly));
-            devices.AddRange(directInput.GetDevices(DeviceType.Mouse, DeviceEnumerationFlags.AttachedOnly));
             devices.AddRange(directInput.GetDevices(DeviceType.Joystick, DeviceEnumerationFlags.AttachedOnly));
             devices.AddRange(directInput.GetDevices(DeviceType.Gamepad, DeviceEnumerationFlags.AttachedOnly));
             //TODO Add setting to allow all types.
