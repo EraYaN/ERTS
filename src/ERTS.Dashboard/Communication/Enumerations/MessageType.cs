@@ -14,12 +14,9 @@
         RemoteControl = 0x31, ///Expects no Acknowledgement
 
         //Parameter messages (0x40-0x9F)
-        SetControllerRollPID = 0x40, ///Expects Acknowledgement
-        SetControllerPitchPID = 0x41, ///Expects Acknowledgement
-        SetControllerYawPID = 0x42, ///Expects Acknowledgement
-        SetControllerHeightPID = 0x43, ///Expects Acknowledgement
-        SetMessageFrequencies = 0x44, ///Expects Acknowledgement. TelemetryFrequency, RemoteControlFrequency and LoopFreqency
-        Parameters = 0x45, ///Expects Acknowledgement
+        ActuationParameters = 0x40, ///Expects Acknowledgement.
+        ControllerParameters = 0x41, ///Expects Acknowledgement.
+        MiscParameters = 0x42, ///Expects Acknowledgement.
 
         //Reserved for future use (0xA0-0xDF)
 

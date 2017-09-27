@@ -62,11 +62,9 @@ namespace ERTS.Dashboard.Control
                     break;
                 case MessageType.RemoteControl:
                 case MessageType.ModeSwitch:
-                case MessageType.SetControllerRollPID:
-                case MessageType.SetControllerPitchPID:
-                case MessageType.SetControllerYawPID:
-                case MessageType.SetControllerHeightPID:
-                case MessageType.SetMessageFrequencies:
+                case MessageType.ActuationParameters:
+                case MessageType.ControllerParameters:
+                case MessageType.MiscParameters:
                 case MessageType.Reset:
                 case MessageType.Kill:
                     throw new NotSupportedException();

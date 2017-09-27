@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace ERTS.Dashboard.Communication.Data
 {
+    //Implemented all Parameter classes.
     public abstract class PackageData
     {
         public PackageData()

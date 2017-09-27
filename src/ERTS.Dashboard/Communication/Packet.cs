@@ -78,24 +78,15 @@ namespace ERTS.Dashboard.Communication {
                 case MessageType.RemoteControl:
                     Data = new RemoteControlData(dataSegment);
                     break;
-                case MessageType.Parameters:
-                    Data = new ParameterData(dataSegment);
-                    break;
-                case MessageType.SetControllerRollPID:
+                case MessageType.ActuationParameters:
                     throw new NotImplementedException();
                     break;
-                case MessageType.SetControllerPitchPID:
+                case MessageType.ControllerParameters:
                     throw new NotImplementedException();
                     break;
-                case MessageType.SetControllerYawPID:
+                case MessageType.MiscParameters:
                     throw new NotImplementedException();
-                    break;
-                case MessageType.SetControllerHeightPID:
-                    throw new NotImplementedException();
-                    break;
-                case MessageType.SetMessageFrequencies:
-                    throw new NotImplementedException();
-                    break;
+                    break;                
                 case MessageType.Reset:
                     throw new NotImplementedException();
                     break;
