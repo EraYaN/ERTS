@@ -81,7 +81,7 @@ class Quadrupel {
 
     void acknowledge(uint32_t ack_number);
 
-    void exception(exceptionType_t Type, const char* message);
+    void exception(exceptionType_t Type, const char (&message)[MAX_MESSAGE_LENGTH+1]);
 
     void heartbeat();
 

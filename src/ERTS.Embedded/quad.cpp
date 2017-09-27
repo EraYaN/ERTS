@@ -76,7 +76,7 @@ void Quadrupel::receive() {
                     break;
                 default:
                     // Message type unrecognized.
-                    exception(BadMessageTypeException,"Bad MessageT");
+                    exception(BadMessageTypeException,"Bad MessageT ");
 #ifdef FAKE_DRIVERS
                     std::cout << "Exception: Unknown packet type " << std::hex << comm_buffer[2] << std::endl;
 #endif
@@ -109,7 +109,7 @@ void Quadrupel::receive() {
 #ifdef FAKE_DRIVERS
                         std::cout << "Exception: Packet did not verify." << std::endl;
 #endif
-                        exception(MessageValidationException, "No Verify");
+                        exception(MessageValidationException, "No Verify    ");
                     }
                     _receiving = false;
                     comm_buffer_index = 0;
@@ -153,7 +153,7 @@ void Quadrupel::acknowledge(uint32_t ack_number) {
     send(packet);
 }
 
-void Quadrupel::exception(exceptionType_t type, const char* message) {
+void Quadrupel::exception(exceptionType_t type, const char (&message)[MAX_MESSAGE_LENGTH+1]) {
     auto packet = new Packet(Exception);
     auto data = new ExceptionData(type, message);
     packet->set_data(data);
