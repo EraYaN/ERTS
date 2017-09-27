@@ -21,10 +21,13 @@
     <ClCompile Include="..\ERTS.Embedded\quad.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\ERTS.Embedded\drivers\fake_driver.cpp">
+    <ClCompile Include="..\ERTS.Embedded\drivers\queue.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\ERTS.Embedded\drivers\queue.c">
+    <ClCompile Include="..\ERTS.Embedded\drivers\fake\fake_driver.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ERTS.Embedded\drivers\fake\serial.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -33,6 +36,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\ERTS.Embedded\drivers\driver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ERTS.Embedded\drivers\fake\serial.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

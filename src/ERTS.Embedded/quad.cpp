@@ -52,7 +52,7 @@ void Quadrupel::receive() {
             // Received 5 bytes, check message type.
             if (comm_buffer_index == 3) {
                 switch (comm_buffer[2]) {
-                    case Unknown:
+                    case UnknownPacket:
                     case ModeSwitch:
                     case Acknowledge:
                     case Telemetry:

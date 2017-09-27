@@ -12,7 +12,7 @@ extern "C"
 
 Packet::Packet() {
     _start = START_SEQUENCE;
-    _type = Unknown;
+    _type = UnknownPacket;
     _end = END_SEQUENCE;
 }
 
