@@ -72,8 +72,6 @@ namespace ERTS.Dashboard.Control
                     throw new NotSupportedException();
                 default:
                     throw new ArgumentException("Received Packet is unsupported at this time.", "Controller");
-
-
             }
         }
 
@@ -156,6 +154,7 @@ namespace ERTS.Dashboard.Control
             {
                 LiftTrim = Math.Min(TRIM_MIN, LiftTrim - TRIM_STEP);
             }
+            RaisePropertyChanged("LiftTrim");
         }
         public void AdjustRollTrim(bool? Direction)
         {
@@ -171,6 +170,7 @@ namespace ERTS.Dashboard.Control
             {
                 RollTrim = Math.Min(TRIM_MIN, RollTrim - TRIM_STEP);
             }
+            RaisePropertyChanged("RollTrim");
         }
         public void AdjustPitchTrim(bool? Direction)
         {
@@ -186,6 +186,7 @@ namespace ERTS.Dashboard.Control
             {
                 PitchTrim = Math.Min(TRIM_MIN, PitchTrim - TRIM_STEP);
             }
+            RaisePropertyChanged("PitchTrim");
         }
         public void AdjustYawTrim(bool? Direction)
         {
@@ -201,6 +202,7 @@ namespace ERTS.Dashboard.Control
             {
                 YawTrim = Math.Min(TRIM_MIN, YawTrim - TRIM_STEP);
             }
+            RaisePropertyChanged("YawTrim");
         }
 
         #endregion

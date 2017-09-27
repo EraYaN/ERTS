@@ -157,5 +157,11 @@ namespace ERTS.Dashboard.Input.Enumerations
         public const int XBOX_LEFTSTICK_Y = 4;
         public const int XBOX_RIGHTSTICK_X = 12;
         public const int XBOX_RIGHTSTICK_Y = 16;
+
+        public const int LE3D_X = 0;
+        public const int LE3D_Y = 4;
+        public const int LE3D_Z = 20;
+        public const int LE3D_THROTTLE = 24;
+        public const int LE3D_TRIGGER = 48;
     }
 }

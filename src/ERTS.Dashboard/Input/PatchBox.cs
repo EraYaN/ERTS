@@ -40,62 +40,80 @@ namespace ERTS.Dashboard.Input
             ControlActuator keyboard3 = new ControlActuator() { DeviceGuid = new Guid("6f1d2b61-d5a0-11cf-bfc7-444553540000"), ControlDisplayName = "Keyboard - 3", RawOffset = DirectInputRawOffsets.KB_3 };
             ControlActuator keyboard4 = new ControlActuator() { DeviceGuid = new Guid("6f1d2b61-d5a0-11cf-bfc7-444553540000"), ControlDisplayName = "Keyboard - 4", RawOffset = DirectInputRawOffsets.KB_4 };
             ControlActuator keyboard5 = new ControlActuator() { DeviceGuid = new Guid("6f1d2b61-d5a0-11cf-bfc7-444553540000"), ControlDisplayName = "Keyboard - 5", RawOffset = DirectInputRawOffsets.KB_5 };
-            ControlActuator joyPadX = new ControlActuator() { DeviceGuid = new Guid("f211f8e0-8dc4-11e7-800f-444553540000"), ControlDisplayName = "Xbox 360 - X", RawOffset = DirectInputRawOffsets.XBOX_LEFTSTICK_X };
-            ControlActuator joyPadY = new ControlActuator() { DeviceGuid = new Guid("f211f8e0-8dc4-11e7-800f-444553540000"), ControlDisplayName = "Xbox 360 - Y", RawOffset = DirectInputRawOffsets.XBOX_LEFTSTICK_Y };
-            ControlActuator joyPadRotX = new ControlActuator() { DeviceGuid = new Guid("f211f8e0-8dc4-11e7-800f-444553540000"), ControlDisplayName = "Xbox 360 - RotationX", RawOffset = DirectInputRawOffsets.XBOX_RIGHTSTICK_X };
-            ControlActuator joyPadRotY = new ControlActuator() { DeviceGuid = new Guid("f211f8e0-8dc4-11e7-800f-444553540000"), ControlDisplayName = "Xbox 360 - RotationY", RawOffset = DirectInputRawOffsets.XBOX_RIGHTSTICK_Y };
 
-           
+            ControlActuator keyboardA = new ControlActuator() { DeviceGuid = new Guid("6f1d2b61-d5a0-11cf-bfc7-444553540000"), ControlDisplayName = "Keyboard - A", RawOffset = DirectInputRawOffsets.KB_A };
+            ControlActuator keyboardZ = new ControlActuator() { DeviceGuid = new Guid("6f1d2b61-d5a0-11cf-bfc7-444553540000"), ControlDisplayName = "Keyboard - Z", RawOffset = DirectInputRawOffsets.KB_Z };
 
-            InputBinding LiftInputBinding = new InputBinding(new ControlActuator[] { joyPadY }, "Lift");
+            ControlActuator keyboardUpArrow = new ControlActuator() { DeviceGuid = new Guid("6f1d2b61-d5a0-11cf-bfc7-444553540000"), ControlDisplayName = "Keyboard - Up Arrow", RawOffset = DirectInputRawOffsets.KB_UP };
+            ControlActuator keyboardDownArrow = new ControlActuator() { DeviceGuid = new Guid("6f1d2b61-d5a0-11cf-bfc7-444553540000"), ControlDisplayName = "Keyboard - Down Arrow", RawOffset = DirectInputRawOffsets.KB_DOWN };
+
+            ControlActuator keyboardLeftArrow = new ControlActuator() { DeviceGuid = new Guid("6f1d2b61-d5a0-11cf-bfc7-444553540000"), ControlDisplayName = "Keyboard - Left Arrow", RawOffset = DirectInputRawOffsets.KB_LEFT };
+            ControlActuator keyboardRightArrow = new ControlActuator() { DeviceGuid = new Guid("6f1d2b61-d5a0-11cf-bfc7-444553540000"), ControlDisplayName = "Keyboard - Right Arrow", RawOffset = DirectInputRawOffsets.KB_RIGHT };
+
+            ControlActuator keyboardQ = new ControlActuator() { DeviceGuid = new Guid("6f1d2b61-d5a0-11cf-bfc7-444553540000"), ControlDisplayName = "Keyboard - Q", RawOffset = DirectInputRawOffsets.KB_Q };
+            ControlActuator keyboardW = new ControlActuator() { DeviceGuid = new Guid("6f1d2b61-d5a0-11cf-bfc7-444553540000"), ControlDisplayName = "Keyboard - W", RawOffset = DirectInputRawOffsets.KB_W };
+            
+            ControlActuator xboxPadX = new ControlActuator() { DeviceGuid = new Guid("f211f8e0-8dc4-11e7-800f-444553540000"), ControlDisplayName = "Xbox 360 - X", RawOffset = DirectInputRawOffsets.XBOX_LEFTSTICK_X };
+            ControlActuator xboxPadY = new ControlActuator() { DeviceGuid = new Guid("f211f8e0-8dc4-11e7-800f-444553540000"), ControlDisplayName = "Xbox 360 - Y", RawOffset = DirectInputRawOffsets.XBOX_LEFTSTICK_Y };
+            ControlActuator xboxPadRotX = new ControlActuator() { DeviceGuid = new Guid("f211f8e0-8dc4-11e7-800f-444553540000"), ControlDisplayName = "Xbox 360 - RotationX", RawOffset = DirectInputRawOffsets.XBOX_RIGHTSTICK_X };
+            ControlActuator xboxPadRotY = new ControlActuator() { DeviceGuid = new Guid("f211f8e0-8dc4-11e7-800f-444553540000"), ControlDisplayName = "Xbox 360 - RotationY", RawOffset = DirectInputRawOffsets.XBOX_RIGHTSTICK_Y };
+            ControlActuator joystickX = new ControlActuator() { DeviceGuid = new Guid("46be56e0-a3a5-11e7-8001-444553540000"), ControlDisplayName = "Logitech Extreme 3D - X", RawOffset = DirectInputRawOffsets.LE3D_X };
+            ControlActuator joystickY = new ControlActuator() { DeviceGuid = new Guid("46be56e0-a3a5-11e7-8001-444553540000"), ControlDisplayName = "Logitech Extreme 3D - Y", RawOffset = DirectInputRawOffsets.LE3D_Y };
+            ControlActuator joystickZ = new ControlActuator() { DeviceGuid = new Guid("46be56e0-a3a5-11e7-8001-444553540000"), ControlDisplayName = "Logitech Extreme 3D - Z", RawOffset = DirectInputRawOffsets.LE3D_Z };
+            ControlActuator joystickThrottle = new ControlActuator() { DeviceGuid = new Guid("46be56e0-a3a5-11e7-8001-444553540000"), ControlDisplayName = "Logitech Extreme 3D - Throttle", RawOffset = DirectInputRawOffsets.LE3D_THROTTLE };
+            ControlActuator joystickTrigger = new ControlActuator() { DeviceGuid = new Guid("46be56e0-a3a5-11e7-8001-444553540000"), ControlDisplayName = "Logitech Extreme 3D - Trigger", RawOffset = DirectInputRawOffsets.LE3D_TRIGGER };
+
+
+
+            InputBinding LiftInputBinding = new InputBinding(new ControlActuator[] { xboxPadY, joystickThrottle }, "Lift");
             LiftInputBinding.BindingActuatedEvent += LiftInputBinding_BindingActuatedEvent;
             InputBindings.Add("Lift", LiftInputBinding);
 
-            InputBinding RollInputBinding = new InputBinding(new ControlActuator[] { joyPadRotX }, "RollRate");
+            InputBinding RollInputBinding = new InputBinding(new ControlActuator[] { xboxPadRotX, joystickX }, "RollRate");
             RollInputBinding.BindingActuatedEvent += RollInputBinding_BindingActuatedEvent;
             InputBindings.Add("Roll", RollInputBinding);
 
-            InputBinding PitchInputBinding = new InputBinding(new ControlActuator[] { joyPadRotY }, "PitchRate");
+            InputBinding PitchInputBinding = new InputBinding(new ControlActuator[] { xboxPadRotY, joystickY }, "PitchRate");
             PitchInputBinding.BindingActuatedEvent += PitchInputBinding_BindingActuatedEvent;
             InputBindings.Add("Pitch", PitchInputBinding);
 
-            InputBinding YawInputBinding = new InputBinding(new ControlActuator[] { joyPadX }, "YawRate");
+            InputBinding YawInputBinding = new InputBinding(new ControlActuator[] { xboxPadX, joystickZ }, "YawRate");
             YawInputBinding.BindingActuatedEvent += YawInputBinding_BindingActuatedEvent;
             InputBindings.Add("Yaw", YawInputBinding);
 
-            InputBinding AbortInputBinding = new InputBinding(new ControlActuator[] { keyboardEsc }, "Abort");
+            InputBinding AbortInputBinding = new InputBinding(new ControlActuator[] { keyboardEsc, joystickTrigger }, "Abort");
             AbortInputBinding.BindingActuatedEvent += AbortInputBinding_BindingActuatedEvent;
             InputBindings.Add("Abort", AbortInputBinding);
 
-            InputBinding LiftTrimUpBinding = new InputBinding(new ControlActuator[] { }, "LiftTrimUp");
+            InputBinding LiftTrimUpBinding = new InputBinding(new ControlActuator[] { keyboardA }, "LiftTrimUp");
             LiftTrimUpBinding.BindingActuatedEvent += LiftTrimUpBinding_BindingActuatedEvent;
             InputBindings.Add("LiftTrimUp", LiftTrimUpBinding);
 
-            InputBinding LiftTrimDownBinding = new InputBinding(new ControlActuator[] { }, "LiftTrimDown");
+            InputBinding LiftTrimDownBinding = new InputBinding(new ControlActuator[] { keyboardZ }, "LiftTrimDown");
             LiftTrimUpBinding.BindingActuatedEvent += LiftTrimDownBinding_BindingActuatedEvent;
             InputBindings.Add("LiftTrimDown", LiftTrimUpBinding);
 
-            InputBinding RollTrimUpBinding = new InputBinding(new ControlActuator[] { }, "RollTrimUp");
+            InputBinding RollTrimUpBinding = new InputBinding(new ControlActuator[] { keyboardLeftArrow }, "RollTrimUp");
             RollTrimUpBinding.BindingActuatedEvent += RollTrimUpBinding_BindingActuatedEvent;
             InputBindings.Add("RollTrimUp", RollTrimUpBinding);
 
-            InputBinding RollTrimDownBinding = new InputBinding(new ControlActuator[] { }, "RollTrimDown");
+            InputBinding RollTrimDownBinding = new InputBinding(new ControlActuator[] { keyboardRightArrow }, "RollTrimDown");
             RollTrimUpBinding.BindingActuatedEvent += RollTrimDownBinding_BindingActuatedEvent;
             InputBindings.Add("RollTrimDown", RollTrimUpBinding);
 
-            InputBinding PitchTrimUpBinding = new InputBinding(new ControlActuator[] { }, "PitchTrimUp");
+            InputBinding PitchTrimUpBinding = new InputBinding(new ControlActuator[] { keyboardDownArrow }, "PitchTrimUp");
             PitchTrimUpBinding.BindingActuatedEvent += PitchTrimUpBinding_BindingActuatedEvent;
             InputBindings.Add("PitchTrimUp", PitchTrimUpBinding);
 
-            InputBinding PitchTrimDownBinding = new InputBinding(new ControlActuator[] { }, "PitchTrimDown");
+            InputBinding PitchTrimDownBinding = new InputBinding(new ControlActuator[] { keyboardUpArrow }, "PitchTrimDown");
             PitchTrimUpBinding.BindingActuatedEvent += PitchTrimDownBinding_BindingActuatedEvent;
             InputBindings.Add("PitchTrimDown", PitchTrimUpBinding);
 
-            InputBinding YawTrimUpBinding = new InputBinding(new ControlActuator[] { }, "YawTrimUp");
+            InputBinding YawTrimUpBinding = new InputBinding(new ControlActuator[] { keyboardW }, "YawTrimUp");
             YawTrimUpBinding.BindingActuatedEvent += YawTrimUpBinding_BindingActuatedEvent;
             InputBindings.Add("YawTrimUp", YawTrimUpBinding);
 
-            InputBinding YawTrimDownBinding = new InputBinding(new ControlActuator[] { }, "YawTrimDown");
+            InputBinding YawTrimDownBinding = new InputBinding(new ControlActuator[] { keyboardQ }, "YawTrimDown");
             YawTrimUpBinding.BindingActuatedEvent += YawTrimDownBinding_BindingActuatedEvent;
             InputBindings.Add("YawTrimDown", YawTrimUpBinding);
 
