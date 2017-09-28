@@ -1,6 +1,7 @@
 ﻿using EraYaN.Serial;
 using ERTS.Dashboard.Communication.Data;
 using ERTS.Dashboard.Communication.Enumerations;
+using ERTS.Dashboard.Helpers;
 using MicroMvvm;
 using System;
 using System.Collections.Generic;
@@ -26,7 +27,8 @@ namespace ERTS.Dashboard.Communication
 
         Random random = new Random();
 
-        Timer PacketTimer;
+        MultimediaTimer PacketTimer;
+        Timer BandwitdhTimer;
 
         List<SentPacket> sentPackets = new List<SentPacket>();
         object sentPacketsLockObject = new object();
@@ -52,7 +54,8 @@ namespace ERTS.Dashboard.Communication
                 }
             }
         }
-
+        Stopwatch BandwidthStopwatch;
+        int _lastBytesReceived = 0;
         int _bytesReceived = 0;
         public int BytesReceived {
             get {
@@ -62,10 +65,11 @@ namespace ERTS.Dashboard.Communication
                 if (_bytesReceived != value)
                 {
                     _bytesReceived = value;
-                    RaisePropertyChanged("BytesReceived");
+                    //RaisePropertyChanged("BytesReceived");
                 }
             }
         }
+        int _lastBytesSent = 0;
         int _bytesSent = 0;
         public int BytesSent {
             get {
@@ -75,7 +79,87 @@ namespace ERTS.Dashboard.Communication
                 if (_bytesSent != value)
                 {
                     _bytesSent = value;
-                    RaisePropertyChanged("BytesSent");
+                    //RaisePropertyChanged("BytesSent");
+                }
+            }
+        }
+        int _lastPacketsReceived = 0;
+        int _packetsReceived = 0;
+        public int PacketsReceived {
+            get {
+                return _packetsReceived;
+            }
+            set {
+                if (_packetsReceived != value)
+                {
+                    _packetsReceived = value;
+                    //RaisePropertyChanged("PacketsReceived");
+                }
+            }
+        }
+        int _lastPacketsSent = 0;
+        int _packetsSent = 0;
+        public int PacketsSent {
+            get {
+                return _packetsSent;
+            }
+            set {
+                if (_packetsSent != value)
+                {
+                    _packetsSent = value;
+                    //RaisePropertyChanged("PacketsSent");
+                }
+            }
+        }
+        double _receivedBandwidth = 0;
+        public double ReceivedBandwidth {
+            get {
+                return _receivedBandwidth;
+            }
+            set {
+                if (_receivedBandwidth != value)
+                {
+                    _receivedBandwidth = value;
+                    RaisePropertyChanged("ReceivedBandwidth");
+                }
+            }
+        }
+        double _sentBandwidth = 0;
+        public double SentBandwidth {
+            get {
+                return _sentBandwidth;
+            }
+            set {
+                if (_sentBandwidth != value)
+                {
+                    _sentBandwidth = value;
+                    RaisePropertyChanged("SentBandwidth");
+                }
+            }
+        }
+        double _packetsReceivedPerSecond = 0;
+        public double PacketsReceivedPerSecond {
+            get {
+                return _packetsReceivedPerSecond;
+            }
+            set {
+                if (_packetsReceivedPerSecond != value)
+                {
+                    _packetsReceivedPerSecond = value;
+                    RaisePropertyChanged("PacketsReceivedPerSecond");
+                }
+            }
+        }
+        double _packetsSentPerSecond = 0;
+        public double PacketsSentPerSecond {
+            get {
+                return _packetsSentPerSecond;
+            }
+            set {
+                if (_packetsSentPerSecond != value)
+                {
+                    _packetsSentPerSecond = value;
+                    RaisePropertyChanged("PacketsSentPerSecond");
                 }
             }
         }
@@ -92,13 +176,34 @@ namespace ERTS.Dashboard.Communication
                 Debug.WriteLine(serial.lastError);
             }
             RaisePropertyChanged("IsOpen");
-            PacketTimer = new Timer(GlobalData.cfg.PacketCheckResendInterval);
+            BandwidthStopwatch = new Stopwatch();
+            PacketTimer = new MultimediaTimer(GlobalData.cfg.PacketCheckResendInterval);
             PacketTimer.Elapsed += PacketTimer_Elapsed;
             PacketTimer.Start();
-
+            BandwitdhTimer = new Timer(1000);
+            BandwitdhTimer.Elapsed += BandwitdhTimer_Elapsed;
+            BandwitdhTimer.Start();
+            BandwidthStopwatch.Start();
         }
 
-        private void PacketTimer_Elapsed(object sender, ElapsedEventArgs e)
+        private void BandwitdhTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            BandwidthStopwatch.Stop();
+            double seconds = BandwidthStopwatch.Elapsed.TotalSeconds;
+            BandwidthStopwatch.Restart();
+            ReceivedBandwidth = (_bytesReceived - _lastBytesReceived) / seconds;
+            SentBandwidth = (_bytesSent - _lastBytesSent) / seconds;
+
+            PacketsReceivedPerSecond = (_packetsReceived - _lastPacketsReceived) / seconds;
+            PacketsSentPerSecond = (_packetsSent - _lastPacketsSent) / seconds;
+
+            _lastBytesSent = _bytesSent;
+            _lastBytesReceived = _bytesReceived;
+            _lastPacketsSent = _packetsSent;
+            _lastPacketsReceived = _packetsReceived;
+        }
+
+        private void PacketTimer_Elapsed(object sender, EventArgs e)
         {
             lock (sentPacketsLockObject)
             {
@@ -237,7 +342,8 @@ namespace ERTS.Dashboard.Communication
                         }
                     }
                 }
-                Debug.WriteLine(String.Format("Sending Packet: {0}", PacketToStringArray(p)));
+                //Debug.WriteLine(String.Format("Sending Packet: {0}", PacketToStringArray(p)));
+                PacketsSent++;
                 BytesSent += Packet.MAX_PACKET_SIZE;
                 serial.SendByteArray(p.ToByteArray());
             }
@@ -334,6 +440,9 @@ namespace ERTS.Dashboard.Communication
             if (disposing)
             {                
                 PacketTimer.Stop();
+                PacketTimer.Dispose();
+                BandwitdhTimer.Stop();
+                BandwitdhTimer.Dispose();
                 // free managed resources
                 if (serial != null)
                 {
@@ -348,6 +457,7 @@ namespace ERTS.Dashboard.Communication
         #region Event members
         void PacketReceived(Packet p)
         {
+            PacketsReceived++;
             OnPacketReceived(new PacketReceivedEventArgs(p));
         }
 

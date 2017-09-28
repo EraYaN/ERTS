@@ -1,6 +1,7 @@
 ﻿using ERTS.Dashboard.Communication;
 using ERTS.Dashboard.Communication.Data;
 using ERTS.Dashboard.Communication.Enumerations;
+using ERTS.Dashboard.Helpers;
 using MicroMvvm;
 using System;
 using System.Collections.Generic;
@@ -20,7 +21,7 @@ namespace ERTS.Dashboard.Control
         const double TRIM_MAX = 0.5;
         const double TRIM_MIN = -0.5;
 
-        Timer RCTimer;
+        MultimediaTimer RCTimer;
 
         public FlightMode Mode { get; set; }
         public double BatteryVoltage { get; set; }
@@ -38,12 +39,22 @@ namespace ERTS.Dashboard.Control
         public double PitchTrim { get; set; }
         public double YawTrim { get; set; }
 
+        readonly int AmountAVG;
+        int RCintervalcount;
+        Stopwatch rcIntervalStopwatch;
+
         public Controller()
         {
-            RCTimer = new Timer(GlobalData.cfg.RCInterval);
+            rcIntervalStopwatch = new Stopwatch();
+
+            RCTimer = new MultimediaTimer(GlobalData.cfg.RCInterval);
+
+            AmountAVG = 5000 / GlobalData.cfg.RCInterval;
             RCTimer.Elapsed += RCTimer_Elapsed;
             RCTimer.Start();
-           
+            Debug.WriteLine(String.Format("Started RC interval timer with an interval of {0} ms.", GlobalData.cfg.RCInterval));
+
+            rcIntervalStopwatch.Start();
             if (GlobalData.com != null)
                 GlobalData.com.PacketReceivedEvent += Com_PacketReceivedEvent;
         }
@@ -77,10 +88,19 @@ namespace ERTS.Dashboard.Control
             }
         }
 
-        private void RCTimer_Elapsed(object sender, ElapsedEventArgs e)
+        private void RCTimer_Elapsed(object sender, EventArgs e)
         {
             if (GlobalData.com != null)
             {
+                RCintervalcount++;
+                if (RCintervalcount == AmountAVG-1)
+                {
+                    RCintervalcount = 0;
+                    rcIntervalStopwatch.Stop();
+                    double hertz = AmountAVG / rcIntervalStopwatch.Elapsed.TotalSeconds;
+                    rcIntervalStopwatch.Restart();
+                    Debug.WriteLine(String.Format("Ran RC intervals for the last five seconds at: {0:N1} Hz",hertz));
+                }
                 //Scaling factors are -4, just for overflow safety, and no averse effect.
                 GlobalData.com.RemoteControl(Convert.ToUInt16(Math.Round(Lift * 65532.0)), Convert.ToInt16(Math.Round(RollRate * 32764.0)),
                     Convert.ToInt16(Math.Round(PitchRate * 32764.0)), Convert.ToInt16(Math.Round(YawRate * 32764.0)));
@@ -233,6 +253,8 @@ namespace ERTS.Dashboard.Control
                 if (disposing)
                 {
                     // TODO: dispose managed state (managed objects).
+                    RCTimer.Stop();
+                    RCTimer.Dispose();
                 }
 
                 // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.

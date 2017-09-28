@@ -202,8 +202,10 @@ namespace ERTS.Dashboard.ViewModel
                 StringBuilder sb = new StringBuilder();
                 if (GlobalData.com != null)
                 {
-                    sb.AppendFormat("Bytes Received: {0}\n", GlobalData.com.BytesReceived);
-                    sb.AppendFormat("Bytes Sent: {0}\n", GlobalData.com.BytesSent);
+                    sb.AppendFormat("Bytes Received: {0} ({1:N2} kbit/s)\n", GlobalData.com.BytesReceived, GlobalData.com.ReceivedBandwidth/125);
+                    sb.AppendFormat("Bytes Sent: {0} ({1:N2} kbit/s)\n", GlobalData.com.BytesSent, GlobalData.com.SentBandwidth/125);
+                    sb.AppendFormat("Packets Received: {0} ({1:N1} pps)\n", GlobalData.com.PacketsReceived, GlobalData.com.PacketsReceivedPerSecond);
+                    sb.AppendFormat("Packets Sent: {0} ({1:N1} pps)\n", GlobalData.com.PacketsSent, GlobalData.com.PacketsSentPerSecond);
                 }
                 sb.AppendLine("\n----\n");
                 sb.AppendLine(VersionInfo);
@@ -425,7 +427,8 @@ namespace ERTS.Dashboard.ViewModel
                 RaisePropertyChanged("SerialPortStatusColor");
                 return;
             }
-            else if (e.PropertyName == "BytesReceived" || e.PropertyName == "BytesSent")
+            else if (e.PropertyName == "BytesReceived" || e.PropertyName == "BytesSent" || e.PropertyName == "ReceivedBandwidth" || e.PropertyName == "SentBandwidth"
+                || e.PropertyName == "PacketsReceived" || e.PropertyName == "PacketsSent" || e.PropertyName == "PacketsReceivedPerSecond" || e.PropertyName == "PacketsSentPerSecond")
             {
                 RaisePropertyChanged("DebugInfo");
                 return;

@@ -68,6 +68,7 @@ namespace EraYaN.Serial
                 // free managed resources
                 if (serialPort != null)
                 {
+                    while (serialPort.BytesToWrite > 0) ;
                     serialPort.Close();
                     serialPort.Dispose();
                 }
