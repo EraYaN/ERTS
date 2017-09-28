@@ -61,7 +61,7 @@ int main(int argc, char *argv[]) {
             clear_timer_flag();
         }
 #ifdef FAKE_DRIVERS
-        nrf_delay_ms(50);
+        nrf_delay_ms(1);
 #endif
 
     }
