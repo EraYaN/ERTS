@@ -85,7 +85,10 @@ set(SOURCE_FILES
         ../libraries/libertscommunication/telemetry_data.cpp
         ../libraries/libertscommunication/actuation_parameter_data.cpp
         ../libraries/libertscommunication/actuation_parameter_data.h
-        ../libraries/libertscommunication/controller_parameter_data.cpp ../libraries/libertscommunication/controller_parameter_data.h ../libraries/libertscommunication/misc_parameter_data.cpp ../libraries/libertscommunication/misc_parameter_data.h)
+        ../libraries/libertscommunication/controller_parameter_data.cpp
+        ../libraries/libertscommunication/controller_parameter_data.h
+        ../libraries/libertscommunication/misc_parameter_data.cpp
+        ../libraries/libertscommunication/misc_parameter_data.h)
 
 add_executable(quad ${SOURCE_FILES})
 target_include_directories(quad PUBLIC
@@ -105,3 +108,30 @@ target_include_directories(quad PUBLIC
         ../libraries/nRF51_SDK_10.0.0_dc26b5e/components/softdevice/common/softdevice_handler
         ERTS.Embedded/drivers
 )
+
+
+set(SERIAL_SOURCE_FILES
+        ERTS.Serial.Test/main.cpp
+        ERTS.Embedded/drivers/fake/serial.cpp
+        ../libraries/libertscommunication/packet.cpp
+        ../libraries/libertscommunication/acknowledge_data.cpp
+        ../libraries/libertscommunication/mode_switch_data.cpp
+        ../libraries/libertscommunication/remote_control_data.cpp
+        ../libraries/libertscommunication/telemetry_data.cpp
+        ../libraries/libertscommunication/actuation_parameter_data.cpp
+        ../libraries/libertscommunication/controller_parameter_data.cpp
+        ../libraries/libertscommunication/misc_parameter_data.cpp
+        ../libraries/libcrc-2.0/src/crc16.c
+        ../libraries/libcrc-2.0/src/crcccitt.c
+        ../libraries/libcrc-2.0/src/crcdnp.c
+        ../libraries/libcrc-2.0/src/crckrmit.c
+        ../libraries/libcrc-2.0/src/crcsick.c
+        ../libraries/libcrc-2.0/src/nmea-chk.c
+        )
+
+add_executable(serial_test ${SERIAL_SOURCE_FILES})
+
+target_include_directories(serial_test PUBLIC
+        ERTS.Embedded/drivers/fake
+        ../libraries/libertscommunication
+        ../libraries/libcrc-2.0/include)
