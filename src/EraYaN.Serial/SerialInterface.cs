@@ -182,9 +182,10 @@ namespace EraYaN.Serial
             serialPort.Write(buf, 0, 1);
         }
         void serialPort_PinChanged(object sender, SerialPinChangedEventArgs e)
-        {
-            serialPort.Close();
-            serialPort.Open();
+        {           
+            //serialPort.Close();
+            Debug.WriteLine(String.Format("Serial Pin Change {0}", e.EventType), "SerialInterface");
+            //serialPort.Open();
         }
 
         void serialPort_ErrorReceived(object sender, SerialErrorReceivedEventArgs e)

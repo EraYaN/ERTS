@@ -52,8 +52,8 @@ int main(int argc, char *argv[]) {
     Quadrupel quad = Quadrupel();
     running = true;
     quad.exit = false;
-    *motor = *quad.motor;
-    *ae = *quad.ae;
+    /**motor = *quad.motor;
+    *ae = *quad.ae;*/
     while (!quad.exit) {
         quad.busywork();
         if (check_timer_flag()) {

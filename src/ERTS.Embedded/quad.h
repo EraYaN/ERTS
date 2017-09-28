@@ -34,7 +34,7 @@ typedef struct {
     uint16_t rate_yaw = 1;
     uint16_t rate_pitch_roll_lift = 1;
     uint16_t divider = 1;
-    uint16_t motor_min = 0, motor_max = 800;
+    uint16_t motor_min = 500, motor_max = 1200;
 } actuator_params_t;
 
 typedef struct {
@@ -94,7 +94,6 @@ class Quadrupel {
     inline uint16_t scale_motor(int32_t value);
 
 public:
-    int16_t motor[4], ae[4];
     bool exit = false;
 
     Quadrupel();

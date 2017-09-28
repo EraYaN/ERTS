@@ -107,7 +107,7 @@ namespace ERTS.Dashboard.Control
         }
         public void HandleException(ExceptionData data)
         {
-            Debug.WriteLine(String.Format("Processing Exception of type {0} with message: {1}",data.ExceptionType, data.Message));
+            Debug.WriteLine(String.Format("Processing Exception of type {0} with message: {1}.\n",data.ExceptionType, data.Message));
 
         }
         #endregion

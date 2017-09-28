@@ -252,19 +252,19 @@ void Quadrupel::busywork() {
     receive();
     if (_mode != Panic && _mode != Safe && _mode != Calibration) {
 
-        if (bat_volt < p_misc.battery_threshold) {
+        /*if (bat_volt < p_misc.battery_threshold) {
 #ifdef FAKE_DRIVERS
             std::cout << "Battery low, entering panic mode." << std::endl;
 #endif
             set_mode(Panic);
-        }
+        }*/
 
-        if ((get_time_us() - last_received) > p_misc.comm_timeout) {
+        /*if ((get_time_us() - last_received) > p_misc.comm_timeout) {
 #ifdef FAKE_DRIVERS
             std::cout << "Timed out, entering panic mode." << std::endl;
 #endif
             set_mode(Panic);
-        }
+        }*/
     }
     if (check_sensor_int_flag()) {
         get_dmp_data();
@@ -340,13 +340,13 @@ int Quadrupel::set_mode(flightMode_t new_mode) {
                 // Always OK.
                 case Safe: {
                     result = MODE_SWITCH_OK;
+                    break;
                 }            
                 default: {
                     result = MODE_SWITCH_UNSUPPORTED;
                     break;
                 }
-            }
-            result = MODE_SWITCH_UNSUPPORTED;
+            }            
             break;
         }
             // Other modes can only transition to safe or panic mode.
