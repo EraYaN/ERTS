@@ -1,5 +1,5 @@
 #include "quad.h"
-
+//#include "drivers/flash_wrapper.h"
 
 #ifdef FAKE_DRIVERS
 
@@ -284,6 +284,7 @@ void Quadrupel::tick() {
         if (_mode == Panic) {
             nrf_gpio_pin_toggle(RED);
         }
+        //flash_write_test();
         heartbeat();
     }
 
