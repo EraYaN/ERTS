@@ -31,7 +31,6 @@ void clear_timer_flag() {
 
 void quadrupel_timer_handler(void *p_context) {
     timer_flag = true;
-    nrf_gpio_pin_set(YELLOW);
     //LoopHandler();
 }
 

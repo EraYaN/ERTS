@@ -43,14 +43,14 @@ void Quadrupel::receive() {
                 comm_buffer[1] = (START_SEQUENCE & 0x00FF);
                 _receiving = true;
                 comm_buffer_index = 2;
-                nrf_gpio_pin_set(GREEN);
+                //nrf_gpio_pin_set(GREEN);
             }
             else {
                 if (currentByte != 0xFE) {
 #ifdef FAKE_DRIVERS
                     std::cout << "Looking for packet in: " << std::hex << last_two_bytes << std::endl;
 #endif
-                    nrf_gpio_pin_clear(GREEN);
+                    //nrf_gpio_pin_clear(GREEN);
                 }
             }
         }
@@ -86,21 +86,23 @@ void Quadrupel::receive() {
             }
             else if (comm_buffer_index == MAX_PACKET_SIZE) {
                 if (comm_buffer[MAX_PACKET_SIZE - 1] == END_SEQUENCE) {
-                    if (Packet::verify((byte *) comm_buffer)) {
+                    if (Packet::verify((byte *) comm_buffer) || true) {
                         auto *packet = new Packet((byte *) comm_buffer);
 #ifdef FAKE_DRIVERS
                         std::cout << "RX:\t\t";
                         packet_print(comm_buffer);
 #endif
-                        nrf_gpio_pin_toggle(YELLOW);
+                        
                         bool handled = handle_packet(packet);
+                        if(handled)
+                            nrf_gpio_pin_toggle(YELLOW);
                         //                        // TODO: Send exception if not handled.
 
-                        if (handled) {
-                            if (packet->get_data()->get_expects_acknowledgement()) {
-                                acknowledge(packet->get_data()->get_ack_number());
-                            }
+                        
+                        if (packet->get_data()->get_expects_acknowledgement()) {
+                            acknowledge(packet->get_data()->get_ack_number());
                         }
+                        
 
                         delete packet;
                     }
@@ -183,7 +185,16 @@ bool Quadrupel::handle_packet(Packet *packet) {
             auto *data = dynamic_cast<ModeSwitchData *>(packet->get_data());
             if (set_mode(data->get_new_mode()) != MODE_SWITCH_OK) {
                 // TODO: Send exception.
-                set_mode(data->get_fallback_mode());
+                exception(InvalidModeException, "Bad Main Mode");
+                if (data->get_fallback_mode() != None) {
+                    if (set_mode(data->get_fallback_mode()) != MODE_SWITCH_OK) {
+                        exception(InvalidModeException, "Bad Fallback.");
+                        return false;
+                    }                    
+                }
+                else {
+                    return false;
+                }
             }
             break;
         }
@@ -325,6 +336,16 @@ int Quadrupel::set_mode(flightMode_t new_mode) {
         }
             // Never transition from panic mode.
         case Panic: {
+            switch (new_mode) {
+                // Always OK.
+                case Safe: {
+                    result = MODE_SWITCH_OK;
+                }            
+                default: {
+                    result = MODE_SWITCH_UNSUPPORTED;
+                    break;
+                }
+            }
             result = MODE_SWITCH_UNSUPPORTED;
             break;
         }

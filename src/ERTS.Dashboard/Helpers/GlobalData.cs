@@ -36,7 +36,7 @@ namespace ERTS.Dashboard
                 catch (Exception e)
                 {
                     Debug.WriteLine("Configuration could not be read. Restored default settings.", "DATA");
-                    cfg = new Settings();
+                    cfg = new Settings(true);
                 }
                 finally
                 {
@@ -45,7 +45,7 @@ namespace ERTS.Dashboard
             else
             {
                 Debug.WriteLine("Configuration not found. Restored default settings.", "DATA");
-                cfg = new Settings();
+                cfg = new Settings(true);
             }
             return cfg != null;
 

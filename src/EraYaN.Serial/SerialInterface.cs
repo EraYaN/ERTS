@@ -43,7 +43,12 @@ namespace EraYaN.Serial
                 Handshake = Handshake.RequestToSendXOnXOff,
                 ReceivedBytesThreshold = 1,
                 ReadTimeout = 500,
-                WriteTimeout = 500
+                WriteTimeout = 500,
+                ReadBufferSize = 10 * 1024 * 1024,
+                WriteBufferSize = 10 * 1024 * 1024,
+                DtrEnable = false,
+                RtsEnable = false
+
             };
             //serialPort.DataReceived += serialPort_DataReceived;
             serialPort.ErrorReceived += serialPort_ErrorReceived;
@@ -73,7 +78,7 @@ namespace EraYaN.Serial
         {
             try
             {
-                Debug.WriteLine(String.Format("Opening port {0} at {1} baud.", port,baudrate), "SerialInterface");
+                Debug.WriteLine(String.Format("Opening port {0} at {1} baud.", port, baudrate), "SerialInterface");
                 serialPort.Open();
                 byte[] buffer = new byte[blockLimit];
                 try
@@ -82,6 +87,8 @@ namespace EraYaN.Serial
                     {
                         try
                         {
+                            if (!serialPort.IsOpen)
+                                return;
                             serialPort.BaseStream.BeginRead(buffer, 0, buffer.Length, delegate (IAsyncResult ar)
                             {
                                 try
@@ -189,8 +196,11 @@ namespace EraYaN.Serial
 
         /*void serialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
-            int input = serialPort.ReadByte();
-            DataSerial((byte)input, e);           
+            while (serialPort.BytesToRead > 0)
+            {
+                byte input = (byte)serialPort.ReadByte();
+                DataSerial(input);
+            }
         }*/
 
         void handleSerialData(byte[] data)
