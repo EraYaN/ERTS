@@ -29,7 +29,6 @@ Quadrupel::Quadrupel() {
     read_baro();
 
     last_received = get_time_us();
-
 }
 
 void Quadrupel::receive() {
@@ -44,14 +43,14 @@ void Quadrupel::receive() {
                 comm_buffer[1] = (START_SEQUENCE & 0x00FF);
                 _receiving = true;
                 comm_buffer_index = 2;
-                nrf_gpio_pin_clear(GREEN);
+                nrf_gpio_pin_set(GREEN);
             }
             else {
                 if (currentByte != 0xFE) {
 #ifdef FAKE_DRIVERS
                     std::cout << "Looking for packet in: " << std::hex << last_two_bytes << std::endl;
 #endif
-                    nrf_gpio_pin_set(GREEN);
+                    nrf_gpio_pin_clear(GREEN);
                 }
             }
         }
