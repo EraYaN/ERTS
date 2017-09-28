@@ -78,7 +78,7 @@ namespace ERTS.Dashboard.Communication
                 if (sentPackets.Count > 0)
                 {
                     List<SentPacket> removedPackets = new List<SentPacket>();
-                    var overDuePackets = sentPackets.Where(item => item.Timestamp.Ticks < DateTime.Now.Ticks - GlobalData.cfg.PacketResendInterval * TimeSpan.TicksPerMillisecond && item.NumberOfTries > 1 || item.Timestamp.Ticks < DateTime.Now.Ticks - GlobalData.cfg.PacketResendInterval * 10 * TimeSpan.TicksPerMillisecond && item.NumberOfTries == 1);
+                    var overDuePackets = sentPackets.Where(item => (item.Timestamp.Ticks < DateTime.Now.Ticks - GlobalData.cfg.PacketResendInterval * TimeSpan.TicksPerMillisecond && item.NumberOfTries > 1) || (item.Timestamp.Ticks < DateTime.Now.Ticks - GlobalData.cfg.PacketResendInterval * 10 * TimeSpan.TicksPerMillisecond && item.NumberOfTries == 1));
                     foreach (SentPacket sp in overDuePackets)
                     {
                         uint newAckNumber = NextAcknowlegdementNumber();
@@ -303,6 +303,7 @@ namespace ERTS.Dashboard.Communication
         {
             if (disposing)
             {
+                PacketTimer.Stop();
                 // free managed resources
                 if (serial != null)
                 {

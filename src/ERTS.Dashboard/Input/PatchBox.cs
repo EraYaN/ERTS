@@ -57,14 +57,18 @@ namespace ERTS.Dashboard.Input
             ControlActuator xboxPadY = new ControlActuator() { DeviceGuid = new Guid("f211f8e0-8dc4-11e7-800f-444553540000"), ControlDisplayName = "Xbox 360 - Y", RawOffset = DirectInputRawOffsets.XBOX_LEFTSTICK_Y };
             ControlActuator xboxPadRotX = new ControlActuator() { DeviceGuid = new Guid("f211f8e0-8dc4-11e7-800f-444553540000"), ControlDisplayName = "Xbox 360 - RotationX", RawOffset = DirectInputRawOffsets.XBOX_RIGHTSTICK_X };
             ControlActuator xboxPadRotY = new ControlActuator() { DeviceGuid = new Guid("f211f8e0-8dc4-11e7-800f-444553540000"), ControlDisplayName = "Xbox 360 - RotationY", RawOffset = DirectInputRawOffsets.XBOX_RIGHTSTICK_Y };
-            ControlActuator joystickX = new ControlActuator() { DeviceGuid = new Guid("46be56e0-a3a5-11e7-8001-444553540000"), ControlDisplayName = "Logitech Extreme 3D - X", RawOffset = DirectInputRawOffsets.LE3D_X };
+            /*ControlActuator joystickX = new ControlActuator() { DeviceGuid = new Guid("46be56e0-a3a5-11e7-8001-444553540000"), ControlDisplayName = "Logitech Extreme 3D - X", RawOffset = DirectInputRawOffsets.LE3D_X };
             ControlActuator joystickY = new ControlActuator() { DeviceGuid = new Guid("46be56e0-a3a5-11e7-8001-444553540000"), ControlDisplayName = "Logitech Extreme 3D - Y", RawOffset = DirectInputRawOffsets.LE3D_Y };
             ControlActuator joystickZ = new ControlActuator() { DeviceGuid = new Guid("46be56e0-a3a5-11e7-8001-444553540000"), ControlDisplayName = "Logitech Extreme 3D - Z", RawOffset = DirectInputRawOffsets.LE3D_Z };
             ControlActuator joystickThrottle = new ControlActuator() { DeviceGuid = new Guid("46be56e0-a3a5-11e7-8001-444553540000"), ControlDisplayName = "Logitech Extreme 3D - Throttle", RawOffset = DirectInputRawOffsets.LE3D_THROTTLE };
-            ControlActuator joystickTrigger = new ControlActuator() { DeviceGuid = new Guid("46be56e0-a3a5-11e7-8001-444553540000"), ControlDisplayName = "Logitech Extreme 3D - Trigger", RawOffset = DirectInputRawOffsets.LE3D_TRIGGER };
+            ControlActuator joystickTrigger = new ControlActuator() { DeviceGuid = new Guid("46be56e0-a3a5-11e7-8001-444553540000"), ControlDisplayName = "Logitech Extreme 3D - Trigger", RawOffset = DirectInputRawOffsets.LE3D_TRIGGER };*/
 
-
-
+            ControlActuator joystickX = new ControlActuator() { DeviceGuid = new Guid("241e5050-93f0-11e7-8001-444553540000"), ControlDisplayName = "Logitech Extreme 3D - X", RawOffset = DirectInputRawOffsets.LE3D_X };
+            ControlActuator joystickY = new ControlActuator() { DeviceGuid = new Guid("241e5050-93f0-11e7-8001-444553540000"), ControlDisplayName = "Logitech Extreme 3D - Y", RawOffset = DirectInputRawOffsets.LE3D_Y };
+            ControlActuator joystickZ = new ControlActuator() { DeviceGuid = new Guid("241e5050-93f0-11e7-8001-444553540000"), ControlDisplayName = "Logitech Extreme 3D - Z", RawOffset = DirectInputRawOffsets.LE3D_Z };
+            ControlActuator joystickThrottle = new ControlActuator() { DeviceGuid = new Guid("241e5050-93f0-11e7-8001-444553540000"), ControlDisplayName = "Logitech Extreme 3D - Throttle", RawOffset = DirectInputRawOffsets.LE3D_THROTTLE };
+            ControlActuator joystickTrigger = new ControlActuator() { DeviceGuid = new Guid("241e5050-93f0-11e7-8001-444553540000"), ControlDisplayName = "Logitech Extreme 3D - Trigger", RawOffset = DirectInputRawOffsets.LE3D_TRIGGER };
+            
             InputBinding LiftInputBinding = new InputBinding(new ControlActuator[] { xboxPadY, joystickThrottle }, "Lift");
             LiftInputBinding.BindingActuatedEvent += LiftInputBinding_BindingActuatedEvent;
             InputBindings.Add("Lift", LiftInputBinding);

@@ -122,9 +122,10 @@ namespace ERTS.Dashboard.Configuration
             }
         }
 
-        public Settings()
+        public Settings(bool defaults = false)
         {
-            SetDefaults();
+            if(defaults)
+                SetDefaults();
         }
 
         public void Save()
