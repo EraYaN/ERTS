@@ -90,8 +90,8 @@ namespace ERTS.Dashboard.Control
         #region Communication Methods
         public void HandleTelemetry(TelemetryData data)
         {
-            //Debug.WriteLine("Processing Telemetry....");
-            //Debug.WriteLine(data.ToString());
+            Debug.WriteLine("Processing Telemetry....");
+            Debug.WriteLine(data.ToString());
             BatteryVoltage = data.BatteryVoltage / 100.0;
             RaisePropertyChanged("BatteryVoltage");
             LoopTime = data.LoopTime / 1000.0;
