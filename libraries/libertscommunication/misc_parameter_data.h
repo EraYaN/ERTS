@@ -8,13 +8,15 @@ class MiscParameterData : PacketData {
     uint16_t _log_divider;
     uint16_t _battery_threshold;
     uint16_t _target_loop_time;
-    uint32_t _ackNumber; // For keeping track of acknowledgements
+    uint32_t _ack_number; // For keeping track of acknowledgements
 
 public:
     explicit MiscParameterData(const uint8_t *data);
+    MiscParameterData(uint16_t panic_decrement, uint16_t rc_interval, uint16_t log_divider,
+                          uint16_t battery_threshold, uint16_t target_loop_time, uint32_t ack_number);
 
     uint32_t get_ack_number() override {
-        return _ackNumber;
+        return _ack_number;
     };
 
     uint16_t get_panic_decrement() {

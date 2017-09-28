@@ -81,7 +81,7 @@ __pragma(pack(push, 1))
 /*typedef struct PACK modeSwitchData_tag {
     flightMode_t newMode;
     flightMode_t fallBackmode; //No fallback if None (0xF) is specified)
-    uint32_t ackNumber; // For keeping track of acknowledgements
+    uint32_t ack_number; // For keeping track of acknowledgements
 } modeSwitchData_t;*/
 
 // 4 bytes

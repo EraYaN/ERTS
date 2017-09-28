@@ -8,13 +8,16 @@ class ActuationParameterData : public PacketData {
     uint16_t _rate_yaw; // Divider for yaw.
     uint16_t _motor_min;
     uint16_t _motor_max;
-    uint32_t _ackNumber; // For keeping track of acknowledgements
+    uint32_t _ack_number; // For keeping track of acknowledgements
 
 public:
     explicit ActuationParameterData(const uint8_t *data);
 
+    ActuationParameterData(uint16_t rate_roll_pitch_lift, uint16_t rate_yaw, uint16_t motor_min, uint16_t motor_max,
+                           uint32_t ack_number);
+
     uint32_t get_ack_number() override {
-        return _ackNumber;
+        return _ack_number;
     };
 
     uint16_t get_rate_pitch_roll_lift() {
