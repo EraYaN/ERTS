@@ -40,7 +40,7 @@ namespace MicroMvvm
         {
             // verify that the property name matches a real,  
             // public, instance property on this Object.
-            if (TypeDescriptor.GetProperties(this)[propertyName] == null)
+            if (TypeDescriptor.GetProperties(this)[propertyName] == null && propertyName != String.Empty)
             {
                 Debug.Fail("Invalid property name: " + propertyName);
             }

@@ -6,7 +6,7 @@
         xmlns:utility="clr-namespace:ERTS.Dashboard.Utility"
         xmlns:viewmodel="clr-namespace:ERTS.Dashboard.ViewModel"
         mc:Ignorable="d"
-        Title="MainWindow" Height="800" Width="1000" PreviewKeyDown="Window_PreviewKeyDown" ResizeMode="NoResize" Initialized="Window_Initialized" Closing="Window_Closing">
+        Title="{Binding WindowTitle}" Height="800" Width="1000" PreviewKeyDown="Window_PreviewKeyDown" ResizeMode="NoResize" Initialized="Window_Initialized" Closing="Window_Closing">
     <Window.Resources>
         <utility:DeviceInstanceToStringConverter x:Key="deviceInstanceToStringConverter" />
     </Window.Resources>
@@ -25,7 +25,7 @@
                 <MenuItem Header="About..." Name="AboutMenuItem" Click="AboutMenuItem_Click"/>
             </MenuItem>
         </Menu>
-        <StackPanel Height="612" VerticalAlignment="Top" Margin="0,28,0,0">
+        <StackPanel Margin="0,28,0,272">
             <ComboBox x:Name="ControllerComboBox" Margin="10,5" VerticalAlignment="Top" ItemsSource="{Binding Devices}" SelectedItem="{Binding SelectedDevice}">
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
@@ -33,8 +33,9 @@
                     </DataTemplate>
                 </ComboBox.ItemTemplate>
             </ComboBox>
-            <Button x:Name="UseControllerButton" Content="Use" Margin="10,5" VerticalAlignment="Top" Height="22" Command="{Binding BindInput}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}" RenderTransformOrigin="0.182,3.471" HorizontalAlignment="Left" Width="75"/>
-            <Button x:Name="StartAllButton" Content="Start All" Margin="10,5" VerticalAlignment="Top" Height="22" HorizontalAlignment="Left" Width="75" Click="StartAllButton_Click"/>
+            <Button x:Name="UseControllerButton" Content="Use" Margin="10,5" VerticalAlignment="Top" Height="22" Command="{Binding BindInput}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}" RenderTransformOrigin="0.182,3.471" HorizontalAlignment="Left" Width="100"/>
+            <Button x:Name="StartAllButton" Content="Start Stage Two" Margin="10,5" VerticalAlignment="Top" Height="22" HorizontalAlignment="Left" Width="100" Click="StartStageTwoButton_Click"/>
+            <Button x:Name="StopStageTwoButton" Content="Stop Stage Two" Margin="10,5" VerticalAlignment="Top" Height="22" HorizontalAlignment="Left" Width="100" Click="StopStageTwoButton_Click"/>
             <GroupBox Header="Status" HorizontalAlignment="Left" Height="100" VerticalAlignment="Top" Width="Auto" Margin="10,5">
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -91,7 +92,7 @@
                         <Label Content="Yaw:"/>
                         <Label Content="Lift:"/>
                     </StackPanel>
-                    
+
                     <StackPanel Grid.Column="2" VerticalAlignment="Center">
                         <Label Content="{Binding RollString}"/>
                         <Label Content="{Binding PitchString}"/>
@@ -102,11 +103,11 @@
 
             </GroupBox>
         </StackPanel>
-        <TextBox Name="DebugTraceTextBox" TextWrapping="Wrap" Margin="10,645,10,31" />
+        <TextBox Name="DebugTraceTextBox" TextWrapping="Wrap" Margin="10,0,10,31" Height="236" VerticalAlignment="Bottom" Text="{Binding DebugInfo, Mode=OneWay}" />
         <StatusBar Grid.ColumnSpan="3" Height="26" VerticalAlignment="Bottom" Grid.Row="1">
-            <StatusBarItem Width="40" Content="{Binding SerialPortStatus, Mode=OneWay}" Foreground="{Binding SerialPortStatusColor, Mode=OneWay}" x:Name="statusBarSerialStatus" HorizontalContentAlignment="Center" HorizontalAlignment="Left"/>
+            <StatusBarItem x:Name="statusBarSerialStatus" Width="120" Content="{Binding SerialPortStatus, Mode=OneWay}" Foreground="{Binding SerialPortStatusColor, Mode=OneWay}" HorizontalContentAlignment="Center" HorizontalAlignment="Left"/>
 
-            <StatusBarItem x:Name="statusBarUnacknowlegdedPackets" Width="120" Content="{Binding UnacknowlegdedPackets, Mode=OneWay}" HorizontalContentAlignment="Center" HorizontalAlignment="Left"/>
+            <StatusBarItem x:Name="statusBarUnacknowlegdedPackets" Width="150" Content="{Binding UnacknowlegdedPackets, Mode=OneWay}" Foreground="{Binding UnacknowlegdedPacketsColor, Mode=OneWay}" HorizontalContentAlignment="Center" HorizontalAlignment="Left"/>
             <StatusBarItem x:Name="statusBarInputStatus" Width="100" Content="{Binding InputStatus, Mode=OneWay}" HorizontalContentAlignment="Center" HorizontalAlignment="Right"/>
             <StatusBarItem x:Name="statusBarInputDevicesStatus" Width="120" Content="{Binding InputDevicesStatus, Mode=OneWay}" HorizontalContentAlignment="Center" HorizontalAlignment="Right"/>
             <StatusBarItem x:Name="statusBarLoopTime" Width="80" Content="{Binding LoopTimeString, Mode=OneWay}" HorizontalContentAlignment="Center" HorizontalAlignment="Right"/>

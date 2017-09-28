@@ -91,6 +91,7 @@ namespace ERTS.Dashboard
             input.StartThread();
             return true;
         }
+        
         /// <summary>
         /// Connects all inputs to the controller and other modules.
         /// </summary>
@@ -165,19 +166,9 @@ namespace ERTS.Dashboard
                 Debug.WriteLine("Starting Controller failed.", "DATA");
             return;
         }
-        static public void Dispose()
-        {
 
-            if (ctr != null)
-            {
-                ctr.Dispose();
-                ctr = null;
-            }
-            if (com != null)
-            {
-                com.Dispose();
-                com = null;
-            }
+        public static void DisposeStageOne()
+        {
             if (patchbox != null)
                 patchbox = null;
             if (input != null)
@@ -192,6 +183,27 @@ namespace ERTS.Dashboard
                 cfg.Save();
                 cfg = null;
             }
+        }
+
+        public static void DisposeStageTwo()
+        {
+            if (ctr != null)
+            {
+                ctr.Dispose();
+                ctr = null;
+            }
+            if (com != null)
+            {
+                com.Dispose();
+                com = null;
+            }
+        }
+
+        static public void Dispose()
+        {
+            DisposeStageTwo();
+
+            DisposeStageOne();
             return;
         }
     }

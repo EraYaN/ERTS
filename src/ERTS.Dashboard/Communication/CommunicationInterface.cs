@@ -23,7 +23,7 @@ namespace ERTS.Dashboard.Communication
         byte[] packetBuffer = new byte[Packet.MAX_PACKET_SIZE];
         ushort lastTwoBytes = 0;
         uint LastAckNumber = 1;
-        
+
         Random random = new Random();
 
         Timer PacketTimer;
@@ -49,6 +49,33 @@ namespace ERTS.Dashboard.Communication
                 lock (sentPacketsLockObject)
                 {
                     return sentPackets.Count;
+                }
+            }
+        }
+
+        int _bytesReceived = 0;
+        public int BytesReceived {
+            get {
+                return _bytesReceived;
+            }
+            set {
+                if (_bytesReceived != value)
+                {
+                    _bytesReceived = value;
+                    RaisePropertyChanged("BytesReceived");
+                }
+            }
+        }
+        int _bytesSent = 0;
+        public int BytesSent {
+            get {
+                return _bytesSent;
+            }
+            set {
+                if (_bytesSent != value)
+                {
+                    _bytesSent = value;
+                    RaisePropertyChanged("BytesSent");
                 }
             }
         }
@@ -108,7 +135,8 @@ namespace ERTS.Dashboard.Communication
             }
         }
 
-        uint NextAcknowlegdementNumber() {
+        uint NextAcknowlegdementNumber()
+        {
             return ++LastAckNumber;
         }
 
@@ -122,6 +150,7 @@ namespace ERTS.Dashboard.Communication
 
         void com_SerialDataEvent(object sender, SerialDataEventArgs e)
         {
+            BytesReceived++;
             RaisePropertyChanged("BytesInRBuffer");
             //Debug.WriteLine(e.Data,"COMMBYTE");
             lastTwoBytes = (ushort)(lastTwoBytes << 8 | e.Data);
@@ -136,14 +165,14 @@ namespace ERTS.Dashboard.Communication
                 }
                 else
                 {
-                    if(e.Data != 0xFE)
+                    if (e.Data != 0xFE)
                         Debug.WriteLine(String.Format("Looking for packet start with {0:X4}", lastTwoBytes));
                 }
             }
             else
             {
                 packetBuffer[bufferIndex] = e.Data;
-                bufferIndex++;                
+                bufferIndex++;
                 if (bufferIndex == 3) // Received three bytes, check MessageType
                 {
                     if (!Enum.IsDefined(typeof(MessageType), packetBuffer[2]))
@@ -153,7 +182,8 @@ namespace ERTS.Dashboard.Communication
                         isReceivingPacket = false;
                         bufferIndex = 0;
                     }
-                } else if (bufferIndex == Packet.MAX_PACKET_SIZE) // Received twenty bytes, check endsequence
+                }
+                else if (bufferIndex == Packet.MAX_PACKET_SIZE) // Received twenty bytes, check endsequence
                 {
                     if (packetBuffer[Packet.MAX_PACKET_SIZE - 1] != Packet.END_SEQUENCE)
                     {
@@ -208,14 +238,14 @@ namespace ERTS.Dashboard.Communication
                     }
                 }
                 Debug.WriteLine(String.Format("Sending Packet: {0}", PacketToStringArray(p)));
-                
+                BytesSent += Packet.MAX_PACKET_SIZE;
                 serial.SendByteArray(p.ToByteArray());
             }
             else
             {
                 Debug.WriteLine("Packet could not be sent.");
             }
-            
+
             RaisePropertyChanged("BytesInTBuffer");
             RaisePropertyChanged("UnacknowlegdedPackets");
 
@@ -223,7 +253,7 @@ namespace ERTS.Dashboard.Communication
 
         string PacketToStringArray(Packet p)
         {
-            return PacketToStringArray(p.ToByteArray());            
+            return PacketToStringArray(p.ToByteArray());
         }
         string PacketToStringArray(byte[] p)
         {
@@ -302,13 +332,15 @@ namespace ERTS.Dashboard.Communication
         protected virtual void Dispose(bool disposing)
         {
             if (disposing)
-            {
+            {                
                 PacketTimer.Stop();
                 // free managed resources
                 if (serial != null)
                 {
                     serial.Dispose();
                 }
+                Debug.WriteLine(String.Format("Bytes Received: {0}", BytesReceived), "CommunicationInterface");
+                Debug.WriteLine(String.Format("Bytes Sent: {0}", BytesSent), "CommunicationInterface");
             }
         }
         #endregion

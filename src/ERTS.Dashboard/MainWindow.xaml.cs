@@ -81,13 +81,19 @@ namespace ERTS.Dashboard
             Application.Current.Shutdown();
         }
 
-        private void StartAllButton_Click(object sender, RoutedEventArgs e)
+        private void StartStageTwoButton_Click(object sender, RoutedEventArgs e)
         {
             GlobalData.InitStageTwo();
 
             ((MainViewModel)DataContext).InitStageTwo();
         }
 
+        private void StopStageTwoButton_Click(object sender, RoutedEventArgs e)
+        {
+            GlobalData.DisposeStageTwo();
+
+            ((MainViewModel)DataContext).StopStageTwo();
+        }
         #endregion
 
 

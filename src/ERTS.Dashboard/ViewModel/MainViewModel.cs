@@ -136,7 +136,7 @@ namespace ERTS.Dashboard.ViewModel
         public double LiftTrimSize {
             get {
                 if (GlobalData.ctr != null)
-                    return Math.Min(0,Math.Abs(GlobalData.ctr.LiftTrim) * 98);
+                    return Math.Min(0, Math.Abs(GlobalData.ctr.LiftTrim) * 98);
                 else
                     return 0;
             }
@@ -151,7 +151,7 @@ namespace ERTS.Dashboard.ViewModel
                     }
                     else
                     {
-                        return Math.Min(0, Math.Abs(GlobalData.ctr.Lift-GlobalData.ctr.LiftTrim) * 98) + 1;
+                        return Math.Min(0, Math.Abs(GlobalData.ctr.Lift - GlobalData.ctr.LiftTrim) * 98) + 1;
                     }
                 }
                 else
@@ -193,15 +193,25 @@ namespace ERTS.Dashboard.ViewModel
 #else
                 string Branch = "Release";
 #endif
-                return String.Format("{3} v{0} {1} {2} by Erwin de Haan, Robin Hes & Casper van Wezel", fileVersion, processorArchitecture, Branch, currAss.FullName);
+                return String.Format("{3} v{0} {1} {2} by Erwin de Haan, Robin Hes & Casper van Wezel", fileVersion, processorArchitecture, Branch, currAss.GetName().Name);
             }
         }
 
         public string DebugInfo {
             get {
-                return VersionInfo;
+                StringBuilder sb = new StringBuilder();
+                if (GlobalData.com != null)
+                {
+                    sb.AppendFormat("Bytes Received: {0}\n", GlobalData.com.BytesReceived);
+                    sb.AppendFormat("Bytes Sent: {0}\n", GlobalData.com.BytesSent);
+                }
+                sb.AppendLine("\n----\n");
+                sb.AppendLine(VersionInfo);
+                return sb.ToString();
             }
         }
+
+
 
         public string VersionInfo {
             get {
@@ -244,6 +254,33 @@ namespace ERTS.Dashboard.ViewModel
                         return Brushes.Green;
                     }
                     else if (b > 0 && b <= 2)
+                    {
+                        return Brushes.LightGreen;
+                    }
+                    else
+                    {
+                        return Brushes.Orange;
+                    }
+                }
+                else
+                {
+                    return Brushes.OrangeRed;
+                }
+            }
+        }
+
+        public Brush UnacknowlegdedPacketsColor {
+            get {
+                if (GlobalData.com == null)
+                    return Brushes.Red;
+                if (GlobalData.com.IsOpen)
+                {
+                    int b = GlobalData.com.UnacknowlegdedPackets;
+                    if (b == 0)
+                    {
+                        return Brushes.Green;
+                    }
+                    else if (b > 0 && b <= 1)
                     {
                         return Brushes.LightGreen;
                     }
@@ -307,7 +344,14 @@ namespace ERTS.Dashboard.ViewModel
             get {
                 if (GlobalData.com != null)
                 {
-                    return string.Format("{0} unacknowlegded packets", GlobalData.com.UnacknowlegdedPackets);
+                    if (GlobalData.com.UnacknowlegdedPackets > 0)
+                    {
+                        return string.Format("{0} waiting packets", GlobalData.com.UnacknowlegdedPackets);
+                    }
+                    else
+                    {
+                        return "No waiting packets";
+                    }
                 }
                 else
                 {
@@ -318,7 +362,7 @@ namespace ERTS.Dashboard.ViewModel
 
         public MainViewModel()
         {
-            
+
         }
 
         public void InitStageOne()
@@ -331,6 +375,8 @@ namespace ERTS.Dashboard.ViewModel
 
             if (GlobalData.input != null)
                 GlobalData.input.PropertyChanged += Input_PropertyChanged;
+
+            RaisePropertyChanged(String.Empty);
         }
 
         public void InitStageTwo()
@@ -339,6 +385,18 @@ namespace ERTS.Dashboard.ViewModel
                 GlobalData.ctr.PropertyChanged += Ctr_PropertyChanged;
             if (GlobalData.com != null)
                 GlobalData.com.PropertyChanged += Com_PropertyChanged;
+
+            RaisePropertyChanged(String.Empty);
+        }
+
+        public void StopStageTwo()
+        {
+            if (GlobalData.ctr != null)
+                GlobalData.ctr.PropertyChanged -= Ctr_PropertyChanged;
+            if (GlobalData.com != null)
+                GlobalData.com.PropertyChanged -= Com_PropertyChanged;
+
+            RaisePropertyChanged(String.Empty);
         }
 
         private void Input_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -367,9 +425,15 @@ namespace ERTS.Dashboard.ViewModel
                 RaisePropertyChanged("SerialPortStatusColor");
                 return;
             }
+            else if (e.PropertyName == "BytesReceived" || e.PropertyName == "BytesSent")
+            {
+                RaisePropertyChanged("DebugInfo");
+                return;
+            }
             else if (e.PropertyName == "UnacknowlegdedPackets")
             {
                 RaisePropertyChanged("UnacknowlegdedPackets");
+                RaisePropertyChanged("UnacknowlegdedPacketsColor");
                 return;
             }
             else
