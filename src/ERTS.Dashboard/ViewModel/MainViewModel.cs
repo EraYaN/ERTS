@@ -302,6 +302,20 @@ namespace ERTS.Dashboard.ViewModel
                 }
             }
         }
+
+        public string UnacknowlegdedPackets {
+            get {
+                if (GlobalData.com != null)
+                {
+                    return string.Format("{0} unacknowlegded packets", GlobalData.com.UnacknowlegdedPackets);
+                }
+                else
+                {
+                    return "com is null";
+                }
+            }
+        }
+
         public MainViewModel()
         {
             
@@ -353,9 +367,14 @@ namespace ERTS.Dashboard.ViewModel
                 RaisePropertyChanged("SerialPortStatusColor");
                 return;
             }
+            else if (e.PropertyName == "UnacknowlegdedPackets")
+            {
+                RaisePropertyChanged("UnacknowlegdedPackets");
+                return;
+            }
             else
             {
-                Debug.WriteLine("Got unsupported binding name from InputManager " + e.PropertyName + ".");
+                Debug.WriteLine("Got unsupported binding name from CommunicationInterface " + e.PropertyName + ".");
             }
         }
 

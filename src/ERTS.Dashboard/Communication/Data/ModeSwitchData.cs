@@ -35,8 +35,8 @@ namespace ERTS.Dashboard.Communication.Data
             if (!Enum.IsDefined(typeof(FlightMode), data[5]))
                 throw new ArgumentException("Data contains unrecognized fallback FlightMode.", "data");
 
-            newMode = (FlightMode)data[0];
-            fallbackMode = (FlightMode)data[1];
+            newMode = (FlightMode)data[4];
+            fallbackMode = (FlightMode)data[5];
             ackNumber = BitConverter.ToUInt32(data, 0);
         }
         public ModeSwitchData()

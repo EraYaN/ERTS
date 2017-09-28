@@ -48,6 +48,39 @@ namespace ERTS.Dashboard.Configuration
             get;
             set;
         }
+        /// <summary>
+        /// The interval between checking for needed retransmissions in milliseconds
+        /// </summary>
+        [DefaultValue(50)]
+        public int PacketCheckResendInterval {
+            get;
+            set;
+        }
+        /// <summary>
+        /// The interval between packet retransmissions in milliseconds
+        /// </summary>
+        [DefaultValue(500)]
+        public int PacketResendInterval {
+            get;
+            set;
+        }
+        /// <summary>
+        /// The amount of times a packet should be retransmitted.
+        /// </summary>
+        [DefaultValue(50)]
+        public int PacketRetransmissionCount {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Setting to kill the quad after 50 transmission fails.
+        /// </summary>
+        [DefaultValue(true)]
+        public bool KillAfterRetransmissionFail {
+            get;
+            set;
+        }
 
         public void SetDefaults(String Property = "")
         {
@@ -70,6 +103,22 @@ namespace ERTS.Dashboard.Configuration
             if (Property == "TelemetryInterval" || Property == "")
             {
                 TelemetryInterval = (int)(TypeDescriptor.GetProperties(this)["TelemetryInterval"].Attributes[typeof(DefaultValueAttribute)] as DefaultValueAttribute).Value;
+            }
+            if (Property == "PacketCheckResendInterval" || Property == "")
+            {
+                PacketCheckResendInterval = (int)(TypeDescriptor.GetProperties(this)["PacketCheckResendInterval"].Attributes[typeof(DefaultValueAttribute)] as DefaultValueAttribute).Value;
+            }
+            if (Property == "PacketResendInterval" || Property == "")
+            {
+                PacketResendInterval = (int)(TypeDescriptor.GetProperties(this)["PacketResendInterval"].Attributes[typeof(DefaultValueAttribute)] as DefaultValueAttribute).Value;
+            }
+            if (Property == "PacketRetransmissionCount" || Property == "")
+            {
+                PacketResendInterval = (int)(TypeDescriptor.GetProperties(this)["PacketRetransmissionCount"].Attributes[typeof(DefaultValueAttribute)] as DefaultValueAttribute).Value;
+            }
+            if (Property == "KillAfterRetransmissionFail" || Property == "")
+            {
+                KillAfterRetransmissionFail = (bool)(TypeDescriptor.GetProperties(this)["KillAfterRetransmissionFail"].Attributes[typeof(DefaultValueAttribute)] as DefaultValueAttribute).Value;
             }
         }
 
@@ -95,6 +144,11 @@ namespace ERTS.Dashboard.Configuration
             try { TargetLoopTime = info.GetInt32("TargetLoopTime"); } catch { SetDefaults("TargetLoopTime"); }
             try { RCInterval = info.GetInt32("RCInterval"); } catch { SetDefaults("RCInterval"); }
             try { TelemetryInterval = info.GetInt32("TelemetryInterval"); } catch { SetDefaults("TelemetryInterval"); }
+            try { PacketCheckResendInterval = info.GetInt32("PacketCheckResendInterval"); } catch { SetDefaults("PacketCheckResendInterval"); }
+            try { PacketResendInterval = info.GetInt32("PacketResendInterval"); } catch { SetDefaults("PacketResendInterval"); }
+            try { PacketRetransmissionCount = info.GetInt32("PacketRetransmissionCount"); } catch { SetDefaults("PacketRetransmissionCount"); }
+            try { KillAfterRetransmissionFail = info.GetBoolean("KillAfterRetransmissionFail"); } catch { SetDefaults("KillAfterRetransmissionFail"); }
+
         }
         [SecurityPermissionAttribute(SecurityAction.Demand,
         SerializationFormatter = true)]
@@ -106,6 +160,10 @@ namespace ERTS.Dashboard.Configuration
             info.AddValue("TargetLoopTime", TargetLoopTime);
             info.AddValue("RCInterval", RCInterval);
             info.AddValue("TelemetryInterval", TelemetryInterval);
+            info.AddValue("PacketCheckResendInterval", PacketCheckResendInterval);
+            info.AddValue("PacketResendInterval", PacketResendInterval);
+            info.AddValue("PacketRetransmissionCount", PacketRetransmissionCount);
+            info.AddValue("KillAfterRetransmissionFail", KillAfterRetransmissionFail);
         }
     }
 }

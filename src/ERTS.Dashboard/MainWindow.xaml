@@ -104,7 +104,9 @@
         </StackPanel>
         <TextBox Name="DebugTraceTextBox" TextWrapping="Wrap" Margin="10,645,10,31" />
         <StatusBar Grid.ColumnSpan="3" Height="26" VerticalAlignment="Bottom" Grid.Row="1">
-            <StatusBarItem Width="40" Content="{Binding SerialPortStatus, Mode=OneWay}" Foreground="{Binding SerialPortStatusColor, Mode=OneWay}" x:Name="statusBarSerialStatus" HorizontalContentAlignment="Center" HorizontalAlignment="Left"/>            
+            <StatusBarItem Width="40" Content="{Binding SerialPortStatus, Mode=OneWay}" Foreground="{Binding SerialPortStatusColor, Mode=OneWay}" x:Name="statusBarSerialStatus" HorizontalContentAlignment="Center" HorizontalAlignment="Left"/>
+
+            <StatusBarItem x:Name="statusBarUnacknowlegdedPackets" Width="120" Content="{Binding UnacknowlegdedPackets, Mode=OneWay}" HorizontalContentAlignment="Center" HorizontalAlignment="Left"/>
             <StatusBarItem x:Name="statusBarInputStatus" Width="100" Content="{Binding InputStatus, Mode=OneWay}" HorizontalContentAlignment="Center" HorizontalAlignment="Right"/>
             <StatusBarItem x:Name="statusBarInputDevicesStatus" Width="120" Content="{Binding InputDevicesStatus, Mode=OneWay}" HorizontalContentAlignment="Center" HorizontalAlignment="Right"/>
             <StatusBarItem x:Name="statusBarLoopTime" Width="80" Content="{Binding LoopTimeString, Mode=OneWay}" HorizontalContentAlignment="Center" HorizontalAlignment="Right"/>

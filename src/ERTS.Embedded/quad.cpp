@@ -365,7 +365,7 @@ int Quadrupel::set_mode(flightMode_t new_mode) {
 
     if (result == MODE_SWITCH_OK) {
 #ifdef FAKE_DRIVERS
-        std::cout << "Set mode " << new_mode << " from " << _mode << std::endl;
+        std::cout << "Set mode " << _mode << " -> " << new_mode << std::endl;
 #endif
         _mode = new_mode;
     }

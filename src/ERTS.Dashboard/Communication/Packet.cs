@@ -15,7 +15,7 @@ namespace ERTS.Dashboard.Communication {
         public const int FOOTER_SIZE = 1;
         public const int DATA_SIZE = MAX_PACKET_SIZE - HEADER_SIZE - FOOTER_SIZE;
         public const byte END_SEQUENCE = 0xFF;
-
+        
         public ushort StartSequence;
         public MessageType Type;
         public ushort Checksum;
@@ -105,6 +105,11 @@ namespace ERTS.Dashboard.Communication {
         public bool IsGoodToSend()
         {
             return Type != MessageType.Unknown && Checksum == 0 && Data.IsValid();
+        }
+
+        public void ResetForRetransmission()
+        {
+            Checksum = 0;
         }
 
         public bool Validate()

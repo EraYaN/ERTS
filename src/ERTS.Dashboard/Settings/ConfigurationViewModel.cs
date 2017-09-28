@@ -138,7 +138,87 @@ namespace ERTS.Dashboard.Configuration {
                 }
             }
         }
-        
+
+        public int PacketCheckResendInterval {
+            get {
+                if (GlobalData.cfg != null)
+                {
+                    return GlobalData.cfg.PacketCheckResendInterval;
+                }
+                return 0;
+            }
+            set {
+                if (GlobalData.cfg != null)
+                {
+                    if (GlobalData.cfg.PacketCheckResendInterval != value)
+                    {
+                        GlobalData.cfg.PacketCheckResendInterval = value;
+                        RaisePropertyChanged("PacketCheckResendInterval");
+                    }
+                }
+            }
+        }
+
+        public int PacketResendInterval {
+            get {
+                if (GlobalData.cfg != null)
+                {
+                    return GlobalData.cfg.PacketResendInterval;
+                }
+                return 0;
+            }
+            set {
+                if (GlobalData.cfg != null)
+                {
+                    if (GlobalData.cfg.PacketResendInterval != value)
+                    {
+                        GlobalData.cfg.PacketResendInterval = value;
+                        RaisePropertyChanged("PacketResendInterval");
+                    }
+                }
+            }
+        }
+
+        public int PacketRetransmissionCount {
+            get {
+                if (GlobalData.cfg != null)
+                {
+                    return GlobalData.cfg.PacketRetransmissionCount;
+                }
+                return 0;
+            }
+            set {
+                if (GlobalData.cfg != null)
+                {
+                    if (GlobalData.cfg.PacketRetransmissionCount != value)
+                    {
+                        GlobalData.cfg.PacketRetransmissionCount = value;
+                        RaisePropertyChanged("PacketRetransmissionCount");
+                    }
+                }
+            }
+        }
+
+        public bool KillAfterRetransmissionFail {
+            get {
+                if (GlobalData.cfg != null)
+                {
+                    return GlobalData.cfg.KillAfterRetransmissionFail;
+                }
+                return false;
+            }
+            set {
+                if (GlobalData.cfg != null)
+                {
+                    if (GlobalData.cfg.KillAfterRetransmissionFail != value)
+                    {
+                        GlobalData.cfg.KillAfterRetransmissionFail = value;
+                        RaisePropertyChanged("KillAfterRetransmissionFail");
+                    }
+                }
+            }
+        }
+
 
         #endregion
 

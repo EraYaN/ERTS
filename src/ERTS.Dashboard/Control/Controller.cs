@@ -21,6 +21,7 @@ namespace ERTS.Dashboard.Control
         const double TRIM_MIN = -0.5;
 
         Timer RCTimer;
+
         public FlightMode Mode { get; set; }
         public double BatteryVoltage { get; set; }
 
@@ -42,9 +43,12 @@ namespace ERTS.Dashboard.Control
             RCTimer = new Timer(GlobalData.cfg.RCInterval);
             RCTimer.Elapsed += RCTimer_Elapsed;
             RCTimer.Start();
+           
             if (GlobalData.com != null)
                 GlobalData.com.PacketReceivedEvent += Com_PacketReceivedEvent;
         }
+
+        
 
         private void Com_PacketReceivedEvent(object sender, Communication.PacketReceivedEventArgs e)
         {
@@ -99,6 +103,7 @@ namespace ERTS.Dashboard.Control
         public void HandleAcknowledge(AcknowledgeData data)
         {
             Debug.WriteLine(String.Format("Processing Acknowledge {0}....",data.Number));
+            GlobalData.com.HandleAcknowledgement(data.Number);
         }
         public void HandleException(ExceptionData data)
         {

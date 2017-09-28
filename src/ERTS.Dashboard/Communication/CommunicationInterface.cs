@@ -3,9 +3,11 @@ using ERTS.Dashboard.Communication.Data;
 using ERTS.Dashboard.Communication.Enumerations;
 using MicroMvvm;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Timers;
 
 namespace ERTS.Dashboard.Communication
 {
@@ -20,6 +22,14 @@ namespace ERTS.Dashboard.Communication
         int bufferIndex = 0;
         byte[] packetBuffer = new byte[Packet.MAX_PACKET_SIZE];
         ushort lastTwoBytes = 0;
+        uint LastAckNumber = 1;
+        
+        Random random = new Random();
+
+        Timer PacketTimer;
+
+        List<SentPacket> sentPackets = new List<SentPacket>();
+        object sentPacketsLockObject = new object();
 
         #region Status Properties
         public bool IsOpen {
@@ -32,6 +42,15 @@ namespace ERTS.Dashboard.Communication
 
         public int BytesInTBuffer {
             get { return serial.BytesInTBuffer; }
+        }
+
+        public int UnacknowlegdedPackets {
+            get {
+                lock (sentPacketsLockObject)
+                {
+                    return sentPackets.Count;
+                }
+            }
         }
         #endregion
 
@@ -46,6 +65,59 @@ namespace ERTS.Dashboard.Communication
                 Debug.WriteLine(serial.lastError);
             }
             RaisePropertyChanged("IsOpen");
+            PacketTimer = new Timer(GlobalData.cfg.PacketCheckResendInterval);
+            PacketTimer.Elapsed += PacketTimer_Elapsed;
+            PacketTimer.Start();
+
+        }
+
+        private void PacketTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            lock (sentPacketsLockObject)
+            {
+                if (sentPackets.Count > 0)
+                {
+                    List<SentPacket> removedPackets = new List<SentPacket>();
+                    var overDuePackets = sentPackets.Where(item => item.Timestamp.Ticks < DateTime.Now.Ticks - GlobalData.cfg.PacketResendInterval * TimeSpan.TicksPerMillisecond && item.NumberOfTries > 1 || item.Timestamp.Ticks < DateTime.Now.Ticks - GlobalData.cfg.PacketResendInterval * 10 * TimeSpan.TicksPerMillisecond && item.NumberOfTries == 1);
+                    foreach (SentPacket sp in overDuePackets)
+                    {
+                        uint newAckNumber = NextAcknowlegdementNumber();
+                        sp.PrepareForNextTry(newAckNumber);
+                        if (sp.NumberOfTries <= GlobalData.cfg.PacketRetransmissionCount)
+                        {
+                            Debug.WriteLine(String.Format("Retransmitting packet ({0}).", sp.NumberOfTries));
+                            SendPacket(sp.Packet, true);
+                        }
+                        else
+                        {
+                            if (GlobalData.cfg.KillAfterRetransmissionFail)
+                            {
+                                //TODO implement killing packets
+                                Debug.WriteLine(String.Format("Packet retransmissions failed after {0} attempts, trying to kill quad.", GlobalData.cfg.PacketRetransmissionCount));
+                                //Kill();
+                            }
+                            removedPackets.Add(sp);
+                        }
+                    }
+                    foreach (SentPacket sp in removedPackets)
+                    {
+                        sentPackets.Remove(sp);
+                    }
+                    RaisePropertyChanged("UnacknowlegdedPackets");
+                }
+            }
+        }
+
+        uint NextAcknowlegdementNumber() {
+            return ++LastAckNumber;
+        }
+
+        public bool HandleAcknowledgement(uint ackNumber)
+        {
+            lock (sentPacketsLockObject)
+            {
+                return sentPackets.RemoveAll(p => p.HasAckNumber(ackNumber)) > 0;
+            }
         }
 
         void com_SerialDataEvent(object sender, SerialDataEventArgs e)
@@ -77,7 +149,7 @@ namespace ERTS.Dashboard.Communication
                     if (!Enum.IsDefined(typeof(MessageType), packetBuffer[2]))
                     {
                         //TODO Send exception
-                        Debug.WriteLine("Packet had bad type.");
+                        Debug.WriteLine(String.Format("Packet had bad type: {0}", PacketToStringArray(packetBuffer)));
                         isReceivingPacket = false;
                         bufferIndex = 0;
                     }
@@ -86,7 +158,7 @@ namespace ERTS.Dashboard.Communication
                     if (packetBuffer[Packet.MAX_PACKET_SIZE - 1] != Packet.END_SEQUENCE)
                     {
                         //TODO Send exception
-                        Debug.WriteLine("Packet had bad end sequence.");
+                        Debug.WriteLine(String.Format("Packet had bad end sequence: {0}", PacketToStringArray(packetBuffer)));
                         isReceivingPacket = false;
                         bufferIndex = 0;
                     }
@@ -102,7 +174,7 @@ namespace ERTS.Dashboard.Communication
                             }
                             else
                             {
-                                Debug.WriteLine("Packet checksum mismatch.");
+                                Debug.WriteLine(String.Format("Packet checksum mismatch: {0}", PacketToStringArray(packetBuffer)));
                             }
 
                         }
@@ -119,22 +191,50 @@ namespace ERTS.Dashboard.Communication
             }
         }
 
-        public void SendPacket(Packet p)
-        {            
+        public void SendPacket(Packet p, bool Retransmission = false)
+        {
             if (serial.IsOpen && p.IsGoodToSend())
             {
-                StringBuilder sb = new StringBuilder();
-                foreach (byte b in p.ToByteArray())
+                if (!Retransmission)
                 {
-                    sb.Append("0x");
-                    sb.Append(b.ToString("X2"));
-                    sb.Append(" ");
+                    if (p.Data.ExpectsAcknowledgement)
+                    {
+                        uint ackNumber = NextAcknowlegdementNumber();
+                        p.Data.SetAckNumber(ackNumber);
+                        lock (sentPacketsLockObject)
+                        {
+                            sentPackets.Add(new SentPacket(p, ackNumber));
+                        }
+                    }
                 }
-                Debug.WriteLine(String.Format("Sending Packet: {0}",sb.ToString()));
+                Debug.WriteLine(String.Format("Sending Packet: {0}", PacketToStringArray(p)));
+                
                 serial.SendByteArray(p.ToByteArray());
+            }
+            else
+            {
+                Debug.WriteLine("Packet could not be sent.");
             }
             
             RaisePropertyChanged("BytesInTBuffer");
+            RaisePropertyChanged("UnacknowlegdedPackets");
+
+        }
+
+        string PacketToStringArray(Packet p)
+        {
+            return PacketToStringArray(p.ToByteArray());            
+        }
+        string PacketToStringArray(byte[] p)
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (byte b in p)
+            {
+                sb.Append("0x");
+                sb.Append(b.ToString("X2"));
+                sb.Append(" ");
+            }
+            return sb.ToString();
         }
 
         #region Protocol Methods
