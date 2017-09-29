@@ -1,5 +1,7 @@
 #pragma once
 #include <string>
+#include <sys/termios.h>
+
 #if defined(_WIN32) || defined(_WIN64)
 #include <Windows.h>
 #endif
@@ -24,4 +26,6 @@ public:
     bool getchar_nb(char *c);
 
     int putchar(char c);
+
+    void flush(int queue_selector = TCIOFLUSH);
 };

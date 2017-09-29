@@ -48,12 +48,9 @@ int main(int argc, char *argv[]) {
     }
 #endif
 
-    // Init instance of the drone class and bind motors.
     Quadrupel quad = Quadrupel();
     running = true;
     quad.exit = false;
-    /**motor = *quad.motor;
-    *ae = *quad.ae;*/
     while (!quad.exit) {
         quad.busywork();
         if (check_timer_flag()) {

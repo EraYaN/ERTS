@@ -111,7 +111,7 @@ Serial::Serial(const char *address) {
 	int result;
 	struct termios tty;
 
-	handle = ::open(address, O_RDWR | O_NOCTTY);
+	handle = ::open(address, O_RDWR | O_NOCTTY | O_NDELAY);
 
 	assert(handle >= 0);
 
@@ -141,7 +141,7 @@ Serial::Serial(const char *address) {
 
 	result = tcsetattr(handle, TCSANOW, &tty); /* non-canonical */
 
-	tcflush(handle, TCIOFLUSH); /* flush I/O buffer */
+	flush(0);
 }
 
 Serial::~Serial() {
@@ -179,6 +179,10 @@ int Serial::putchar(char c) {
 
 	assert(result == 1);
 	return result;
+}
+
+void Serial::flush(int queue_selector) {
+	tcflush(handle, queue_selector);
 }
 
 #endif

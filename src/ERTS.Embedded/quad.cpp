@@ -4,6 +4,7 @@
 #ifdef FAKE_DRIVERS
 
 #include <iostream>
+#include <driver.h>
 
 #endif
 
@@ -32,7 +33,7 @@ Quadrupel::Quadrupel() {
 }
 
 void Quadrupel::receive() {
-    while (uart_available()) {
+    while (rx_queue.count) {
         uint8_t currentByte = uart_get();
 
         last_two_bytes = last_two_bytes << 8 | currentByte;
@@ -86,7 +87,7 @@ void Quadrupel::receive() {
             }
             else if (comm_buffer_index == MAX_PACKET_SIZE) {
                 if (comm_buffer[MAX_PACKET_SIZE - 1] == END_SEQUENCE) {
-                    if (Packet::verify((byte *) comm_buffer) || true) {
+                    if (Packet::verify((byte *) comm_buffer)) {
                         auto *packet = new Packet((byte *) comm_buffer);
 #ifdef FAKE_DRIVERS
                         std::cout << "RX:\t\t";
@@ -96,7 +97,8 @@ void Quadrupel::receive() {
                         bool handled = handle_packet(packet);
                         if(handled)
                             nrf_gpio_pin_toggle(YELLOW);
-                        //                        // TODO: Send exception if not handled.
+
+                        // TODO: Send exception if not handled.
 
                         
                         if (packet->get_data()->get_expects_acknowledgement()) {
@@ -124,8 +126,17 @@ void Quadrupel::receive() {
                     _receiving = false;
                     comm_buffer_index = 0;
                 }
+
+                break;
             }
         }
+    }
+
+    if (rx_queue.count == 0) {
+        nrf_gpio_pin_set(RED);
+    }
+    else {
+        nrf_gpio_pin_clear(RED);
     }
 }
 
@@ -209,6 +220,7 @@ bool Quadrupel::handle_packet(Packet *packet) {
 
             last_received = get_time_us();
             break;
+
         }
         case Kill: {
             kill();

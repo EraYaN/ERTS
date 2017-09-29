@@ -121,7 +121,7 @@ OUTPUT_FILENAME := $(PROJECT_NAME)
 $(OBJECT_DIRECTORY)%.o: %.c
 	@echo Compiling file: $(notdir $<)
 	$(NO_ECHO)$(CC) $(CFLAGS) $(INC_PATHS) -c -o $@ $<
-	
+
 $(OBJECT_DIRECTORY)%.o: %.c
 	@echo Compiling file: $(notdir $<)
 	$(NO_ECHO)$(CC) $(CFLAGS) $(INC_PATHS) -c -o $@ $<
@@ -137,7 +137,7 @@ $(OBJECT_DIRECTORY)%.o: %.s
 
 $(PROJECT_NAME): LINKER_SCRIPT=$(abspath ../../libraries/shared.ld)
 $(PROJECT_NAME): $(EXT_DEPS_COMM_LIB) $(EXT_DEPS_CRC_LIB) $(BUILD_DIRECTORIES) $(OBJECTS)
-	
+
 	@echo Linking target: $(OUTPUT_FILENAME).out
 	$(NO_ECHO)$(CPP) $(LDFLAGS) $(LD_PATHS) $(C_OBJECTS) $(CPP_OBJECTS) $(ASM_OBJECTS) $(LIBS) -o $(OUTPUT_BINARY_DIRECTORY)$(OUTPUT_FILENAME).out
 	$(NO_ECHO)$(MAKE) -f $(MAKEFILE_NAME) -C $(MAKEFILE_DIR) -e finalize
@@ -167,8 +167,8 @@ $(OUTPUT_BINARY_DIRECTORY)$(OUTPUT_FILENAME).hex: $(OUTPUT_BINARY_DIRECTORY)/$(O
 echovars:
 	@echo $(OBJECT_DIRECTORY)
 	@echo $(C_OBJECTS)
-	@echo $(C_SOURCE_FILES)	
-	
+	@echo $(C_SOURCE_FILES)
+
 finalize: genbin genhex echosize
 
 genbin:
@@ -197,4 +197,4 @@ upload:
 	$(DFU_TOOL) $(OUTPUT_BINARY_DIRECTORY)$(OUTPUT_FILENAME).bin
 
 upload_mac:
-	python $(DFU_TOOL) -p "/dev/tty.usbserial-DN00P2TZ" $(OUTPUT_BINARY_DIRECTORY)$(OUTPUT_FILENAME).bin
+	python $(DFU_TOOL) -p "/dev/tty.usbserial-DN00P2TE" $(OUTPUT_BINARY_DIRECTORY)$(OUTPUT_FILENAME).bin
