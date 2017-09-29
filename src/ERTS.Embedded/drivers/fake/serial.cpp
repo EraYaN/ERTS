@@ -106,6 +106,8 @@ int Serial::putchar(char c) {
 #include <termios.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <cerrno>
+#include <cstring>
 
 Serial::Serial(const char *address) {
 	int result;
@@ -160,7 +162,6 @@ bool Serial::getchar_nb(char *c) {
 		return true;
 	}
 }
-
 
 char Serial::getchar() {
 	char c;

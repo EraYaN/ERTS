@@ -33,8 +33,10 @@ Quadrupel::Quadrupel() {
 }
 
 void Quadrupel::receive() {
-    while (rx_queue.count) {
+    while (uart_available()&&!check_timer_flag()) {
         uint8_t currentByte = uart_get();
+        bytes++;
+        //printf("Got byte: 0x%X\n",currentByte);
 
         last_two_bytes = last_two_bytes << 8 | currentByte;
 
@@ -98,6 +100,8 @@ void Quadrupel::receive() {
                         if(handled)
                             nrf_gpio_pin_toggle(YELLOW);
 
+                        packets++;
+
                         // TODO: Send exception if not handled.
 
                         
@@ -126,11 +130,18 @@ void Quadrupel::receive() {
                     _receiving = false;
                     comm_buffer_index = 0;
                 }
-
-                break;
+                
             }
         }
-    }
+        if(packets%10==0){
+            if(!status_printed){
+                status_printed = true;
+                printf("#RX Packets: %ld; RX Bytes: %ld; RX BuffIdx: %d\n",packets,bytes,comm_buffer_index);
+            }
+        } else if(bytes%10==1){
+            status_printed = false;
+        }
+    }    
 
     if (rx_queue.count == 0) {
         nrf_gpio_pin_set(RED);
@@ -297,7 +308,7 @@ void Quadrupel::tick() {
             nrf_gpio_pin_toggle(RED);
         }
         //flash_write_test();
-        heartbeat();
+        //heartbeat();
     }
 
     control();

@@ -9,6 +9,7 @@
 #else
 #include "app_timer.h"
 #include "nrf_gpio.h"
+#include "nrf_uart.h"
 #include "nrf_delay.h"
 #include "invensense/dmpKey.h"
 #include "invensense/inv_mpu.h"
@@ -42,7 +43,7 @@ extern int16_t motor[NUM_MOTORS], ae[NUM_MOTORS];
 
 // Timers
 #define TIMER_PERIOD    10 //50ms=20Hz (MAX 23bit, 4.6h)
-#define HB_INTERVAL    10 // 1000/10
+#define HB_INTERVAL    100 // 1000/10
 
 #define APP_TIMER_PRESCALER             0                                           /**< Value of the RTC1 PRESCALER register. */
 #define APP_TIMER_OP_QUEUE_SIZE         4                                           /**< Size of timer operation queues. */

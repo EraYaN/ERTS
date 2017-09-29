@@ -74,6 +74,10 @@ class Quadrupel {
     uint8_t comm_buffer_index = 0;
     uint32_t last_received;
 
+    uint32_t bytes = 0;
+    uint32_t packets = 0;
+    bool status_printed = false;
+
     // Private methods
     void receive();
 
