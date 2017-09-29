@@ -97,14 +97,21 @@ void imu_init(bool dmp, uint16_t freq)
     uint16_t dmp_features = DMP_FEATURE_6X_LP_QUAT | DMP_FEATURE_SEND_RAW_ACCEL | DMP_FEATURE_SEND_CAL_GYRO | DMP_FEATURE_GYRO_CAL | DMP_FEATURE_TAP;
 
     //mpu
+#if DEBUG
     printf("\rmpu init result: %d\n", mpu_init(NULL));
     printf("\rmpu set sensors: %d\n", mpu_set_sensors(INV_XYZ_GYRO | INV_XYZ_ACCEL));
     printf("\rmpu conf fifo  : %d\n", mpu_configure_fifo(INV_XYZ_GYRO | INV_XYZ_ACCEL));
+#else
+    mpu_init(NULL);
+    mpu_set_sensors(INV_XYZ_GYRO | INV_XYZ_ACCEL);
+    mpu_configure_fifo(INV_XYZ_GYRO | INV_XYZ_ACCEL);
+#endif
     mpu_set_int_level(0);
     mpu_set_int_latched(1);
 
     if (dmp)
     {
+#if DEBUG
         printf("\r\ndmp load firm  : %d\n", dmp_load_motion_driver_firmware());
         printf("\rdmp set orient : %d\n", dmp_set_orientation(inv_orientation_matrix_to_scalar(gyro_orientation)));
 
@@ -112,6 +119,15 @@ void imu_init(bool dmp, uint16_t freq)
         printf("\rdmp set rate   : %d\n", dmp_set_fifo_rate(100));
         printf("\rdmp set state  : %d\n", mpu_set_dmp_state(1));
         printf("\rdlpf set freq  : %d\n", mpu_set_lpf(10));
+#else
+        dmp_load_motion_driver_firmware();
+        dmp_set_orientation(inv_orientation_matrix_to_scalar(gyro_orientation));
+
+        dmp_enable_feature(dmp_features);
+        dmp_set_fifo_rate(100);
+        mpu_set_dmp_state(1);
+        mpu_set_lpf(10);
+#endif
     } else {
         unsigned char data = 0;
         printf("\rdisable dlpf   : %d\n", i2c_write(0x68, 0x1A, 1, &data));

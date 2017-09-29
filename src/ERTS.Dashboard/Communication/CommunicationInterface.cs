@@ -6,6 +6,7 @@ using MicroMvvm;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Timers;
@@ -17,7 +18,7 @@ namespace ERTS.Dashboard.Communication
         SerialInterface serial;
         string serialPort;
         int baudRate;
-        public event EventHandler<PacketReceivedEventArgs> PacketReceivedEvent;
+        public event EventHandler<PacketReceivedEventArgs> PacketReceived;
 
         bool isReceivingPacket = false;
         int bufferIndex = 0;
@@ -164,7 +165,8 @@ namespace ERTS.Dashboard.Communication
             }
         }
         #endregion
-
+        TextWriter tw_rx;
+        TextWriter tw_tx;
         public CommunicationInterface(string SerialPort, int BaudRate)
         {
             serialPort = SerialPort;
@@ -184,6 +186,9 @@ namespace ERTS.Dashboard.Communication
             BandwitdhTimer.Elapsed += BandwitdhTimer_Elapsed;
             BandwitdhTimer.Start();
             BandwidthStopwatch.Start();
+
+            tw_rx = File.CreateText("rx.bin");
+            tw_tx = File.CreateText("tx.bin");
         }
 
         private void BandwitdhTimer_Elapsed(object sender, ElapsedEventArgs e)
@@ -257,6 +262,16 @@ namespace ERTS.Dashboard.Communication
         {
             BytesReceived++;
             RaisePropertyChanged("BytesInRBuffer");
+            tw_rx.WriteLine(e.Data.ToString("X2"));
+            /*if ((char)e.Data == '#')
+            {
+                Debug.WriteLine(String.Format("TX Packets: {0}; TX Bytes: {1};", PacketsSent, BytesSent));
+            }
+            else
+            {
+                Debug.Write((char)e.Data);
+            }*/
+
             //Debug.WriteLine(e.Data,"COMMBYTE");
             lastTwoBytes = (ushort)(lastTwoBytes << 8 | e.Data);
             if (isReceivingPacket == false)
@@ -305,7 +320,7 @@ namespace ERTS.Dashboard.Communication
                             {
                                 Packet p = new Packet(packetBuffer.ToArray());
                                 //Debug.WriteLine(p.ToString());
-                                PacketReceived(p);
+                                DoPacketReceived(p);
                             }
                             else
                             {
@@ -330,10 +345,15 @@ namespace ERTS.Dashboard.Communication
         {
             if (serial.IsOpen && p.IsGoodToSend())
             {
+                /*if (p.Data.ExpectsAcknowledgement)
+                {
+                    return;
+                }*/
                 if (!Retransmission)
                 {
                     if (p.Data.ExpectsAcknowledgement)
                     {
+
                         uint ackNumber = NextAcknowlegdementNumber();
                         p.Data.SetAckNumber(ackNumber);
                         lock (sentPacketsLockObject)
@@ -345,6 +365,10 @@ namespace ERTS.Dashboard.Communication
                 //Debug.WriteLine(String.Format("Sending Packet: {0}", PacketToStringArray(p)));
                 PacketsSent++;
                 BytesSent += Packet.MAX_PACKET_SIZE;
+                foreach (byte b in p.ToByteArray())
+                {
+                    tw_tx.WriteLine(b.ToString("X2"));
+                }
                 serial.SendByteArray(p.ToByteArray());
             }
             else
@@ -438,7 +462,9 @@ namespace ERTS.Dashboard.Communication
         protected virtual void Dispose(bool disposing)
         {
             if (disposing)
-            {                
+            {
+                tw_rx.Close();
+                tw_tx.Close();
                 PacketTimer.Stop();
                 PacketTimer.Dispose();
                 BandwitdhTimer.Stop();
@@ -455,7 +481,7 @@ namespace ERTS.Dashboard.Communication
         #endregion
 
         #region Event members
-        void PacketReceived(Packet p)
+        void DoPacketReceived(Packet p)
         {
             PacketsReceived++;
             OnPacketReceived(new PacketReceivedEventArgs(p));
@@ -463,9 +489,9 @@ namespace ERTS.Dashboard.Communication
 
         protected virtual void OnPacketReceived(PacketReceivedEventArgs e)
         {
-            if (PacketReceivedEvent != null)
+            if (PacketReceived != null)
             {
-                PacketReceivedEvent(this, e);
+                PacketReceived(this, e);
             }
         }
         #endregion

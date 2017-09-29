@@ -33,8 +33,8 @@ Quadrupel::Quadrupel() {
 }
 
 void Quadrupel::receive() {
-    while (uart_available()&&!check_timer_flag()) {
-        uint8_t currentByte = uart_get();
+    while (uart_available()&&!check_timer_flag()&&!check_sensor_int_flag()) {
+        uint8_t currentByte = uart_get();        
         bytes++;
         //printf("Got byte: 0x%X\n",currentByte);
 
@@ -95,12 +95,12 @@ void Quadrupel::receive() {
                         std::cout << "RX:\t\t";
                         packet_print(comm_buffer);
 #endif
-                        
+                        //send(packet);
                         bool handled = handle_packet(packet);
-                        if(handled)
-                            nrf_gpio_pin_toggle(YELLOW);
-
-                        packets++;
+                        if (handled) {
+                            //nrf_gpio_pin_toggle(YELLOW);
+                            packets++;
+                        }
 
                         // TODO: Send exception if not handled.
 
@@ -133,16 +133,22 @@ void Quadrupel::receive() {
                 
             }
         }
-        if(packets%10==0){
-            if(!status_printed){
+        /*if(packets%10==0 || packets>=999){
+            if(!status_printed || currentByte == 0xFF){
                 status_printed = true;
                 printf("#RX Packets: %ld; RX Bytes: %ld; RX BuffIdx: %d\n",packets,bytes,comm_buffer_index);
             }
-        } else if(bytes%10==1){
+        } else if(bytes%10==1 || packets >= 999){
             status_printed = false;
-        }
-    }    
-
+        }*/
+    }
+    
+    if (tx_queue.count == 0) {
+        nrf_gpio_pin_set(YELLOW);
+    }
+    else {
+        nrf_gpio_pin_clear(YELLOW);
+    }
     if (rx_queue.count == 0) {
         nrf_gpio_pin_set(RED);
     }
@@ -166,7 +172,6 @@ void Quadrupel::send(Packet *packet) {
     }
 
     delete[] buffer;
-    delete packet;
 }
 
 void Quadrupel::acknowledge(uint32_t ack_number) {
@@ -175,6 +180,7 @@ void Quadrupel::acknowledge(uint32_t ack_number) {
     packet->set_data(data);
 
     send(packet);
+    delete packet;
 }
 
 void Quadrupel::exception(exceptionType_t type, const char (&message)[MAX_MESSAGE_LENGTH + 1]) {
@@ -183,6 +189,8 @@ void Quadrupel::exception(exceptionType_t type, const char (&message)[MAX_MESSAG
     packet->set_data(data);
 
     send(packet);
+
+    delete packet;
 }
 
 void Quadrupel::heartbeat() {
@@ -197,6 +205,8 @@ void Quadrupel::heartbeat() {
     packet->set_data(data);
 
     send(packet);
+
+    delete packet;
 }
 
 bool Quadrupel::handle_packet(Packet *packet) {
@@ -282,12 +292,12 @@ void Quadrupel::busywork() {
             set_mode(Panic);
         }*/
 
-        /*if ((get_time_us() - last_received) > p_misc.comm_timeout) {
+        if ((get_time_us() - last_received)/1000 > p_misc.comm_timeout) {
 #ifdef FAKE_DRIVERS
             std::cout << "Timed out, entering panic mode." << std::endl;
 #endif
             set_mode(Panic);
-        }*/
+        }
     }
     if (check_sensor_int_flag()) {
         get_dmp_data();
@@ -295,6 +305,7 @@ void Quadrupel::busywork() {
 }
 
 void Quadrupel::tick() {
+    nrf_gpio_pin_clear(GREEN);
     uint32_t timestamp = get_time_us();
     counter++;
 
@@ -308,12 +319,14 @@ void Quadrupel::tick() {
             nrf_gpio_pin_toggle(RED);
         }
         //flash_write_test();
-        //heartbeat();
+        heartbeat();
     }
 
     control();
     update_motors();
+    nrf_delay_ms(5);
     _accum_loop_time += get_time_us() - timestamp;
+    nrf_gpio_pin_set(GREEN);
 }
 
 int Quadrupel::set_mode(flightMode_t new_mode) {

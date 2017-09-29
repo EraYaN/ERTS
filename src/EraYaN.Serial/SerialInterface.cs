@@ -7,7 +7,7 @@ namespace EraYaN.Serial
 {
     public class SerialInterface : ISerial, IDisposable
     {
-        const int blockLimit = 256;
+        const int blockLimit = 1;
         Action kickoffRead = null;
         string port;
         int baudrate;
@@ -40,12 +40,12 @@ namespace EraYaN.Serial
                 Parity = Parity.None,
                 DataBits = 8,
                 StopBits = StopBits.One,
-                Handshake = Handshake.RequestToSendXOnXOff,
+                Handshake = Handshake.None,
                 ReceivedBytesThreshold = 1,
                 ReadTimeout = 500,
                 WriteTimeout = 500,
-                ReadBufferSize = 10 * 1024 * 1024,
-                WriteBufferSize = 10 * 1024 * 1024,
+                ReadBufferSize = 512,
+                WriteBufferSize = 512,
                 DtrEnable = false,
                 RtsEnable = false
 
@@ -96,7 +96,7 @@ namespace EraYaN.Serial
                                 {
                                     if (!serialPort.IsOpen)
                                         return;
-                                    int actualLength = serialPort.BaseStream.EndRead(ar);
+                                    int actualLength = serialPort.BaseStream.EndRead(ar);                                    
                                     byte[] received = new byte[actualLength];
                                     Buffer.BlockCopy(buffer, 0, received, 0, actualLength);
                                     handleSerialData(received);
@@ -196,14 +196,14 @@ namespace EraYaN.Serial
             //throw new NotImplementedException();
         }
 
-        /*void serialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
+        void serialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
             while (serialPort.BytesToRead > 0)
             {
                 byte input = (byte)serialPort.ReadByte();
                 DataSerial(input);
             }
-        }*/
+        }
 
         void handleSerialData(byte[] data)
         {

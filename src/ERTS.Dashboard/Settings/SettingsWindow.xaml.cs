@@ -49,10 +49,6 @@ namespace ERTS.Dashboard.Configuration
 
         private void Window_Closing(object sender, CancelEventArgs e)
         {
-            if (GlobalData.cfg != null)
-            {
-                GlobalData.cfg.Save();
-            }
             e.Cancel = true;
             this.Hide();
         }
@@ -127,6 +123,15 @@ namespace ERTS.Dashboard.Configuration
                 }
 
             }
+        }
+
+        private void SettingsSaveButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (GlobalData.cfg != null)
+            {
+                GlobalData.cfg.Save();
+            }
+            this.Hide();
         }
     }
 }

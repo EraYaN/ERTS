@@ -39,6 +39,8 @@ namespace ERTS.Dashboard.Control
         public double PitchTrim { get; set; }
         public double YawTrim { get; set; }
 
+        //int counter=0;
+
         readonly int AmountAVG;
         int RCintervalcount;
         Stopwatch rcIntervalStopwatch;
@@ -56,7 +58,7 @@ namespace ERTS.Dashboard.Control
 
             rcIntervalStopwatch.Start();
             if (GlobalData.com != null)
-                GlobalData.com.PacketReceivedEvent += Com_PacketReceivedEvent;
+                GlobalData.com.PacketReceived += Com_PacketReceivedEvent;
         }
 
         
@@ -76,6 +78,8 @@ namespace ERTS.Dashboard.Control
                     HandleException((ExceptionData)p.Data);
                     break;
                 case MessageType.RemoteControl:
+                    //testing.
+                    break;
                 case MessageType.ModeSwitch:
                 case MessageType.ActuationParameters:
                 case MessageType.ControllerParameters:
@@ -102,16 +106,23 @@ namespace ERTS.Dashboard.Control
                     Debug.WriteLine(String.Format("Ran RC intervals for the last five seconds at: {0:N1} Hz",hertz));
                 }
                 //Scaling factors are -4, just for overflow safety, and no averse effect.
+                /*if (counter >= 2000)
+                {
+                    return;
+                }
+                counter++;*/
                 GlobalData.com.RemoteControl(Convert.ToUInt16(Math.Round(Lift * 65532.0)), Convert.ToInt16(Math.Round(RollRate * 32764.0)),
                     Convert.ToInt16(Math.Round(PitchRate * 32764.0)), Convert.ToInt16(Math.Round(YawRate * 32764.0)));
+                /*GlobalData.com.RemoteControl(Convert.ToUInt16(counter), Convert.ToInt16(Math.Round(RollRate * 32764.0)),
+                    Convert.ToInt16(Math.Round(PitchRate * 32764.0)), Convert.ToInt16(Math.Round(YawRate * 32764.0)));*/
             }
         }
 
         #region Communication Methods
         public void HandleTelemetry(TelemetryData data)
         {
-            Debug.WriteLine("Processing Telemetry....");
-            Debug.WriteLine(data.ToString());
+            //Debug.WriteLine("Processing Telemetry....");
+            //Debug.WriteLine(data.ToString());
             BatteryVoltage = data.BatteryVoltage / 100.0;
             RaisePropertyChanged("BatteryVoltage");
             LoopTime = data.LoopTime / 1000.0;

@@ -10,7 +10,7 @@
         <local:ControlActuatorToStringConverter x:Key="ControlConverter" />
     </Window.Resources>
     <Grid>
-        <TabControl x:Name="SettingsTabControl" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0,1,0,0" SelectionChanged="SettingsTabControl_SelectionChanged">
+        <TabControl x:Name="SettingsTabControl" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0,1,0,0" SelectionChanged="SettingsTabControl_SelectionChanged" Margin="0,0,0,34">
             <TabItem Header="General">
                 <Grid>
                     <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
@@ -52,11 +52,12 @@
                 </Grid>
             </TabItem>
             <TabItem Header="Controls">
-                <Grid>                    
+                <Grid>
                     <TextBlock TextWrapping="Wrap" Margin="10">All devices have been aquired, look in the Debug log for more information on RawOffsets and GUIDs.</TextBlock>
                 </Grid>
             </TabItem>
         </TabControl>
+        <Button x:Name="SettingsSaveButton" Content="Save" Margin="0,0,10,9" Click="SettingsSaveButton_Click" HorizontalAlignment="Right" Width="75" Height="20" VerticalAlignment="Bottom"/>
 
     </Grid>
 </Window>
