@@ -11,7 +11,6 @@ using System.Text;
 
 namespace ERTS.Dashboard.Configuration
 {
-    //TODO Implementent this based on actual application settings. (Configuration.settings file)
     [Serializable]
     public class Settings : ISerializable
     {
@@ -26,12 +25,33 @@ namespace ERTS.Dashboard.Configuration
             get;
             set;
         }
-        //The target loop time on the Embedded System in microseconds
+        /// <summary>
+        /// The target loop time on the Embedded System in microseconds
+        /// </summary>
         [DefaultValue(1000)]
         public int TargetLoopTime {
             get;
             set;
         }
+
+        /// <summary>
+        /// The lower battery cutoff voltage
+        /// </summary>
+        [DefaultValue(1050)]
+        public int BatteryThreshold {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// The decrement of motor value per loop time while in panic mode.
+        /// </summary>
+        [DefaultValue(10)]
+        public int PanicDecrement {
+            get;
+            set;
+        }
+        
         /// <summary>
         /// The interval in RC Control messages in milliseconds
         /// </summary>
@@ -41,10 +61,18 @@ namespace ERTS.Dashboard.Configuration
             set;
         }
         /// <summary>
-        /// The interval between telemetry submissions in milliseconds
+        /// The divider for telemetry transmissions
         /// </summary>
-        [DefaultValue(1000)]
-        public int TelemetryInterval {
+        [DefaultValue(20)]
+        public int TelemetryDivider {
+            get;
+            set;
+        }
+        /// <summary>
+        /// The divider for logging values to flash
+        /// </summary>
+        [DefaultValue(10)]
+        public int LogDivider {
             get;
             set;
         }
@@ -82,6 +110,42 @@ namespace ERTS.Dashboard.Configuration
             set;
         }
 
+        /// <summary>
+        /// The deadzone for the lift axis
+        /// </summary>
+        [DefaultValue(1.0)]
+        public double LiftDeadzone {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// The deadzone for the roll axis
+        /// </summary>
+        [DefaultValue(1.0)]
+        public double RollDeadzone {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// The deadzone for the pitch axis
+        /// </summary>
+        [DefaultValue(1.0)]
+        public double PitchDeadzone {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// The deadzone for the yaw axis
+        /// </summary>
+        [DefaultValue(1.0)]
+        public double YawDeadzone {
+            get;
+            set;
+        }
+
         public void SetDefaults(String Property = "")
         {
             if (Property == "ComPort" || Property == "")
@@ -96,13 +160,25 @@ namespace ERTS.Dashboard.Configuration
             {
                 TargetLoopTime = (int)(TypeDescriptor.GetProperties(this)["TargetLoopTime"].Attributes[typeof(DefaultValueAttribute)] as DefaultValueAttribute).Value;
             }
+            if (Property == "BatteryThreshold" || Property == "")
+            {
+                BatteryThreshold = (int)(TypeDescriptor.GetProperties(this)["BatteryThreshold"].Attributes[typeof(DefaultValueAttribute)] as DefaultValueAttribute).Value;
+            }
+            if (Property == "PanicDecrement" || Property == "")
+            {
+                PanicDecrement = (int)(TypeDescriptor.GetProperties(this)["PanicDecrement"].Attributes[typeof(DefaultValueAttribute)] as DefaultValueAttribute).Value;
+            }
             if (Property == "RCInterval" || Property == "")
             {
                 RCInterval = (int)(TypeDescriptor.GetProperties(this)["RCInterval"].Attributes[typeof(DefaultValueAttribute)] as DefaultValueAttribute).Value;
             }
-            if (Property == "TelemetryInterval" || Property == "")
+            if (Property == "TelemetryDivider" || Property == "")
             {
-                TelemetryInterval = (int)(TypeDescriptor.GetProperties(this)["TelemetryInterval"].Attributes[typeof(DefaultValueAttribute)] as DefaultValueAttribute).Value;
+                TelemetryDivider = (int)(TypeDescriptor.GetProperties(this)["TelemetryDivider"].Attributes[typeof(DefaultValueAttribute)] as DefaultValueAttribute).Value;
+            }
+            if (Property == "LogDivider" || Property == "")
+            {
+                LogDivider = (int)(TypeDescriptor.GetProperties(this)["LogDivider"].Attributes[typeof(DefaultValueAttribute)] as DefaultValueAttribute).Value;
             }
             if (Property == "PacketCheckResendInterval" || Property == "")
             {
@@ -119,6 +195,22 @@ namespace ERTS.Dashboard.Configuration
             if (Property == "KillAfterRetransmissionFail" || Property == "")
             {
                 KillAfterRetransmissionFail = (bool)(TypeDescriptor.GetProperties(this)["KillAfterRetransmissionFail"].Attributes[typeof(DefaultValueAttribute)] as DefaultValueAttribute).Value;
+            }
+            if (Property == "LiftDeadzone" || Property == "")
+            {
+                LiftDeadzone = (double)(TypeDescriptor.GetProperties(this)["LiftDeadzone"].Attributes[typeof(DefaultValueAttribute)] as DefaultValueAttribute).Value;
+            }
+            if (Property == "RollDeadzone" || Property == "")
+            {
+                RollDeadzone = (double)(TypeDescriptor.GetProperties(this)["RollDeadzone"].Attributes[typeof(DefaultValueAttribute)] as DefaultValueAttribute).Value;
+            }
+            if (Property == "PitchDeadzone" || Property == "")
+            {
+                PitchDeadzone = (double)(TypeDescriptor.GetProperties(this)["PitchDeadzone"].Attributes[typeof(DefaultValueAttribute)] as DefaultValueAttribute).Value;
+            }
+            if (Property == "YawDeadzone" || Property == "")
+            {
+                YawDeadzone = (double)(TypeDescriptor.GetProperties(this)["YawDeadzone"].Attributes[typeof(DefaultValueAttribute)] as DefaultValueAttribute).Value;
             }
         }
 
@@ -143,15 +235,22 @@ namespace ERTS.Dashboard.Configuration
             try { ComPort = info.GetString("ComPort"); } catch { SetDefaults("ComPort"); }
             try { BaudRate = info.GetInt32("BaudRate"); } catch { SetDefaults("BaudRate"); }
             try { TargetLoopTime = info.GetInt32("TargetLoopTime"); } catch { SetDefaults("TargetLoopTime"); }
+            try { BatteryThreshold = info.GetInt32("BatteryThreshold"); } catch { SetDefaults("BatteryThreshold"); }
+            try { PanicDecrement = info.GetInt32("PanicDecrement"); } catch { SetDefaults("PanicDecrement"); }
             try { RCInterval = info.GetInt32("RCInterval"); } catch { SetDefaults("RCInterval"); }
-            try { TelemetryInterval = info.GetInt32("TelemetryInterval"); } catch { SetDefaults("TelemetryInterval"); }
+            try { TelemetryDivider = info.GetInt32("TelemetryDivider"); } catch { SetDefaults("TelemetryDivider"); }
+            try { LogDivider = info.GetInt32("LogDivider"); } catch { SetDefaults("LogDivider"); }
             try { PacketCheckResendInterval = info.GetInt32("PacketCheckResendInterval"); } catch { SetDefaults("PacketCheckResendInterval"); }
             try { PacketResendInterval = info.GetInt32("PacketResendInterval"); } catch { SetDefaults("PacketResendInterval"); }
             try { PacketRetransmissionCount = info.GetInt32("PacketRetransmissionCount"); } catch { SetDefaults("PacketRetransmissionCount"); }
             try { KillAfterRetransmissionFail = info.GetBoolean("KillAfterRetransmissionFail"); } catch { SetDefaults("KillAfterRetransmissionFail"); }
+            try { LiftDeadzone = info.GetDouble("LiftDeadzone"); } catch { SetDefaults("LiftDeadzone"); }
+            try { RollDeadzone = info.GetDouble("RollDeadzone"); } catch { SetDefaults("RollDeadzone"); }
+            try { PitchDeadzone = info.GetDouble("PitchDeadzone"); } catch { SetDefaults("PitchDeadzone"); }
+            try { YawDeadzone = info.GetDouble("YawDeadzone"); } catch { SetDefaults("YawDeadzone"); }
 
         }
-        [SecurityPermissionAttribute(SecurityAction.Demand,
+        [SecurityPermission(SecurityAction.Demand,
         SerializationFormatter = true)]
 
         public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
@@ -159,12 +258,19 @@ namespace ERTS.Dashboard.Configuration
             info.AddValue("ComPort", ComPort);
             info.AddValue("BaudRate", BaudRate);
             info.AddValue("TargetLoopTime", TargetLoopTime);
+            info.AddValue("BatteryThreshold", BatteryThreshold);
+            info.AddValue("PanicDecrement", PanicDecrement);
             info.AddValue("RCInterval", RCInterval);
-            info.AddValue("TelemetryInterval", TelemetryInterval);
+            info.AddValue("TelemetryDivider", TelemetryDivider);
+            info.AddValue("LogDivider", LogDivider);
             info.AddValue("PacketCheckResendInterval", PacketCheckResendInterval);
             info.AddValue("PacketResendInterval", PacketResendInterval);
             info.AddValue("PacketRetransmissionCount", PacketRetransmissionCount);
             info.AddValue("KillAfterRetransmissionFail", KillAfterRetransmissionFail);
+            info.AddValue("LiftDeadzone", LiftDeadzone);
+            info.AddValue("RollDeadzone", RollDeadzone);
+            info.AddValue("PitchDeadzone", PitchDeadzone);
+            info.AddValue("YawDeadzone", YawDeadzone);
         }
     }
 }

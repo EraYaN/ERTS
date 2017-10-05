@@ -30,7 +30,7 @@ namespace ERTS.Dashboard.Communication.Data
             get { return ackNumber; }
         }
 
-        public ActuationParameterData(ushort RatePitchRollLift, ushort RateYaw, ushort MotorMin, ushort MotorMax, uint AckNumber)
+        public ActuationParameterData(ushort RatePitchRollLift, ushort RateYaw, ushort MotorMin, ushort MotorMax, uint AckNumber = 0)
         {
             ratePitchRollLift = RatePitchRollLift;
             rateYaw = RateYaw;

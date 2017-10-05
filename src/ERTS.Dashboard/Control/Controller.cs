@@ -2,6 +2,7 @@
 using ERTS.Dashboard.Communication.Data;
 using ERTS.Dashboard.Communication.Enumerations;
 using ERTS.Dashboard.Helpers;
+using ERTS.Dashboard.Utility;
 using MicroMvvm;
 using System;
 using System.Collections.Generic;
@@ -110,9 +111,9 @@ namespace ERTS.Dashboard.Control
                 {
                     return;
                 }
-                counter++;*/
-                GlobalData.com.RemoteControl(Convert.ToUInt16(Math.Round(Lift * 65532.0)), Convert.ToInt16(Math.Round(RollRate * 32764.0)),
-                    Convert.ToInt16(Math.Round(PitchRate * 32764.0)), Convert.ToInt16(Math.Round(YawRate * 32764.0)));
+                counter++;*/                
+                GlobalData.com.RemoteControl(Convert.ToUInt16(Math.Round(Lift.Clamp(0, 1) * (2^16 - 1))), Convert.ToInt16(Math.Round(RollRate.Clamp(-1, 1) * (2 ^ 15 - 1))),
+                    Convert.ToInt16(Math.Round(PitchRate.Clamp(-1, 1) * (2 ^ 15 - 1))), Convert.ToInt16(Math.Round(YawRate.Clamp(-1,1) * (2 ^ 15 - 1))));
                 /*GlobalData.com.RemoteControl(Convert.ToUInt16(counter), Convert.ToInt16(Math.Round(RollRate * 32764.0)),
                     Convert.ToInt16(Math.Round(PitchRate * 32764.0)), Convert.ToInt16(Math.Round(YawRate * 32764.0)));*/
             }
@@ -141,6 +142,7 @@ namespace ERTS.Dashboard.Control
             Debug.WriteLine(String.Format("Processing Exception of type {0} with message: {1}.\n",data.ExceptionType, data.Message));
 
         }
+        
         #endregion
 
         #region Control Methods
@@ -156,22 +158,22 @@ namespace ERTS.Dashboard.Control
         }
         public void SetLift(double _Lift)
         {
-            Lift = GetRcRate(_Lift, 0, 1);
+            Lift = GetRcRate(_Lift, 0, 1,GlobalData.cfg.LiftDeadzone);
             RaisePropertyChanged("Lift");
         }
         public void SetRoll(double _RollRate)
         {
-            RollRate = GetRcRate(_RollRate);
+            RollRate = GetRcRate(_RollRate, RC_EXPO, RC_RATE, GlobalData.cfg.RollDeadzone);
             RaisePropertyChanged("RollRate");
         }
         public void SetPitch(double _PitchRate)
         {
-            PitchRate = GetRcRate(_PitchRate);
+            PitchRate = GetRcRate(_PitchRate, RC_EXPO, RC_RATE, GlobalData.cfg.PitchDeadzone);
             RaisePropertyChanged("PitchRate");
         }
         public void SetYaw(double _YawRate)
         {
-            YawRate = GetRcRate(_YawRate);
+            YawRate = GetRcRate(_YawRate, RC_EXPO, RC_RATE, GlobalData.cfg.YawDeadzone);
             RaisePropertyChanged("YawRate");
         }
 
@@ -243,11 +245,20 @@ namespace ERTS.Dashboard.Control
             Debug.WriteLine(String.Format("Set YawTrim to {0}", YawTrim));
         }
 
+        public void SendAllParameters()
+        {            
+            GlobalData.com.MiscParameters(Convert.ToUInt16(GlobalData.cfg.PanicDecrement), Convert.ToUInt16(GlobalData.cfg.RCInterval), Convert.ToUInt16(GlobalData.cfg.LogDivider), Convert.ToUInt16(GlobalData.cfg.BatteryThreshold), Convert.ToUInt16(GlobalData.cfg.TargetLoopTime));
+            //TODO controller params
+            //TODO actuation params
+            //TODO how to send TelemetryDivider. (And Led Divider really, maybe EventLoopParameters together with other dividers.)
+        }
+
         #endregion
 
-        double GetRcRate(double _input, double expo = RC_EXPO, double rate = RC_RATE)
+        double GetRcRate(double _input, double expo = RC_EXPO, double rate = RC_RATE, double deadzone = 0)
         {
-            double rcCommand = _input;
+            double rcCommand = _input.Deadzone(-deadzone/100,deadzone/100);                     
+
             if (RC_EXPO > 0)
                 rcCommand = rcCommand * Math.Pow(Math.Abs(rcCommand), 3) * expo + rcCommand * (1 - expo); // Courtesy of CleanFlight/BetaFlight
             double rcRate = rcCommand * rate;

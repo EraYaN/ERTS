@@ -33,9 +33,9 @@
                     </DataTemplate>
                 </ComboBox.ItemTemplate>
             </ComboBox>
-            <Button x:Name="UseControllerButton" Content="Use" Margin="10,5" VerticalAlignment="Top" Height="22" Command="{Binding BindInput}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}" RenderTransformOrigin="0.182,3.471" HorizontalAlignment="Left" Width="100"/>
-            <Button x:Name="StartAllButton" Content="Start Stage Two" Margin="10,5" VerticalAlignment="Top" Height="22" HorizontalAlignment="Left" Width="100" Click="StartStageTwoButton_Click"/>
-            <Button x:Name="StopStageTwoButton" Content="Stop Stage Two" Margin="10,5" VerticalAlignment="Top" Height="22" HorizontalAlignment="Left" Width="100" Click="StopStageTwoButton_Click"/>
+            <Button x:Name="UseControllerButton" Content="Use" Margin="10,5" VerticalAlignment="Top" Height="22" Command="{Binding BindInput}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}" HorizontalAlignment="Left" Width="100"/>
+            <Button x:Name="StartAllButton" Content="Start Stage Two" Margin="10,5" VerticalAlignment="Top" Height="22" HorizontalAlignment="Left" Width="100" Command="{Binding StartStageTwo}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}"/>
+            <Button x:Name="StopStageTwoButton" Content="Stop Stage Two" Margin="10,5" VerticalAlignment="Top" Height="22" HorizontalAlignment="Left" Width="100" Command="{Binding StopStageTwo}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}"/>
             <GroupBox Header="Status" HorizontalAlignment="Left" Height="100" VerticalAlignment="Top" Width="Auto" Margin="10,5">
                 <Grid>
                     <Grid.ColumnDefinitions>

@@ -34,7 +34,7 @@ namespace ERTS.Dashboard.Communication.Data
             get { return ackNumber; }
         }
 
-        public MiscParameterData(ushort PanicDecrement, ushort RCInterval, ushort LogDivider, ushort BatteryThreshold, ushort TargetLoopTime, uint AckNumber)
+        public MiscParameterData(ushort PanicDecrement, ushort RCInterval, ushort LogDivider, ushort BatteryThreshold, ushort TargetLoopTime, uint AckNumber = 0)
         {
             panicDecrement = PanicDecrement;
             rcInterval = RCInterval;

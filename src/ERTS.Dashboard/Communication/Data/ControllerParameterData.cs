@@ -31,7 +31,7 @@ namespace ERTS.Dashboard.Communication.Data
             get { return ackNumber; }
         }
 
-        public ControllerParameterData(ushort PYaw, ushort PHeight, ushort P1PitchRoll, ushort P2PitchRoll, uint AckNumber)
+        public ControllerParameterData(ushort PYaw, ushort PHeight, ushort P1PitchRoll, ushort P2PitchRoll, uint AckNumber = 0)
         {
             pYaw = PYaw;
             pHeight = PHeight;

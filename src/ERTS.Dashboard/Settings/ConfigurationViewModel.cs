@@ -99,6 +99,46 @@ namespace ERTS.Dashboard.Configuration {
             }
         }
 
+        public int BatteryThreshold {
+            get {
+                if (GlobalData.cfg != null)
+                {
+                    return GlobalData.cfg.BatteryThreshold;
+                }
+                return 0;
+            }
+            set {
+                if (GlobalData.cfg != null)
+                {
+                    if (GlobalData.cfg.BatteryThreshold != value)
+                    {
+                        GlobalData.cfg.BatteryThreshold = value;
+                        RaisePropertyChanged("BatteryThreshold");
+                    }
+                }
+            }
+        }
+
+        public int PanicDecrement {
+            get {
+                if (GlobalData.cfg != null)
+                {
+                    return GlobalData.cfg.PanicDecrement;
+                }
+                return 0;
+            }
+            set {
+                if (GlobalData.cfg != null)
+                {
+                    if (GlobalData.cfg.PanicDecrement != value)
+                    {
+                        GlobalData.cfg.PanicDecrement = value;
+                        RaisePropertyChanged("PanicDecrement");
+                    }
+                }
+            }
+        }
+        
         public int RCInterval {
             get {
                 if (GlobalData.cfg != null)
@@ -119,21 +159,41 @@ namespace ERTS.Dashboard.Configuration {
             }
         }
 
-        public int TelemetryInterval {
+        public int TelemetryDivider {
             get {
                 if (GlobalData.cfg != null)
                 {
-                    return GlobalData.cfg.TelemetryInterval;
+                    return GlobalData.cfg.TelemetryDivider;
                 }
                 return 0;
             }
             set {
                 if (GlobalData.cfg != null)
                 {
-                    if (GlobalData.cfg.TelemetryInterval != value)
+                    if (GlobalData.cfg.TelemetryDivider != value)
                     {
-                        GlobalData.cfg.TelemetryInterval = value;
-                        RaisePropertyChanged("TelemetryInterval");
+                        GlobalData.cfg.TelemetryDivider = value;
+                        RaisePropertyChanged("TelemetryDivider");
+                    }
+                }
+            }
+        }
+
+        public int LogDivider {
+            get {
+                if (GlobalData.cfg != null)
+                {
+                    return GlobalData.cfg.LogDivider;
+                }
+                return 0;
+            }
+            set {
+                if (GlobalData.cfg != null)
+                {
+                    if (GlobalData.cfg.LogDivider != value)
+                    {
+                        GlobalData.cfg.LogDivider = value;
+                        RaisePropertyChanged("LogDivider");
                     }
                 }
             }
@@ -214,6 +274,86 @@ namespace ERTS.Dashboard.Configuration {
                     {
                         GlobalData.cfg.KillAfterRetransmissionFail = value;
                         RaisePropertyChanged("KillAfterRetransmissionFail");
+                    }
+                }
+            }
+        }
+
+        public double LiftDeadzone {
+            get {
+                if (GlobalData.cfg != null)
+                {
+                    return GlobalData.cfg.LiftDeadzone;
+                }
+                return 0;
+            }
+            set {
+                if (GlobalData.cfg != null)
+                {
+                    if (GlobalData.cfg.LiftDeadzone != value)
+                    {
+                        GlobalData.cfg.LiftDeadzone = value;
+                        RaisePropertyChanged("LiftDeadzone");
+                    }
+                }
+            }
+        }
+
+        public double RollDeadzone {
+            get {
+                if (GlobalData.cfg != null)
+                {
+                    return GlobalData.cfg.RollDeadzone;
+                }
+                return 0;
+            }
+            set {
+                if (GlobalData.cfg != null)
+                {
+                    if (GlobalData.cfg.RollDeadzone != value)
+                    {
+                        GlobalData.cfg.RollDeadzone = value;
+                        RaisePropertyChanged("RollDeadzone");
+                    }
+                }
+            }
+        }
+
+        public double PitchDeadzone {
+            get {
+                if (GlobalData.cfg != null)
+                {
+                    return GlobalData.cfg.PitchDeadzone;
+                }
+                return 0;
+            }
+            set {
+                if (GlobalData.cfg != null)
+                {
+                    if (GlobalData.cfg.PitchDeadzone != value)
+                    {
+                        GlobalData.cfg.PitchDeadzone = value;
+                        RaisePropertyChanged("PitchDeadzone");
+                    }
+                }
+            }
+        }
+
+        public double YawDeadzone {
+            get {
+                if (GlobalData.cfg != null)
+                {
+                    return GlobalData.cfg.YawDeadzone;
+                }
+                return 0;
+            }
+            set {
+                if (GlobalData.cfg != null)
+                {
+                    if (GlobalData.cfg.YawDeadzone != value)
+                    {
+                        GlobalData.cfg.YawDeadzone = value;
+                        RaisePropertyChanged("YawDeadzone");
                     }
                 }
             }

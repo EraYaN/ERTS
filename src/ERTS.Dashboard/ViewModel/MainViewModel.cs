@@ -5,10 +5,10 @@ using SharpDX.DirectInput;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO.Ports;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
@@ -136,7 +136,7 @@ namespace ERTS.Dashboard.ViewModel
         public double LiftTrimSize {
             get {
                 if (GlobalData.ctr != null)
-                    return Math.Min(0, Math.Abs(GlobalData.ctr.LiftTrim) * 98);
+                    return Math.Max(0, Math.Abs(GlobalData.ctr.LiftTrim) * 98);
                 else
                     return 0;
             }
@@ -151,7 +151,7 @@ namespace ERTS.Dashboard.ViewModel
                     }
                     else
                     {
-                        return Math.Min(0, Math.Abs(GlobalData.ctr.Lift - GlobalData.ctr.LiftTrim) * 98) + 1;
+                        return (GlobalData.ctr.Lift + GlobalData.ctr.LiftTrim) * 98 + 1;
                     }
                 }
                 else
@@ -391,7 +391,7 @@ namespace ERTS.Dashboard.ViewModel
             RaisePropertyChanged(String.Empty);
         }
 
-        public void StopStageTwo()
+        public void DisposeStageTwo()
         {
             if (GlobalData.ctr != null)
                 GlobalData.ctr.PropertyChanged -= Ctr_PropertyChanged;
@@ -449,6 +449,7 @@ namespace ERTS.Dashboard.ViewModel
         {
             if (e.PropertyName == "Lift")
             {
+                RaisePropertyChanged("LiftTrimOffset");
                 RaisePropertyChanged("LiftString");
                 RaisePropertyChanged("Lift");
                 return;
@@ -518,7 +519,7 @@ namespace ERTS.Dashboard.ViewModel
         {
             if (SelectedDevice != null)
             {
-                GlobalData.input.AquireDevice((DeviceInstance)SelectedDevice, new WindowInteropHelper(obj as Window).Handle);
+                GlobalData.input.AquireDevice(SelectedDevice, new WindowInteropHelper(obj as Window).Handle);
             }
         }
 
@@ -526,8 +527,52 @@ namespace ERTS.Dashboard.ViewModel
         {
             return SelectedDevice != null && !GlobalData.input.IsDeviceInUse(SelectedDevice);
         }
+        void StartStageTwoExecute(object obj)
+        {
+            GlobalData.InitStageTwo();
+
+            InitStageTwo();
+        }
+
+        bool CanStartStageTwoExecute(object obj)
+        {
+            if (GlobalData.cfg != null)
+                return GlobalData.ctr == null && SerialPort.GetPortNames().Contains(GlobalData.cfg.ComPort) && GlobalData.cfg.BaudRate > 0;
+            else
+                return false;
+        }
+
+        void StopStageTwoExecute(object obj)
+        {
+            GlobalData.DisposeStageTwo();
+
+            DisposeStageTwo();
+        }
+
+        bool CanStopStageTwoExecute(object obj)
+        {
+            return GlobalData.ctr != null;
+        }
+
+        void SendAllParametersExecute(object obj)
+        {
+            if (GlobalData.ctr != null) {
+
+            }
+        }
+
+        bool CanSendAllParametersExecute(object obj)
+        {
+            return CanStopStageTwoExecute(obj);
+        }
 
         public ICommand BindInput { get { return new RelayCommand<MainWindow>(BindInputExecute, CanBindInputExecute); } }
+
+        public ICommand StartStageTwo { get { return new RelayCommand<MainWindow>(StartStageTwoExecute, CanStartStageTwoExecute); } }
+
+        public ICommand StopStageTwo { get { return new RelayCommand<MainWindow>(StopStageTwoExecute, CanStopStageTwoExecute); } }
+
+        public ICommand SendAllParameters { get { return new RelayCommand<MainWindow>(SendAllParametersExecute, CanSendAllParametersExecute); } }
 
     }
 }
