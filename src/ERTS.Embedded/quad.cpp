@@ -472,15 +472,14 @@ void Quadrupel::control() {
     if (_mode == Panic) {
         if (_initial_panic) {
             // Set all motors equal to the current minimum value.
-            ae[0] = ae[1] = ae[2] = ae[3] = std::min(std::min(ae[0], ae[1]), std::min(ae[2], ae[3]));
+            ae[0] = ae[1] = ae[2] = ae[3] = std::min({ae[0], ae[1], ae[2], ae[3]});
             _initial_panic = false;
         }
 
-        // Linearly decrease motor values and clamp to zero.
-        ae[0] = std::max(ae[0] - p_misc.panic_decrement, 0);
-        ae[1] = std::max(ae[1] - p_misc.panic_decrement, 0);
-        ae[3] = std::max(ae[2] - p_misc.panic_decrement, 0);
-        ae[3] = std::max(ae[3] - p_misc.panic_decrement, 0);
+        if (ae[0] != 0) {
+            // Linearly decrease motor values and clamp to zero.
+            ae[0] = ae[1] = ae[2] = ae[3] = std::max(ae[0] - p_misc.panic_decrement, 0);
+        }
     }
     else {
         if (_mode == Manual) {
@@ -509,11 +508,16 @@ void Quadrupel::control() {
         oo3 = lift / (2 * p_act.rate_pitch_roll_lift) - pitch / p_act.rate_pitch_roll_lift - yaw / p_act.rate_yaw;
         oo4 = lift / (2 * p_act.rate_pitch_roll_lift) + roll / p_act.rate_pitch_roll_lift + yaw / p_act.rate_yaw;
 
-        // TODO: Re-introduce square-root if required.
-        ae[0] = scale_motor(oo1);
-        ae[1] = scale_motor(oo2);
-        ae[2] = scale_motor(oo3);
-        ae[3] = scale_motor(oo4);
+        if (_mode == Safe || _mode == Calibration) {
+            ae[0] = ae[1] = ae[2] = ae[3] = 0;
+        }
+        else {
+            // TODO: Re-introduce square-root if required.
+            ae[0] = scale_motor(oo1);
+            ae[1] = scale_motor(oo2);
+            ae[2] = scale_motor(oo3);
+            ae[3] = scale_motor(oo4);
+        }
     }
 }
 

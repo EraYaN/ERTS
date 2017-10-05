@@ -50,7 +50,7 @@ typedef struct {
     uint16_t log_divider = 100;
     uint16_t battery_threshold = 1050;
     uint16_t target_loop_time = 20000;
-    uint16_t comm_timeout = 100;
+    uint16_t comm_timeout = 200;
 } misc_params_t;
 
 class Quadrupel {
