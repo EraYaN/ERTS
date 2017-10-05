@@ -64,7 +64,8 @@ class Quadrupel {
     flightMode_t _new_mode = Safe;
     bool _is_calibrated;
     uint32_t _accum_loop_time;
-    quad_state_t target_state, current_state;
+    quad_state_t target_state, current_state, calibration_offsets;
+    uint32_t calibration_steps = 0;
 
     // Comm
     uint32_t counter = 1;
@@ -97,6 +98,8 @@ class Quadrupel {
 
     inline uint16_t scale_motor(int32_t value);
 
+    void set_current_state();
+
 public:
     bool exit = false;
 
@@ -113,6 +116,8 @@ public:
     void update_motors();
 
     void control();
+
+    void calibrate(bool finalize = false);
 
     void set_p_act(ActuationParameterData *data);
 
