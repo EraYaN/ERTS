@@ -28,6 +28,7 @@
     <ClCompile Include="drivers\twi.c" />
     <ClCompile Include="drivers\uart.c" />
     <ClCompile Include="erts-quad.cpp" />
+    <ClCompile Include="flash_wrapper.cpp" />
     <ClCompile Include="quad.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -39,6 +40,7 @@
     <ClInclude Include="drivers\invensense\inv_mpu.h" />
     <ClInclude Include="drivers\invensense\inv_mpu_dmp_motion_driver.h" />
     <ClInclude Include="drivers\invensense\ml.h" />
+    <ClInclude Include="flash_wrapper.h" />
     <ClInclude Include="quad.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
