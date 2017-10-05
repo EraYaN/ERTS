@@ -72,6 +72,7 @@
     <Compile Include="AboutWindow.xaml.cs">
       <DependentUpon>AboutWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Communication\Data\KillData.cs" />
     <Compile Include="Communication\Data\AcknowledgeData.cs" />
     <Compile Include="Communication\Data\ActuationParameterData.cs" />
     <Compile Include="Communication\Data\ControllerParameterData.cs" />

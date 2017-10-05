@@ -408,6 +408,33 @@ namespace ERTS.Dashboard.Communication
             SendPacket(p);
         }
 
+        public void MiscParameters(ushort PanicDecrement, ushort RCInterval, ushort LogDivider, ushort BatteryThreshold, ushort TargetLoopTime)
+        {
+            Packet p = new Packet(MessageType.MiscParameters)
+            {
+                Data = new MiscParameterData(PanicDecrement, RCInterval, LogDivider, BatteryThreshold, TargetLoopTime)
+            };
+            SendPacket(p);
+        }
+
+        public void ControllerParameter(ushort PYaw, ushort PHeight, ushort P1PitchRoll, ushort P2PitchRoll)
+        {
+            Packet p = new Packet(MessageType.ControllerParameters)
+            {
+                Data = new ControllerParameterData(PYaw, PHeight, P1PitchRoll, P2PitchRoll)
+            };
+            SendPacket(p);
+        }
+
+        public void ActuationParameter(ushort RatePitchRollLift, ushort RateYaw, ushort MotorMin, ushort MotorMax)
+        {
+            Packet p = new Packet(MessageType.ActuationParameters)
+            {
+                Data = new ActuationParameterData(RatePitchRollLift, RateYaw, MotorMin, MotorMax)
+            };
+            SendPacket(p);
+        }
+
         public void Acknowledge(uint Number = 0)
         {
             Packet p = new Packet(MessageType.Acknowledge)
@@ -431,6 +458,15 @@ namespace ERTS.Dashboard.Communication
             Packet p = new Packet(MessageType.RemoteControl)
             {
                 Data = new RemoteControlData(Lift, Roll, Pitch, Yaw)
+            };
+            SendPacket(p);
+        }
+
+        public void Kill()
+        {
+            Packet p = new Packet(MessageType.Kill)
+            {
+                Data = new KillData()
             };
             SendPacket(p);
         }

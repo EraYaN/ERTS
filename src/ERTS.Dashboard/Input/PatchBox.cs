@@ -11,6 +11,11 @@ namespace ERTS.Dashboard.Input
 {
     public class PatchBox
     {
+        Guid keyboardGuid = new Guid("6f1d2b61-d5a0-11cf-bfc7-444553540000");
+        Guid joystickGuid = new Guid("241e5050-93f0-11e7-8001-444553540000"); // Lab Joystick, ERWIN_LAPTOP
+        //Guid joystickGuid = new Guid("46be56e0-a3a5-11e7-8001-444553540000") // Robin Joystick, ROBIN_LAPTOP
+        //Guid xboxPadGuid = new Guid("f211f8e0-8dc4-11e7-800f-444553540000"); // xboxPad 1, ERWIN_PC
+        Guid xboxPadGuid = new Guid("c701ce90-a648-11e7-8002-444553540000"); // xboxPad 1, ERWIN_LAPTOP
         const int KeyThreshold = 64;
         //axis
         /*InputBinding LiftInputBinding;
@@ -32,42 +37,39 @@ namespace ERTS.Dashboard.Input
 
         public PatchBox()
         {
-            //TODO get ControlActuator[] from config.
-            ControlActuator keyboardEsc = new ControlActuator() { DeviceGuid = new Guid("6f1d2b61-d5a0-11cf-bfc7-444553540000"), ControlDisplayName = "Keyboard - Esc", RawOffset = DirectInputRawOffsets.KB_ESCAPE };
-            ControlActuator keyboard0 = new ControlActuator() { DeviceGuid = new Guid("6f1d2b61-d5a0-11cf-bfc7-444553540000"), ControlDisplayName = "Keyboard - 0", RawOffset = DirectInputRawOffsets.KB_0 };
-            ControlActuator keyboard1 = new ControlActuator() { DeviceGuid = new Guid("6f1d2b61-d5a0-11cf-bfc7-444553540000"), ControlDisplayName = "Keyboard - 1", RawOffset = DirectInputRawOffsets.KB_1 };
-            ControlActuator keyboard2 = new ControlActuator() { DeviceGuid = new Guid("6f1d2b61-d5a0-11cf-bfc7-444553540000"), ControlDisplayName = "Keyboard - 2", RawOffset = DirectInputRawOffsets.KB_2 };
-            ControlActuator keyboard3 = new ControlActuator() { DeviceGuid = new Guid("6f1d2b61-d5a0-11cf-bfc7-444553540000"), ControlDisplayName = "Keyboard - 3", RawOffset = DirectInputRawOffsets.KB_3 };
-            ControlActuator keyboard4 = new ControlActuator() { DeviceGuid = new Guid("6f1d2b61-d5a0-11cf-bfc7-444553540000"), ControlDisplayName = "Keyboard - 4", RawOffset = DirectInputRawOffsets.KB_4 };
-            ControlActuator keyboard5 = new ControlActuator() { DeviceGuid = new Guid("6f1d2b61-d5a0-11cf-bfc7-444553540000"), ControlDisplayName = "Keyboard - 5", RawOffset = DirectInputRawOffsets.KB_5 };
-
-            ControlActuator keyboardA = new ControlActuator() { DeviceGuid = new Guid("6f1d2b61-d5a0-11cf-bfc7-444553540000"), ControlDisplayName = "Keyboard - A", RawOffset = DirectInputRawOffsets.KB_A };
-            ControlActuator keyboardZ = new ControlActuator() { DeviceGuid = new Guid("6f1d2b61-d5a0-11cf-bfc7-444553540000"), ControlDisplayName = "Keyboard - Z", RawOffset = DirectInputRawOffsets.KB_Z };
-
-            ControlActuator keyboardUpArrow = new ControlActuator() { DeviceGuid = new Guid("6f1d2b61-d5a0-11cf-bfc7-444553540000"), ControlDisplayName = "Keyboard - Up Arrow", RawOffset = DirectInputRawOffsets.KB_UP };
-            ControlActuator keyboardDownArrow = new ControlActuator() { DeviceGuid = new Guid("6f1d2b61-d5a0-11cf-bfc7-444553540000"), ControlDisplayName = "Keyboard - Down Arrow", RawOffset = DirectInputRawOffsets.KB_DOWN };
-
-            ControlActuator keyboardLeftArrow = new ControlActuator() { DeviceGuid = new Guid("6f1d2b61-d5a0-11cf-bfc7-444553540000"), ControlDisplayName = "Keyboard - Left Arrow", RawOffset = DirectInputRawOffsets.KB_LEFT };
-            ControlActuator keyboardRightArrow = new ControlActuator() { DeviceGuid = new Guid("6f1d2b61-d5a0-11cf-bfc7-444553540000"), ControlDisplayName = "Keyboard - Right Arrow", RawOffset = DirectInputRawOffsets.KB_RIGHT };
-
-            ControlActuator keyboardQ = new ControlActuator() { DeviceGuid = new Guid("6f1d2b61-d5a0-11cf-bfc7-444553540000"), ControlDisplayName = "Keyboard - Q", RawOffset = DirectInputRawOffsets.KB_Q };
-            ControlActuator keyboardW = new ControlActuator() { DeviceGuid = new Guid("6f1d2b61-d5a0-11cf-bfc7-444553540000"), ControlDisplayName = "Keyboard - W", RawOffset = DirectInputRawOffsets.KB_W };
             
-            ControlActuator xboxPadX = new ControlActuator() { DeviceGuid = new Guid("f211f8e0-8dc4-11e7-800f-444553540000"), ControlDisplayName = "Xbox 360 - X", RawOffset = DirectInputRawOffsets.XBOX_LEFTSTICK_X };
-            ControlActuator xboxPadY = new ControlActuator() { DeviceGuid = new Guid("f211f8e0-8dc4-11e7-800f-444553540000"), ControlDisplayName = "Xbox 360 - Y", RawOffset = DirectInputRawOffsets.XBOX_LEFTSTICK_Y };
-            ControlActuator xboxPadRotX = new ControlActuator() { DeviceGuid = new Guid("f211f8e0-8dc4-11e7-800f-444553540000"), ControlDisplayName = "Xbox 360 - RotationX", RawOffset = DirectInputRawOffsets.XBOX_RIGHTSTICK_X };
-            ControlActuator xboxPadRotY = new ControlActuator() { DeviceGuid = new Guid("f211f8e0-8dc4-11e7-800f-444553540000"), ControlDisplayName = "Xbox 360 - RotationY", RawOffset = DirectInputRawOffsets.XBOX_RIGHTSTICK_Y };
-            /*ControlActuator joystickX = new ControlActuator() { DeviceGuid = new Guid("46be56e0-a3a5-11e7-8001-444553540000"), ControlDisplayName = "Logitech Extreme 3D - X", RawOffset = DirectInputRawOffsets.LE3D_X };
-            ControlActuator joystickY = new ControlActuator() { DeviceGuid = new Guid("46be56e0-a3a5-11e7-8001-444553540000"), ControlDisplayName = "Logitech Extreme 3D - Y", RawOffset = DirectInputRawOffsets.LE3D_Y };
-            ControlActuator joystickZ = new ControlActuator() { DeviceGuid = new Guid("46be56e0-a3a5-11e7-8001-444553540000"), ControlDisplayName = "Logitech Extreme 3D - Z", RawOffset = DirectInputRawOffsets.LE3D_Z };
-            ControlActuator joystickThrottle = new ControlActuator() { DeviceGuid = new Guid("46be56e0-a3a5-11e7-8001-444553540000"), ControlDisplayName = "Logitech Extreme 3D - Throttle", RawOffset = DirectInputRawOffsets.LE3D_THROTTLE };
-            ControlActuator joystickTrigger = new ControlActuator() { DeviceGuid = new Guid("46be56e0-a3a5-11e7-8001-444553540000"), ControlDisplayName = "Logitech Extreme 3D - Trigger", RawOffset = DirectInputRawOffsets.LE3D_TRIGGER };*/
 
-            ControlActuator joystickX = new ControlActuator() { DeviceGuid = new Guid("241e5050-93f0-11e7-8001-444553540000"), ControlDisplayName = "Logitech Extreme 3D - X", RawOffset = DirectInputRawOffsets.LE3D_X };
-            ControlActuator joystickY = new ControlActuator() { DeviceGuid = new Guid("241e5050-93f0-11e7-8001-444553540000"), ControlDisplayName = "Logitech Extreme 3D - Y", RawOffset = DirectInputRawOffsets.LE3D_Y };
-            ControlActuator joystickZ = new ControlActuator() { DeviceGuid = new Guid("241e5050-93f0-11e7-8001-444553540000"), ControlDisplayName = "Logitech Extreme 3D - Z", RawOffset = DirectInputRawOffsets.LE3D_Z };
-            ControlActuator joystickThrottle = new ControlActuator() { DeviceGuid = new Guid("241e5050-93f0-11e7-8001-444553540000"), ControlDisplayName = "Logitech Extreme 3D - Throttle", RawOffset = DirectInputRawOffsets.LE3D_THROTTLE };
-            ControlActuator joystickTrigger = new ControlActuator() { DeviceGuid = new Guid("241e5050-93f0-11e7-8001-444553540000"), ControlDisplayName = "Logitech Extreme 3D - Trigger", RawOffset = DirectInputRawOffsets.LE3D_TRIGGER };
+            //TODO get ControlActuator[] from config.
+            ControlActuator keyboardEsc = new ControlActuator() { DeviceGuid = keyboardGuid, ControlDisplayName = "Keyboard - Esc", RawOffset = DirectInputRawOffsets.KB_ESCAPE };
+            ControlActuator keyboard0 = new ControlActuator() { DeviceGuid = keyboardGuid, ControlDisplayName = "Keyboard - 0", RawOffset = DirectInputRawOffsets.KB_0 };
+            ControlActuator keyboard1 = new ControlActuator() { DeviceGuid = keyboardGuid, ControlDisplayName = "Keyboard - 1", RawOffset = DirectInputRawOffsets.KB_1 };
+            ControlActuator keyboard2 = new ControlActuator() { DeviceGuid = keyboardGuid, ControlDisplayName = "Keyboard - 2", RawOffset = DirectInputRawOffsets.KB_2 };
+            ControlActuator keyboard3 = new ControlActuator() { DeviceGuid = keyboardGuid, ControlDisplayName = "Keyboard - 3", RawOffset = DirectInputRawOffsets.KB_3 };
+            ControlActuator keyboard4 = new ControlActuator() { DeviceGuid = keyboardGuid, ControlDisplayName = "Keyboard - 4", RawOffset = DirectInputRawOffsets.KB_4 };
+            ControlActuator keyboard5 = new ControlActuator() { DeviceGuid = keyboardGuid, ControlDisplayName = "Keyboard - 5", RawOffset = DirectInputRawOffsets.KB_5 };
+
+            ControlActuator keyboardA = new ControlActuator() { DeviceGuid = keyboardGuid, ControlDisplayName = "Keyboard - A", RawOffset = DirectInputRawOffsets.KB_A };
+            ControlActuator keyboardZ = new ControlActuator() { DeviceGuid = keyboardGuid, ControlDisplayName = "Keyboard - Z", RawOffset = DirectInputRawOffsets.KB_Z };
+
+            ControlActuator keyboardUpArrow = new ControlActuator() { DeviceGuid = keyboardGuid, ControlDisplayName = "Keyboard - Up Arrow", RawOffset = DirectInputRawOffsets.KB_UP };
+            ControlActuator keyboardDownArrow = new ControlActuator() { DeviceGuid = keyboardGuid, ControlDisplayName = "Keyboard - Down Arrow", RawOffset = DirectInputRawOffsets.KB_DOWN };
+
+            ControlActuator keyboardLeftArrow = new ControlActuator() { DeviceGuid = keyboardGuid, ControlDisplayName = "Keyboard - Left Arrow", RawOffset = DirectInputRawOffsets.KB_LEFT };
+            ControlActuator keyboardRightArrow = new ControlActuator() { DeviceGuid = keyboardGuid, ControlDisplayName = "Keyboard - Right Arrow", RawOffset = DirectInputRawOffsets.KB_RIGHT };
+
+            ControlActuator keyboardQ = new ControlActuator() { DeviceGuid = keyboardGuid, ControlDisplayName = "Keyboard - Q", RawOffset = DirectInputRawOffsets.KB_Q };
+            ControlActuator keyboardW = new ControlActuator() { DeviceGuid = keyboardGuid, ControlDisplayName = "Keyboard - W", RawOffset = DirectInputRawOffsets.KB_W };
+            
+            ControlActuator xboxPadX = new ControlActuator() { DeviceGuid = xboxPadGuid, ControlDisplayName = "Xbox 360 - X", RawOffset = DirectInputRawOffsets.XBOX_LEFTSTICK_X };
+            ControlActuator xboxPadY = new ControlActuator() { DeviceGuid = xboxPadGuid, ControlDisplayName = "Xbox 360 - Y", RawOffset = DirectInputRawOffsets.XBOX_LEFTSTICK_Y };
+            ControlActuator xboxPadRotX = new ControlActuator() { DeviceGuid = xboxPadGuid, ControlDisplayName = "Xbox 360 - RotationX", RawOffset = DirectInputRawOffsets.XBOX_RIGHTSTICK_X };
+            ControlActuator xboxPadRotY = new ControlActuator() { DeviceGuid = xboxPadGuid, ControlDisplayName = "Xbox 360 - RotationY", RawOffset = DirectInputRawOffsets.XBOX_RIGHTSTICK_Y };            
+
+            ControlActuator joystickX = new ControlActuator() { DeviceGuid = joystickGuid, ControlDisplayName = "Logitech Extreme 3D - X", RawOffset = DirectInputRawOffsets.LE3D_X };
+            ControlActuator joystickY = new ControlActuator() { DeviceGuid = joystickGuid, ControlDisplayName = "Logitech Extreme 3D - Y", RawOffset = DirectInputRawOffsets.LE3D_Y };
+            ControlActuator joystickZ = new ControlActuator() { DeviceGuid = joystickGuid, ControlDisplayName = "Logitech Extreme 3D - Z", RawOffset = DirectInputRawOffsets.LE3D_Z };
+            ControlActuator joystickThrottle = new ControlActuator() { DeviceGuid = joystickGuid, ControlDisplayName = "Logitech Extreme 3D - Throttle", RawOffset = DirectInputRawOffsets.LE3D_THROTTLE };
+            ControlActuator joystickTrigger = new ControlActuator() { DeviceGuid = joystickGuid, ControlDisplayName = "Logitech Extreme 3D - Trigger", RawOffset = DirectInputRawOffsets.LE3D_TRIGGER };
             
             InputBinding LiftInputBinding = new InputBinding(new ControlActuator[] { xboxPadY, joystickThrottle }, "Lift");
             LiftInputBinding.BindingActuatedEvent += LiftInputBinding_BindingActuatedEvent;

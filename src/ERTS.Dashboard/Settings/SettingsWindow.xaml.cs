@@ -25,7 +25,7 @@ namespace ERTS.Dashboard.Configuration
     /// </summary>
     public partial class SettingsWindow : Window
     {
-        const int CONTROL_TAB_INDEX = 2;
+        const int CONTROL_TAB_INDEX = 3;
         //TODO make handle class member of InputManager instead
         IntPtr MainWindowHandle;
 
