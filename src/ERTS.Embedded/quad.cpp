@@ -301,6 +301,7 @@ void Quadrupel::busywork() {
     }
     if (check_sensor_int_flag()) {
         get_dmp_data();
+        set_current_state();
     }
 }
 
@@ -322,8 +323,15 @@ void Quadrupel::tick() {
         heartbeat();
     }
 
-    control();
-    update_motors();
+    if (_mode == Calibration) {
+        calibrate();
+    }
+    else {
+        control();
+        update_motors();
+    }
+
+
     nrf_delay_ms(5);
     _accum_loop_time += get_time_us() - timestamp;
     nrf_gpio_pin_set(GREEN);
@@ -337,6 +345,17 @@ int Quadrupel::set_mode(flightMode_t new_mode) {
     switch (_mode) {
         // Transitions from safe mode.
         case Safe: {
+            // Disallow mode switch when any of the inputs is non-zero.
+            if (new_mode != Panic
+                && (target_state.lift != 0
+                    || target_state.roll != 0
+                    || target_state.pitch != 0
+                    || target_state.yaw != 0
+                    )) {
+                result = MODE_SWITCH_NOT_ALLOWED;
+                break;
+            }
+
             switch (new_mode) {
                 // Always OK.
                 case Panic: {
@@ -385,8 +404,22 @@ int Quadrupel::set_mode(flightMode_t new_mode) {
             }            
             break;
         }
-            // Other modes can only transition to safe or panic mode.
+            // Finalize calibration upon switching back to safe mode.
         case Calibration:
+            switch (new_mode) {
+                case Safe:
+                    calibrate(true);
+                case Panic: {
+                    result = MODE_SWITCH_OK;
+                    break;
+                }
+                default: {
+                    result = MODE_SWITCH_UNSUPPORTED;
+                    break;
+                }
+                break;
+            }
+            // Other modes can only transition to safe or panic mode.
         case Manual:
         case YawControl:
         case FullControl:
@@ -462,7 +495,7 @@ void Quadrupel::control() {
             pitch = target_state.pitch;
 
             //setpoint_temp = yaw_p1.yaw_p1 * target_state.yaw;
-            yaw = p_ctr.p_yaw * (target_state.yaw - sr);
+            yaw = p_ctr.p_yaw * (target_state.yaw - current_state.yaw);
         }
         else {
             lift = 0;
@@ -481,6 +514,20 @@ void Quadrupel::control() {
         ae[1] = scale_motor(oo2);
         ae[2] = scale_motor(oo3);
         ae[3] = scale_motor(oo4);
+    }
+}
+
+void Quadrupel::calibrate(bool finalize) {
+    calibration_offsets.roll += sp;
+    calibration_offsets.pitch += sq;
+    calibration_offsets.yaw += sr;
+    calibration_steps++;
+
+    if (finalize) {
+        calibration_offsets.roll /= calibration_steps;
+        calibration_offsets.pitch /= calibration_steps;
+        calibration_offsets.yaw /= calibration_steps;
+        calibration_steps = 0;
     }
 }
 
@@ -529,4 +576,11 @@ void Quadrupel::set_p_misc(MiscParameterData *data) {
     p_misc.battery_threshold = data->get_battery_threshold();
     p_misc.target_loop_time = data->get_target_loop_time();
     p_misc.comm_timeout = p_misc.target_loop_time << 1;
+}
+
+void Quadrupel::set_current_state() {
+    // TODO: Add lift.
+    current_state.roll = sp - calibration_offsets.roll;
+    current_state.pitch = sq - calibration_offsets.pitch;
+    current_state.yaw = sr - calibration_offsets.yaw;
 }
