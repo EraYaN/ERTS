@@ -59,7 +59,17 @@ namespace ERTS.Dashboard.Input
 
             ControlActuator keyboardQ = new ControlActuator() { DeviceGuid = keyboardGuid, ControlDisplayName = "Keyboard - Q", RawOffset = DirectInputRawOffsets.KB_Q };
             ControlActuator keyboardW = new ControlActuator() { DeviceGuid = keyboardGuid, ControlDisplayName = "Keyboard - W", RawOffset = DirectInputRawOffsets.KB_W };
-            
+
+            ControlActuator keyboardU = new ControlActuator() { DeviceGuid = keyboardGuid, ControlDisplayName = "Keyboard - U", RawOffset = DirectInputRawOffsets.KB_U };
+            ControlActuator keyboardJ = new ControlActuator() { DeviceGuid = keyboardGuid, ControlDisplayName = "Keyboard - J", RawOffset = DirectInputRawOffsets.KB_J };
+
+            ControlActuator keyboardI = new ControlActuator() { DeviceGuid = keyboardGuid, ControlDisplayName = "Keyboard - I", RawOffset = DirectInputRawOffsets.KB_I };
+            ControlActuator keyboardK = new ControlActuator() { DeviceGuid = keyboardGuid, ControlDisplayName = "Keyboard - K", RawOffset = DirectInputRawOffsets.KB_K };
+
+            ControlActuator keyboardO = new ControlActuator() { DeviceGuid = keyboardGuid, ControlDisplayName = "Keyboard - O", RawOffset = DirectInputRawOffsets.KB_O };
+            ControlActuator keyboardL = new ControlActuator() { DeviceGuid = keyboardGuid, ControlDisplayName = "Keyboard - L", RawOffset = DirectInputRawOffsets.KB_L };
+
+
             ControlActuator xboxPadX = new ControlActuator() { DeviceGuid = xboxPadGuid, ControlDisplayName = "Xbox 360 - X", RawOffset = DirectInputRawOffsets.XBOX_LEFTSTICK_X };
             ControlActuator xboxPadY = new ControlActuator() { DeviceGuid = xboxPadGuid, ControlDisplayName = "Xbox 360 - Y", RawOffset = DirectInputRawOffsets.XBOX_LEFTSTICK_Y };
             ControlActuator xboxPadRotX = new ControlActuator() { DeviceGuid = xboxPadGuid, ControlDisplayName = "Xbox 360 - RotationX", RawOffset = DirectInputRawOffsets.XBOX_RIGHTSTICK_X };
@@ -122,6 +132,15 @@ namespace ERTS.Dashboard.Input
             InputBinding YawTrimDownBinding = new InputBinding(new ControlActuator[] { keyboardQ }, "YawTrimDown");
             YawTrimDownBinding.BindingActuatedEvent += YawTrimDownBinding_BindingActuatedEvent;
             InputBindings.Add("YawTrimDown", YawTrimDownBinding);
+
+            /*InputBinding YawPUpBinding = new InputBinding(new ControlActuator[] { keyboardDownArrow }, "YawPUp");
+            YawPUpBinding.BindingActuatedEvent += YawPUpBinding_BindingActuatedEvent;
+            InputBindings.Add("YawPUp", YawPUpBinding);
+
+            InputBinding YawPDownBinding = new InputBinding(new ControlActuator[] { keyboardUpArrow }, "YawPDown");
+            YawPDownBinding.BindingActuatedEvent += YawPDownBinding_BindingActuatedEvent;
+            InputBindings.Add("YawPDown", PitchTrimDownBinding);*/
+
 
             InputBinding ModeSafeBinding = new InputBinding(new ControlActuator[] { keyboard0 }, "ModeSafe");
             ModeSafeBinding.BindingActuatedEvent += ModeSafeBinding_BindingActuatedEvent;

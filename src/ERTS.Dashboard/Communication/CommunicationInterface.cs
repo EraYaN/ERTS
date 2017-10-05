@@ -498,9 +498,7 @@ namespace ERTS.Dashboard.Communication
         protected virtual void Dispose(bool disposing)
         {
             if (disposing)
-            {
-                tw_rx.Close();
-                tw_tx.Close();
+            {                
                 PacketTimer.Stop();
                 PacketTimer.Dispose();
                 BandwitdhTimer.Stop();
@@ -510,6 +508,8 @@ namespace ERTS.Dashboard.Communication
                 {
                     serial.Dispose();
                 }
+                tw_rx.Close();
+                tw_tx.Close();
                 Debug.WriteLine(String.Format("Bytes Received: {0}", BytesReceived), "CommunicationInterface");
                 Debug.WriteLine(String.Format("Bytes Sent: {0}", BytesSent), "CommunicationInterface");
             }
