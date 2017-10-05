@@ -345,6 +345,17 @@ int Quadrupel::set_mode(flightMode_t new_mode) {
     switch (_mode) {
         // Transitions from safe mode.
         case Safe: {
+            // Disallow mode switch when any of the inputs is non-zero.
+            if (new_mode != Panic
+                && (target_state.lift != 0
+                    || target_state.roll != 0
+                    || target_state.pitch != 0
+                    || target_state.yaw != 0
+                    )) {
+                result = MODE_SWITCH_NOT_ALLOWED;
+                break;
+            }
+
             switch (new_mode) {
                 // Always OK.
                 case Panic: {

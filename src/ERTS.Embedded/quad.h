@@ -21,6 +21,7 @@ extern "C"
 
 #define MODE_SWITCH_OK 0
 #define MODE_SWITCH_UNSUPPORTED 1
+#define MODE_SWITCH_NOT_ALLOWED 2
 
 typedef struct {
     uint16_t lift;
