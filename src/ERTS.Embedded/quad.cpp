@@ -466,8 +466,7 @@ void Quadrupel::control() {
     // Equations to get desired lift, roll rate, pitch rate and yaw rate.
     int32_t oo1, oo2, oo3, oo4;
     uint16_t lift;
-    int16_t roll, pitch, yaw;
-    // uint16_t setpoint_temp;
+    int16_t roll, pitch, yaw, p_s, q_s;
 
     if (_mode == Panic) {
         if (_initial_panic) {
@@ -493,7 +492,17 @@ void Quadrupel::control() {
             roll = target_state.roll;
             pitch = target_state.pitch;
 
-            //setpoint_temp = yaw_p1.yaw_p1 * target_state.yaw;
+            yaw = p_ctr.p_yaw * (target_state.yaw - current_state.yaw);
+        }
+        else if (_mode == FullControl) {
+            lift = target_state.lift;
+
+            p_s = p_ctr.p1_pitch_roll * (target_state.roll - current_state.roll);
+            roll = p_ctr.p2_pitch_roll * (p_s - sp);
+
+            q_s = p_ctr.p1_pitch_roll * (target_state.pitch - current_state.pitch);
+            pitch = p_ctr.p2_pitch_roll * (q_s - sq);
+
             yaw = p_ctr.p_yaw * (target_state.yaw - current_state.yaw);
         }
         else {
@@ -584,7 +593,7 @@ void Quadrupel::set_p_misc(MiscParameterData *data) {
 
 void Quadrupel::set_current_state() {
     // TODO: Add lift.
-    current_state.roll = sp - calibration_offsets.roll;
-    current_state.pitch = sq - calibration_offsets.pitch;
-    current_state.yaw = sr - calibration_offsets.yaw;
+    current_state.roll = phi - calibration_offsets.roll;
+    current_state.pitch = theta - calibration_offsets.pitch;
+    current_state.yaw = psi - calibration_offsets.yaw;
 }
