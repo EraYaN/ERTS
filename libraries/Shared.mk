@@ -9,7 +9,7 @@ EXT_DEPS_CRC_LIB := $(addsuffix .a, $(addprefix lib, $(EXT_DEPS_CRC)))
 EXT_DEPS_COMM_PATH += $(abspath ../../libraries/lib$(EXT_DEPS_COMM))
 EXT_DEPS_CRC_PATH += $(abspath ../../libraries/lib$(EXT_DEPS_CRC)-2.0)
 
-EXT_DEPS += $(EXT_DEPS_COMM) 
+EXT_DEPS += $(EXT_DEPS_COMM)
 EXT_DEPS += $(EXT_DEPS_CRC)
 
 EXT_DEPS_LIB_NAMES += $(EXT_DEPS_COMM_LIB)
@@ -42,24 +42,33 @@ else
 NO_ECHO := @
 endif
 
+
+ifeq ($(shell uname),Darwin)
+GNU_INSTALL_ROOT :=
+else
+GNU_INSTALL_ROOT := ../gcc-arm-none-eabi/bin/
+endif
+
+debug:
+	@echo $(GNU_INSTALL_ROOT)
+
 # Toolchain commands
-CC              := '$(GNU_PREFIX)-gcc'
-CPP             := '$(GNU_PREFIX)-g++'
-AS              := '$(GNU_PREFIX)-as'
-AR              := '$(GNU_PREFIX)-ar' -r
-LD              := '$(GNU_PREFIX)-ld'
-NM              := '$(GNU_PREFIX)-nm'
-OBJDUMP         := '$(GNU_PREFIX)-objdump'
-OBJCOPY         := '$(GNU_PREFIX)-objcopy'
-SIZE            := '$(GNU_PREFIX)-size'
-STRIP  = '$(GNU_PREFIX)-strip'
+CC              := '$(GNU_INSTALL_ROOT)$(GNU_PREFIX)-gcc'
+CPP				:= '$(GNU_INSTALL_ROOT)$(GNU_PREFIX)-g++'
+AS              := '$(GNU_INSTALL_ROOT)$(GNU_PREFIX)-as'
+AR              := '$(GNU_INSTALL_ROOT)$(GNU_PREFIX)-ar' -r
+LD              := '$(GNU_INSTALL_ROOT)$(GNU_PREFIX)-ld'
+NM              := '$(GNU_INSTALL_ROOT)$(GNU_PREFIX)-nm'
+OBJDUMP         := '$(GNU_INSTALL_ROOT)$(GNU_PREFIX)-objdump'
+OBJCOPY         := '$(GNU_INSTALL_ROOT)$(GNU_PREFIX)-objcopy'
+SIZE            := '$(GNU_INSTALL_ROOT)$(GNU_PREFIX)-size'
+STRIP  			:= '$(GNU_INSTALL_ROOT)$(GNU_PREFIX)-strip'
+RANLIB			:= '$(GNU_INSTALL_ROOT)$(GNU_PREFIX)-ranlib'
 OBJEXT = .o
 LIBEXT = .a
 EXEEXT =
 OFLAG  = -o
 XFLAG  = -o
-
-RANLIB = '$(GNU_PREFIX)-ranlib'
 
 #function for removing duplicates in a list
 remduplicates = $(strip $(if $1,$(firstword $1) $(call remduplicates,$(filter-out $(firstword $1),$1))))
@@ -128,16 +137,16 @@ SHARED_LDFLAGS += -Wl,--no-wchar-size-warning
 # use newlib in nano version
 SHARED_LDFLAGS += --specs=nano.specs -lc -lnosys
 
-$(EXT_DEPS_COMM_LIB): 
+$(EXT_DEPS_COMM_LIB):
 	@echo 	Building $@
-	$(MAKE) -C $(EXT_DEPS_COMM_PATH) libonly	
+	$(MAKE) -C $(EXT_DEPS_COMM_PATH) libonly
 
-$(EXT_DEPS_CRC_LIB): 
+$(EXT_DEPS_CRC_LIB):
 	@echo 	Building $@
-	$(MAKE) -C $(EXT_DEPS_CRC_PATH) -f Makefile.arm libonly	
+	$(MAKE) -C $(EXT_DEPS_CRC_PATH) -f Makefile.arm libonly
 
 $(addsuffix clean, $(EXT_DEPS_CRC_LIB)):
-	$(MAKE) -C $(EXT_DEPS_CRC_PATH) -e clean	
-	
+	$(MAKE) -C $(EXT_DEPS_CRC_PATH) -e clean
+
 $(addsuffix clean, $(EXT_DEPS_COMM_LIB)):
 	$(MAKE) -C $(EXT_DEPS_COMM_PATH) -e clean
