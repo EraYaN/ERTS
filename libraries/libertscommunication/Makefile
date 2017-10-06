@@ -1,5 +1,6 @@
 PROJECT_NAME := libertscommunication
-
+# The root folder (for toolchainpaths in Shared.mk)
+PROJECT_ROOT := $(realpath $(dir $(realpath $(firstword $(MAKEFILE_LIST))))../../)
 include ../Shared.mk
 
 CPP_SOURCE_FILES += \

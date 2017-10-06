@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <stdint.h>
 #include <algorithm>
 #include "actuation_parameter_data.h"
 #include "controller_parameter_data.h"
@@ -24,10 +25,10 @@ extern "C"
 #define MODE_SWITCH_NOT_ALLOWED 2
 
 typedef struct {
-    uint16_t lift;
-    int16_t yaw;
-    int16_t pitch;
-    int16_t roll;
+    uint16_t lift = 0;
+    int16_t yaw = 0;
+    int16_t pitch = 0;
+    int16_t roll = 0;
 } quad_state_t;
 
 
@@ -45,12 +46,13 @@ typedef struct {
 } controller_params_t;
 
 typedef struct {
-    uint16_t panic_decrement = 100;
+    uint16_t panic_decrement = 1;
     uint16_t rc_interval = 100;
-    uint16_t log_divider = 100;
+    uint16_t log_divider = 0;
+	uint16_t telemetry_divider = 0;
     uint16_t battery_threshold = 1050;
     uint16_t target_loop_time = 20000;
-    uint16_t comm_timeout = 200;
+    uint16_t comm_timeout = 2000;
 } misc_params_t;
 
 class Quadrupel {
@@ -69,7 +71,8 @@ class Quadrupel {
     uint32_t calibration_steps = 0;
 
     // Comm
-    uint32_t counter = 1;
+    uint32_t counterHB = 1;
+	uint32_t counterLED = 1;
     uint16_t last_two_bytes = 0;
     bool _receiving = false;
     uint8_t comm_buffer[MAX_PACKET_SIZE];

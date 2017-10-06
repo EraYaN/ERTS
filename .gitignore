@@ -52,8 +52,8 @@ Module.symvers
 Mkfile.old
 dkms.conf
 
-nRF51_SDK_10.0.0_dc26b5e/
-nRF5_SDK_14.0.0_3bcc1f7/
+nRF51_SDK*/
+nRF5_SDK*/
 
 # Visual Studio
 .vs
@@ -384,3 +384,4 @@ crashlytics-build.properties
 fabric.properties
 *.dat
 src/gcc-arm-none-eabi/
+src/gcc-arm-none-eabi-x64/

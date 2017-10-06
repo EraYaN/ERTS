@@ -141,7 +141,6 @@ namespace ERTS.Dashboard.Input
             YawPDownBinding.BindingActuatedEvent += YawPDownBinding_BindingActuatedEvent;
             InputBindings.Add("YawPDown", PitchTrimDownBinding);*/
 
-
             InputBinding ModeSafeBinding = new InputBinding(new ControlActuator[] { keyboard0 }, "ModeSafe");
             ModeSafeBinding.BindingActuatedEvent += ModeSafeBinding_BindingActuatedEvent;
             InputBindings.Add("ModeSafe", ModeSafeBinding);

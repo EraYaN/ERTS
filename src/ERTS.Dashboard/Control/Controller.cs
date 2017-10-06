@@ -111,11 +111,10 @@ namespace ERTS.Dashboard.Control
                 {
                     return;
                 }
-                counter++;*/                
+                counter++;    */           
                 GlobalData.com.RemoteControl(Convert.ToUInt16(Math.Round(Lift.Clamp(0, 1) * (2^16 - 1))), Convert.ToInt16(Math.Round(RollRate.Clamp(-1, 1) * (2 ^ 15 - 1))),
                     Convert.ToInt16(Math.Round(PitchRate.Clamp(-1, 1) * (2 ^ 15 - 1))), Convert.ToInt16(Math.Round(YawRate.Clamp(-1,1) * (2 ^ 15 - 1))));
-                /*GlobalData.com.RemoteControl(Convert.ToUInt16(counter), Convert.ToInt16(Math.Round(RollRate * 32764.0)),
-                    Convert.ToInt16(Math.Round(PitchRate * 32764.0)), Convert.ToInt16(Math.Round(YawRate * 32764.0)));*/
+                //GlobalData.com.RemoteControl(Convert.ToUInt16(counter), 0, 0 ,0);
             }
         }
 

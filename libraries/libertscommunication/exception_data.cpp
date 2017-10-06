@@ -5,9 +5,9 @@ ExceptionData::ExceptionData(const uint8_t* data) {
     memcpy(&_message, &data[1], MAX_MESSAGE_LENGTH);
 }
 
-ExceptionData::ExceptionData(exceptionType_t type, const char(&message)[MAX_MESSAGE_LENGTH+1]) {
+ExceptionData::ExceptionData(exceptionType_t type, const char* message) {
     _type = type;
-    memcpy((void *)message, &_message, MAX_MESSAGE_LENGTH);
+    memcpy(&_message, message, std::min((int)strlen(message),MAX_MESSAGE_LENGTH));
 }
 
 void ExceptionData::to_buffer(uint8_t *buffer) {

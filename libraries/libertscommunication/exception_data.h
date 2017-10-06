@@ -8,7 +8,7 @@ class ExceptionData : public PacketData {
 
 public:
     ExceptionData(const uint8_t* data);
-    ExceptionData(exceptionType_t type, const char(&message)[MAX_MESSAGE_LENGTH+1]);
+    ExceptionData(exceptionType_t type, const char* message);
 
     int get_length() override {
         return 14;

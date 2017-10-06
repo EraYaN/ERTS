@@ -42,15 +42,14 @@ else
 NO_ECHO := @
 endif
 
-
 ifeq ($(shell uname),Darwin)
 GNU_INSTALL_ROOT :=
 else
-GNU_INSTALL_ROOT := ../gcc-arm-none-eabi/bin/
+GNU_INSTALL_ROOT := $(realpath $(PROJECT_ROOT)/src/gcc-arm-none-eabi-x64/bin/)/
 endif
 
-debug:
-	@echo $(GNU_INSTALL_ROOT)
+printdebug:
+	@echo $(GNU_INSTALL_ROOT)	
 
 # Toolchain commands
 CC              := '$(GNU_INSTALL_ROOT)$(GNU_PREFIX)-gcc'

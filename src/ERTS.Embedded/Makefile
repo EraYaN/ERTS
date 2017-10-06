@@ -1,7 +1,7 @@
 PROJECT_NAME := erts-quad
-
+# The root folder (for toolchainpaths in Shared.mk)
+PROJECT_ROOT := $(realpath $(dir $(realpath $(firstword $(MAKEFILE_LIST))))../../)
 include ../../libraries/Shared.mk
-
 
 export OUTPUT_FILENAME
 #MAKEFILE_NAME := $(CURDIR)/$(word $(words $(MAKEFILE_LIST)),$(MAKEFILE_LIST))
