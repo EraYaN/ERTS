@@ -606,3 +606,21 @@ void Quadrupel::set_current_state() {
 	current_state.pitch = sq - calibration_offsets.pitch;
 	current_state.yaw = sr - calibration_offsets.yaw;
 }
+
+void Quadrupel::dumpflash() {
+    uint16_t seqNumber = 0;
+    uint8_t dataFlash[DATA_SIZE];
+    auto packet = new Packet(FlashData);
+
+    //TODO:Turn off heartbeats/interupts
+
+    for (seqNumber=0; seqNumber <= FLASH_PACKETS; seqNumber++){
+        flash_read_bytes(seqNumber*FLASH_BYTES_PER_UART_PACKET, dataFlash, FLASH_BYTES_PER_UART_PACKET);
+        auto data = new FlashDumpData(seqNumber, dataFlash);
+        packet->set_data(data);
+        send(packet);
+    }
+    //TODO:Turn off heartbeats/interupts
+
+    delete packet;
+}

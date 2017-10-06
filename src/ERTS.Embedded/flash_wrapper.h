@@ -1,12 +1,11 @@
 #include <cstdint>
-// #include <stdint.h>
 
 // #include <packet_datastructures.h>
 
-#define FLASH_LENGTH_HEADER     5 // uint32 timestamp + uint8 timestamp
+#define FLASH_LENGTH_HEADER     6 // uint32 timestamp + uint16 timestamp
 #define FLASH_LENGTH_REMOTE     (8 + FLASH_LENGTH_HEADER)
-#define FLASH_LENGTH_TELEMETRY  (12 + FLASH_LENGTH_HEADER)
-#define FLASH_LENGTH_SENSOR     (14 + FLASH_LENGTH_HEADER)
+#define FLASH_LENGTH_TELEMETRY  (14 + FLASH_LENGTH_HEADER)
+#define FLASH_LENGTH_SENSOR     (12 + FLASH_LENGTH_HEADER)
 #define FLASH_LENGTH_TEST       (0 + FLASH_LENGTH_HEADER)
 
 // #define FLASH_BYTES_PER_UART_PACKET (DATA_SIZE - 2)
