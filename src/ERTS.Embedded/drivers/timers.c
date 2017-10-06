@@ -41,7 +41,11 @@ void TIMER1_IRQHandler() {
         NRF_TIMER1->EVENTS_COMPARE[3] = 0;
 
         NRF_TIMER1->TASKS_CAPTURE[2] = 1;
+        #ifdef SOFTDEVICE_PRESENT
         if (!radio_active && (NRF_TIMER1->CC[2] < 500))
+#else
+        if ((NRF_TIMER1->CC[2] < 500))
+#endif
         {
             motor[0] = (motor[0] < 1000) ? ((motor[0] < 0) ? 0 : motor[0]) : 1000;
             motor[1] = (motor[1] < 1000) ? ((motor[1] < 0) ? 0 : motor[1]) : 1000;
@@ -60,7 +64,11 @@ void TIMER2_IRQHandler() {
         // Check that the radio is not being used (highest interrupt) and that we are not near a flip in the pulse
         // This interrupt should only fire at the first 62 us of each motor pulse - otherwise there is a chance of flipping the pwm signal!
         NRF_TIMER2->TASKS_CAPTURE[2] = 1;
+#ifdef SOFTDEVICE_PRESENT
         if (!radio_active && (NRF_TIMER2->CC[2] < 500))
+#else
+        if ((NRF_TIMER2->CC[2] < 500))
+#endif
         {
             motor[2] = (motor[2] < 1000) ? ((motor[2] < 0) ? 0 : motor[2]) : 1000;
             motor[3] = (motor[3] < 1000) ? ((motor[3] < 0) ? 0 : motor[3]) : 1000;

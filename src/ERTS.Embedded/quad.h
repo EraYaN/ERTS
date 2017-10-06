@@ -49,12 +49,12 @@ typedef struct {
 
 typedef struct {
     uint16_t panic_decrement = 1;
-    uint16_t rc_interval = 100;
+    uint16_t rc_interval = 50;
     uint16_t log_divider = 0;
-	uint16_t telemetry_divider = 0;
-    uint16_t battery_threshold = 1050;
+	uint16_t telemetry_divider = 10;
+    uint16_t battery_threshold = 400;
     uint16_t target_loop_time = 20000;
-    uint16_t comm_timeout = 2000;
+    uint32_t comm_timeout = 200000;
 } misc_params_t;
 
 class Quadrupel {

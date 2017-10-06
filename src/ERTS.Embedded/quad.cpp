@@ -34,8 +34,9 @@ Quadrupel::Quadrupel() {
 
 void Quadrupel::receive() {
 	while (uart_available() && !check_timer_flag() && !check_sensor_int_flag()) {
-		uint8_t currentByte = uart_get();
+		uint8_t currentByte = uart_get();        
 		bytes++;
+       
 		//printf("Got byte: 0x%X\n",currentByte);
 
 		last_two_bytes = last_two_bytes << 8 | currentByte;
@@ -144,16 +145,16 @@ void Quadrupel::receive() {
 	}
 
 	if (tx_queue.count < 4) {
+		nrf_gpio_pin_set(GREEN);
+	}
+	else {
+		nrf_gpio_pin_clear(GREEN);
+	}
+	if (rx_queue.count < 4) {
 		nrf_gpio_pin_set(YELLOW);
 	}
 	else {
 		nrf_gpio_pin_clear(YELLOW);
-	}
-	if (rx_queue.count < 4) {
-		nrf_gpio_pin_set(RED);
-	}
-	else {
-		nrf_gpio_pin_clear(RED);
 	}
 }
 
@@ -285,23 +286,9 @@ void Quadrupel::busywork() {
 	receive();
 	if (_mode != Panic && _mode != Safe && _mode != Calibration) {
 
-		/*if (bat_volt < p_misc.battery_threshold) {
-		#ifdef FAKE_DRIVERS
-		std::cout << "Battery low, entering panic mode." << std::endl;
-		#endif
-		exception(UnknownException, "Battery Low..");
-		set_mode(Panic);
+		/**/
 
-		}*/
-
-		if ((get_time_us() - last_received) / 1000 > p_misc.comm_timeout) {
-#ifdef FAKE_DRIVERS
-			std::cout << "Timed out, entering panic mode." << std::endl;
-#endif
-			exception(UnknownException, "RC Timeout...");
-			set_mode(Panic);
-
-		}
+		
 	}
 	if (check_sensor_int_flag()) {
 		get_dmp_data();
@@ -310,14 +297,23 @@ void Quadrupel::busywork() {
 }
 
 void Quadrupel::tick() {
-	nrf_gpio_pin_clear(GREEN);
 	uint32_t timestamp = get_time_us();
 
 	counterLED++;
 
 	counterHB++;
 
-	
+    if (_mode != Panic && _mode != Safe && _mode != Calibration) {
+        if ((get_time_us() - last_received) > p_misc.comm_timeout) {
+#ifdef FAKE_DRIVERS
+            std::cout << "Timed out, entering panic mode." << std::endl;
+#endif
+            exception(UnknownException, "RC Timeout...");
+            set_mode(Panic);
+
+        }
+    }
+
 	//TODO Height should be a seperate switch
 	if (_mode == Height) {
 		read_baro();
@@ -335,6 +331,17 @@ void Quadrupel::tick() {
 	}
 	if (counterHB == p_misc.telemetry_divider) {
 		adc_request_sample(); // Really only needed once per heartbeat
+        if (_mode != Panic && _mode != Safe) {
+            if (bat_volt < p_misc.battery_threshold) {
+#ifdef FAKE_DRIVERS
+                std::cout << "Battery low, entering panic mode." << std::endl;
+#endif
+                exception(UnknownException, "Battery Low..");
+                set_mode(Panic);
+
+            }
+        }
+
 		counterHB = 1;
 		if (p_misc.telemetry_divider != 0) {
 			heartbeat();
@@ -352,7 +359,6 @@ void Quadrupel::tick() {
 
 	nrf_delay_ms(5);
 	_accum_loop_time += get_time_us() - timestamp;
-	nrf_gpio_pin_set(GREEN);
 }
 
 int Quadrupel::set_mode(flightMode_t new_mode) {
@@ -595,9 +601,10 @@ void Quadrupel::set_p_misc(MiscParameterData *data) {
 	p_misc.panic_decrement = data->get_panic_decrement();
 	p_misc.rc_interval = data->get_rc_interval();
 	p_misc.log_divider = data->get_log_divider();
+    //TODO implement this: p_misc.telemetry_divider = data->get_telemetry_divider();
 	p_misc.battery_threshold = data->get_battery_threshold();
 	p_misc.target_loop_time = data->get_target_loop_time();
-	p_misc.comm_timeout = p_misc.target_loop_time << 1;
+	p_misc.comm_timeout = ((uint32_t)(p_misc.rc_interval) << 2)*1000;
 }
 
 void Quadrupel::set_current_state() {

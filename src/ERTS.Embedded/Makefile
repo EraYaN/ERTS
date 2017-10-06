@@ -9,21 +9,20 @@ MAKEFILE_NAME := $(MAKEFILE_LIST)
 MAKEFILE_DIR := $(dir $(MAKEFILE_NAME) )
 
 #source common to all targets
-C_SOURCE_FILES += \
-$(abspath ./drivers/gpio.c) \
-$(abspath ./drivers/timers.c) \
-$(abspath ./drivers/uart.c) \
-$(abspath ./drivers/queue.c) \
-$(abspath ./drivers/twi.c) \
-$(abspath ./drivers/adc.c) \
-$(abspath ./drivers/baro.c) \
-$(abspath ./drivers/ble.c) \
-$(abspath ./drivers/spi_flash.c) \
-$(abspath ./drivers/invensense/inv_mpu.c) \
-$(abspath ./drivers/invensense/inv_mpu_dmp_motion_driver.c) \
-$(abspath ./drivers/invensense/ml.c) \
-$(abspath ./drivers/invensense/mpu_wrapper.c) \
-$(HW_SDK_C_SOURCE_FILES) # from Shared.mk
+C_SOURCE_FILES += $(abspath ./drivers/gpio.c) 
+C_SOURCE_FILES += $(abspath ./drivers/timers.c) 
+C_SOURCE_FILES += $(abspath ./drivers/uart.c) 
+C_SOURCE_FILES += $(abspath ./drivers/queue.c)
+C_SOURCE_FILES += $(abspath ./drivers/twi.c) 
+C_SOURCE_FILES += $(abspath ./drivers/adc.c) 
+C_SOURCE_FILES += $(abspath ./drivers/baro.c) 
+#C_SOURCE_FILES += $(abspath ./drivers/ble.c) 
+C_SOURCE_FILES += $(abspath ./drivers/spi_flash.c) 
+C_SOURCE_FILES += $(abspath ./drivers/invensense/inv_mpu.c) 
+C_SOURCE_FILES += $(abspath ./drivers/invensense/inv_mpu_dmp_motion_driver.c) 
+C_SOURCE_FILES += $(abspath ./drivers/invensense/ml.c) 
+C_SOURCE_FILES += $(abspath ./drivers/invensense/mpu_wrapper.c) 
+C_SOURCE_FILES += $(HW_SDK_C_SOURCE_FILES) # from Shared.mk
 
 CPP_SOURCE_FILES += \
 $(abspath ./$(PROJECT_NAME).cpp) \

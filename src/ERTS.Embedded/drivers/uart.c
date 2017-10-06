@@ -20,7 +20,10 @@ bool uart_available() {
 }
 
 uint8_t uart_get() {
-    return dequeue(&rx_queue);
+    NVIC_DisableIRQ(UART0_IRQn);
+    uint8_t c = dequeue(&rx_queue);
+    NVIC_EnableIRQ(UART0_IRQn);
+    return c;
 }
 
 void uart_put(uint8_t byte) {
