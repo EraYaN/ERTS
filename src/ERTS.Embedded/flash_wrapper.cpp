@@ -28,8 +28,10 @@ bool flash_write_remote(uint32_t timestamp, uint8_t mode, uint16_t lift, int16_t
     flashPacket_t type = flashRemote;
     uint8_t data[FLASH_LENGTH_REMOTE];
     bool status;
+	//TODO this will break hilariously. (Alignment is bad.) Sort by size, biggest first.
     *(reinterpret_cast<uint32_t*>(&data[0])) = timestamp;
     *(reinterpret_cast<uint8_t*>(&data[4])) = static_cast<uint8_t>(((type & 0xFFu) << 4) | (mode & 0xFFu));
+	//TODO this will break hilariously. (Alignment is bad.) Sort by size, biggest first.
     *(reinterpret_cast<uint16_t*>(&data[5])) = lift;
     *(reinterpret_cast<uint16_t*>(&data[7])) = roll;
     *(reinterpret_cast<uint16_t*>(&data[9])) = pitch;
@@ -47,8 +49,10 @@ bool flash_write_telemetry(uint32_t timestamp, uint8_t mode, uint16_t battery_vo
     flashPacket_t type = flashTelemetry;
     uint8_t data[FLASH_LENGTH_TELEMETRY];
     bool status;
+	//TODO this will break hilariously. (Alignment is bad.) Sort by size, biggest first.
     *(reinterpret_cast<uint32_t*>(&data[0])) = timestamp;
     *(reinterpret_cast<uint8_t*>(&data[4])) = static_cast<uint8_t>(((type & 0xFFu) << 4) | (mode & 0xFFu));
+	//TODO this will break hilariously. (Alignment is bad.) Sort by size, biggest first.
     *(reinterpret_cast<uint16_t*>(&data[5])) = battery_voltage;
     *(reinterpret_cast<uint16_t*>(&data[7])) = phi;
     *(reinterpret_cast<uint16_t*>(&data[9])) = theta;
