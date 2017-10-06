@@ -12,6 +12,7 @@ $(abspath ./telemetry_data.cpp) \
 $(abspath ./exception_data.cpp) \
 $(abspath ./actuation_parameter_data.cpp) \
 $(abspath ./controller_parameter_data.cpp) \
+$(abspath ./flashdump_data.cpp) \
 $(abspath ./misc_parameter_data.cpp)
 
 INC_PATHS += -I$(abspath ./)

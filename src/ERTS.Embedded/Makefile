@@ -27,7 +27,7 @@ $(HW_SDK_C_SOURCE_FILES) # from Shared.mk
 
 CPP_SOURCE_FILES += \
 $(abspath ./$(PROJECT_NAME).cpp) \
-$(abspath ./drivers/flash_wrapper.cpp) \
+$(abspath ./flash_wrapper.cpp) \
 $(abspath ./quad.cpp)
 
 #assembly files common to all targets

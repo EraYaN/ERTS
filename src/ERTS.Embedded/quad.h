@@ -11,6 +11,7 @@
 #include "mode_switch_data.h"
 #include "remote_control_data.h"
 #include "telemetry_data.h"
+#include "flashdump_data.h"
 
 extern "C"
 {
@@ -19,6 +20,7 @@ extern "C"
 
 #include "packet.h"
 #include "packet_datastructures.h"
+#include "flash_wrapper.h"
 
 #define MODE_SWITCH_OK 0
 #define MODE_SWITCH_UNSUPPORTED 1
@@ -128,4 +130,6 @@ public:
     void set_p_ctr(ControllerParameterData *data);
 
     void set_p_misc(MiscParameterData *data);
+
+    void dumpflash();
 };
