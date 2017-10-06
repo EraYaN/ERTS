@@ -82,11 +82,13 @@
     <ClCompile Include="..\ERTS.Embedded\drivers\queue.c" />
     <ClCompile Include="..\ERTS.Embedded\erts-quad.cpp" />
     <ClCompile Include="..\ERTS.Embedded\quad.cpp" />
+    <ClCompile Include="flash_wrapper.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\ERTS.Embedded\drivers\driver.h" />
     <ClInclude Include="..\ERTS.Embedded\drivers\fake\serial.h" />
     <ClInclude Include="..\ERTS.Embedded\quad.h" />
+    <ClInclude Include="flash_wrapper.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
