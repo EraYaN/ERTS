@@ -304,6 +304,9 @@ void Quadrupel::tick() {
 	counterHB++;
 
     if (_mode != Panic && _mode != Safe && _mode != Calibration) {
+        if ((get_time_us() - last_received) > p_misc.comm_timeout >> 1) {
+            nrf_gpio_pin_clear(RED);
+        } else
         if ((get_time_us() - last_received) > p_misc.comm_timeout) {
 #ifdef FAKE_DRIVERS
             std::cout << "Timed out, entering panic mode." << std::endl;
@@ -311,6 +314,9 @@ void Quadrupel::tick() {
             exception(UnknownException, "RC Timeout...");
             set_mode(Panic);
 
+        }
+        else {
+            nrf_gpio_pin_set(RED);
         }
     }
 

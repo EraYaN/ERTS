@@ -38,7 +38,7 @@ typedef struct {
     uint16_t rate_yaw = 1;
     uint16_t rate_pitch_roll_lift = 1;
     uint16_t divider = 1;
-    uint16_t motor_min = 500, motor_max = 1200;
+    uint16_t motor_min = 500, motor_max = 1000;
 } actuator_params_t;
 
 typedef struct {

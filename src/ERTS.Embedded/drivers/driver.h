@@ -42,7 +42,7 @@ extern const char *serial_port;
 extern int16_t motor[NUM_MOTORS], ae[NUM_MOTORS];
 
 // Timers
-#define TIMER_PERIOD    10 //50ms=20Hz (MAX 23bit, 4.6h)
+#define TIMER_PERIOD    10 //10ms=100Hz (MAX 23bit, 4.6h)
 #define LED_INTERVAL     100 // 1000/10
 
 #define APP_TIMER_PRESCALER             0                                           /**< Value of the RTC1 PRESCALER register. */
