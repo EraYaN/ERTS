@@ -34,9 +34,9 @@ Quadrupel::Quadrupel() {
 
 void Quadrupel::receive() {
     while (uart_available() && !check_timer_flag() && !check_sensor_int_flag()) {
-        uint8_t currentByte = uart_get();        
+        uint8_t currentByte = uart_get();
         bytes++;
-       
+
         //printf("Got byte: 0x%X\n",currentByte);
 
         last_two_bytes = last_two_bytes << 8 | currentByte;
@@ -288,7 +288,7 @@ void Quadrupel::busywork() {
 
         /**/
 
-        
+
     }
     if (check_sensor_int_flag()) {
         get_dmp_data();
@@ -306,7 +306,8 @@ void Quadrupel::tick() {
     if (_mode != Panic && _mode != Safe && _mode != Calibration) {
         if ((get_time_us() - last_received) > (p_misc.comm_timeout >> 1)) {
             nrf_gpio_pin_clear(RED);
-        } else {
+        }
+        else {
             nrf_gpio_pin_set(RED);
         }
         if ((get_time_us() - last_received) > p_misc.comm_timeout) {
@@ -317,7 +318,7 @@ void Quadrupel::tick() {
             set_mode(Panic);
 
         }
-        
+
     }
 
     //TODO Height should be a seperate switch
@@ -326,7 +327,7 @@ void Quadrupel::tick() {
     }
 
     if (counterLED == LED_INTERVAL) {
-        
+
         counterLED = 1;
         if (LED_INTERVAL != 0) {
             nrf_gpio_pin_toggle(BLUE);
@@ -338,14 +339,14 @@ void Quadrupel::tick() {
     if (counterHB == p_misc.telemetry_divider) {
         adc_request_sample(); // Really only needed once per heartbeat
         if (_mode != Panic && _mode != Safe) {
-            /*if (bat_volt < p_misc.battery_threshold) {
+            if (bat_volt < p_misc.battery_threshold) {
 #ifdef FAKE_DRIVERS
                 std::cout << "Battery low, entering panic mode." << std::endl;
 #endif
                 exception(UnknownException, "Battery Low..");
                 set_mode(Panic);
 
-            }*/
+            }
         }
 
         counterHB = 1;
@@ -501,7 +502,7 @@ void Quadrupel::control() {
     if (_mode == Panic) {
         if (_initial_panic) {
             // Set all motors equal to the current minimum value.
-            ae[0] = ae[1] = ae[2] = ae[3] = std::min({ ae[0], ae[1], ae[2], ae[3] });
+            ae[0] = ae[1] = ae[2] = ae[3] = (ae[0] + ae[1] + ae[2] + ae[3]) / 4;
             _initial_panic = false;
         }
 
@@ -542,10 +543,14 @@ void Quadrupel::control() {
             yaw = 0;
         }
 
-        oo1 = lift / (2 * p_act.rate_pitch_roll_lift) + pitch / p_act.rate_pitch_roll_lift - yaw / p_act.rate_yaw;
-        oo2 = lift / (2 * p_act.rate_pitch_roll_lift) - roll / p_act.rate_pitch_roll_lift + yaw / p_act.rate_yaw;
-        oo3 = lift / (2 * p_act.rate_pitch_roll_lift) - pitch / p_act.rate_pitch_roll_lift - yaw / p_act.rate_yaw;
-        oo4 = lift / (2 * p_act.rate_pitch_roll_lift) + roll / p_act.rate_pitch_roll_lift + yaw / p_act.rate_yaw;
+        oo1 = lift / (p_act.rate_lift) + pitch / p_act.rate_pitch_roll - yaw / p_act.rate_yaw;
+        oo2 = lift / (p_act.rate_lift) - roll / p_act.rate_pitch_roll + yaw / p_act.rate_yaw;
+        oo3 = lift / (p_act.rate_lift) - pitch / p_act.rate_pitch_roll - yaw / p_act.rate_yaw;
+        oo4 = lift / (p_act.rate_lift) + roll / p_act.rate_pitch_roll + yaw / p_act.rate_yaw;
+        /*oo1 = (lift / p_act.rate_pitch_roll_lift + 2 * pitch / (2 * p_act.rate_pitch_roll_lift) - yaw / p_act.rate_yaw);
+        oo2 = (lift / p_act.rate_pitch_roll_lift - 2 * roll / (2 * p_act.rate_pitch_roll_lift) + yaw / p_act.rate_yaw);
+        oo3 = (lift / p_act.rate_pitch_roll_lift - 2 * pitch / (2 * p_act.rate_pitch_roll_lift) - yaw / p_act.rate_yaw);
+        oo4 = (lift / p_act.rate_pitch_roll_lift + 2 * roll / (2 * p_act.rate_pitch_roll_lift) + yaw / p_act.rate_yaw);*/
 
         if (_mode == Safe || _mode == Calibration) {
             ae[0] = ae[1] = ae[2] = ae[3] = 0;
@@ -561,12 +566,13 @@ void Quadrupel::control() {
 }
 
 void Quadrupel::calibrate(bool finalize) {
-    calibration_offsets.roll += sp;
-    calibration_offsets.pitch += sq;
+    calibration_offsets.roll += phi;//sp;
+    calibration_offsets.pitch += theta;//sq;
     calibration_offsets.yaw += sr;
     calibration_steps++;
 
     if (finalize) {
+        _is_calibrated = true;
         calibration_offsets.roll /= calibration_steps;
         calibration_offsets.pitch /= calibration_steps;
         calibration_offsets.yaw /= calibration_steps;
@@ -577,7 +583,7 @@ void Quadrupel::calibrate(bool finalize) {
 void Quadrupel::init_divider() {
     uint32_t min = 0;
 
-    auto max = UINT16_MAX;// = (uint32_t)(UINT16_MAX / (2 * p_act.rate_pitch_roll_lift) + INT16_MAX / p_act.rate_pitch_roll_lift + INT16_MAX / p_act.rate_yaw);
+    auto max = (uint32_t)(UINT16_MAX / (p_act.rate_lift) + INT16_MAX / p_act.rate_pitch_roll + INT16_MAX / p_act.rate_yaw);
 
     p_act.divider = (uint16_t)((max - min) / (p_act.motor_max - p_act.motor_min));
 }
@@ -591,12 +597,14 @@ uint16_t Quadrupel::scale_motor(int32_t value) {
 
     // Offset
     value += p_act.motor_min;
-
-    return (uint16_t)value;
+    if (target_state.lift < 100)
+        return 0;
+    else
+        return (uint16_t)value;
 }
 
 void Quadrupel::set_p_act(ActuationParameterData *data) {
-    p_act.rate_pitch_roll_lift = data->get_rate_pitch_roll_lift();
+    p_act.rate_pitch_roll = data->get_rate_pitch_roll_lift();
     p_act.rate_yaw = data->get_rate_yaw();
     p_act.motor_min = data->get_motor_min();
     p_act.motor_max = data->get_motor_max();
@@ -618,14 +626,14 @@ void Quadrupel::set_p_misc(MiscParameterData *data) {
     //TODO implement this: p_misc.telemetry_divider = data->get_telemetry_divider();
     p_misc.battery_threshold = data->get_battery_threshold();
     p_misc.target_loop_time = data->get_target_loop_time();
-    p_misc.comm_timeout = ((uint32_t)(p_misc.rc_interval) << 2)*1000;
+    p_misc.comm_timeout = ((uint32_t)(p_misc.rc_interval) << 2) * 1000;
 }
 
 void Quadrupel::set_current_state() {
     // TODO: Add lift.
     current_state.roll = phi - calibration_offsets.roll;
     current_state.pitch = theta - calibration_offsets.pitch;
-    current_state.yaw = psi - calibration_offsets.yaw;
+    current_state.yaw = sr - calibration_offsets.yaw;
 }
 
 
@@ -636,7 +644,7 @@ void Quadrupel::dumpflash() {
 
     //TODO:Turn off heartbeats/interupts
 
-    for (seqNumber=0; seqNumber <= FLASH_PACKETS; seqNumber++){
+    for (seqNumber = 0; seqNumber <= FLASH_PACKETS; seqNumber++) {
         flash_read_bytes(seqNumber*FLASH_BYTES_PER_UART_PACKET, dataFlash, FLASH_BYTES_PER_UART_PACKET);
         auto data = new FlashDumpData(seqNumber, dataFlash);
         packet->set_data(data);

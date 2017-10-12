@@ -35,16 +35,17 @@ typedef struct {
 
 
 typedef struct {
-    uint16_t rate_yaw = 1;
-    uint16_t rate_pitch_roll_lift = 1;
+    uint16_t rate_yaw = 256;
+    uint16_t rate_pitch_roll = 512;
+    uint16_t rate_lift = 128;
     uint16_t divider = 1;
-    uint16_t motor_min = 0, motor_max = 1000;
+    uint16_t motor_min = 200, motor_max = 750;
 } actuator_params_t;
 
 typedef struct {
-    uint16_t p_yaw = 5;
+    uint16_t p_yaw = 50;
     uint16_t p_height = 5;
-    uint16_t p1_pitch_roll = 5, p2_pitch_roll = 5;
+    uint16_t p1_pitch_roll = 50, p2_pitch_roll = 50;
 } controller_params_t;
 
 typedef struct {
@@ -52,7 +53,7 @@ typedef struct {
     uint16_t rc_interval = 50;
     uint16_t log_divider = 0;
     uint16_t telemetry_divider = 10;
-    uint16_t battery_threshold = 400;
+    uint16_t battery_threshold = 1050;
     uint16_t target_loop_time = 20000;
     uint32_t comm_timeout = 500000;
 } misc_params_t;
@@ -67,7 +68,7 @@ class Quadrupel {
     bool _initial_panic = false;
     flightMode_t _mode = Safe;
     flightMode_t _new_mode = Safe;
-    bool _is_calibrated;
+    bool _is_calibrated = false;
     uint32_t _accum_loop_time;
     quad_state_t target_state, current_state, calibration_offsets;
     uint32_t calibration_steps = 0;
