@@ -38,7 +38,7 @@ typedef struct {
     uint16_t rate_yaw = 1;
     uint16_t rate_pitch_roll_lift = 1;
     uint16_t divider = 1;
-    uint16_t motor_min = 500, motor_max = 1000;
+    uint16_t motor_min = 0, motor_max = 1000;
 } actuator_params_t;
 
 typedef struct {
@@ -51,10 +51,10 @@ typedef struct {
     uint16_t panic_decrement = 1;
     uint16_t rc_interval = 50;
     uint16_t log_divider = 0;
-	uint16_t telemetry_divider = 10;
+    uint16_t telemetry_divider = 10;
     uint16_t battery_threshold = 400;
     uint16_t target_loop_time = 20000;
-    uint32_t comm_timeout = 200000;
+    uint32_t comm_timeout = 500000;
 } misc_params_t;
 
 class Quadrupel {
@@ -74,7 +74,7 @@ class Quadrupel {
 
     // Comm
     uint32_t counterHB = 1;
-	uint32_t counterLED = 1;
+    uint32_t counterLED = 1;
     uint16_t last_two_bytes = 0;
     bool _receiving = false;
     uint8_t comm_buffer[MAX_PACKET_SIZE];
