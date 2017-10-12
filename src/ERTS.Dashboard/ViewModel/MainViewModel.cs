@@ -557,7 +557,7 @@ namespace ERTS.Dashboard.ViewModel
         void SendAllParametersExecute(object obj)
         {
             if (GlobalData.ctr != null) {
-
+                GlobalData.ctr.SendAllParameters();
             }
         }
 

@@ -2,7 +2,7 @@
 
 #include "packet_data.h"
 
-class ControllerParameterData : PacketData {
+class ControllerParameterData : public PacketData {
     uint16_t _p_yaw;
     uint16_t _p_height; // Divider for yaw.
     uint16_t _p1_pitch_roll;

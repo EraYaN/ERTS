@@ -1,6 +1,9 @@
 #include "packet.h"
 #include "mode_switch_data.h"
 #include "remote_control_data.h"
+#include "actuation_parameter_data.h"
+#include "controller_parameter_data.h"
+#include "misc_parameter_data.h"
 
 #include <cstring>
 
@@ -38,6 +41,15 @@ Packet::Packet(const byte* packet)
             break;
         case Kill:
             // Nothing
+            break;
+        case ActuationParameters:
+            _data = new ActuationParameterData(&packet[5]);
+            break;
+        case ControllerParameters:
+            _data = new ControllerParameterData(&packet[5]);
+            break;
+        case MiscParameters:
+            _data = new MiscParameterData(&packet[5]);
             break;
         default:
             // Not implemented.

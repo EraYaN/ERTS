@@ -2,7 +2,7 @@
 
 #include "packet_data.h"
 
-class MiscParameterData : PacketData {
+class MiscParameterData : public PacketData {
     uint16_t _panic_decrement;
     uint16_t _rc_interval;
     uint16_t _log_divider;
