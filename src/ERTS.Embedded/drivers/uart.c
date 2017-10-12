@@ -20,7 +20,10 @@ bool uart_available() {
 }
 
 uint8_t uart_get() {
-    return dequeue(&rx_queue);
+    NVIC_DisableIRQ(UART0_IRQn);
+    uint8_t c = dequeue(&rx_queue);
+    NVIC_EnableIRQ(UART0_IRQn);
+    return c;
 }
 
 void uart_put(uint8_t byte) {
@@ -75,7 +78,7 @@ void uart_init() {
     NRF_UART0->EVENTS_TXDRDY    = 0;
     NRF_UART0->TASKS_STARTTX    = 1;
     NRF_UART0->TASKS_STARTRX    = 1;
-    NRF_UART0->CONFIG           = NRF_UART_HWFC_DISABLED;
+    NRF_UART0->CONFIG           = NRF_UART_HWFC_ENABLED;
 
     NRF_UART0->INTENCLR = 0xffffffffUL;
     NRF_UART0->INTENSET =   (UART_INTENSET_RXDRDY_Set << UART_INTENSET_RXDRDY_Pos) |

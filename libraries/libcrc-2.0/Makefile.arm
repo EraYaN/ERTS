@@ -55,7 +55,8 @@
 # routines and to avoid version and dependency issues when distributing the
 # end application to different environments.
 #
-
+# The root folder (for toolchainpaths in Shared.mk)
+PROJECT_ROOT := $(realpath $(dir $(realpath $(firstword $(MAKEFILE_LIST))))../../)
 include ../Shared.mk
 
 INCDIR = include/

@@ -42,27 +42,21 @@ namespace ERTS.Dashboard.Control
 
         //int counter=0;
 
-        readonly int AmountAVG;
-        int RCintervalcount;
-        Stopwatch rcIntervalStopwatch;
 
         public Controller()
         {
-            rcIntervalStopwatch = new Stopwatch();
 
             RCTimer = new MultimediaTimer(GlobalData.cfg.RCInterval);
 
-            AmountAVG = 5000 / GlobalData.cfg.RCInterval;
             RCTimer.Elapsed += RCTimer_Elapsed;
             RCTimer.Start();
             Debug.WriteLine(String.Format("Started RC interval timer with an interval of {0} ms.", GlobalData.cfg.RCInterval));
 
-            rcIntervalStopwatch.Start();
             if (GlobalData.com != null)
                 GlobalData.com.PacketReceived += Com_PacketReceivedEvent;
         }
 
-        
+
 
         private void Com_PacketReceivedEvent(object sender, Communication.PacketReceivedEventArgs e)
         {
@@ -97,25 +91,17 @@ namespace ERTS.Dashboard.Control
         {
             if (GlobalData.com != null)
             {
-                RCintervalcount++;
-                if (RCintervalcount == AmountAVG-1)
-                {
-                    RCintervalcount = 0;
-                    rcIntervalStopwatch.Stop();
-                    double hertz = AmountAVG / rcIntervalStopwatch.Elapsed.TotalSeconds;
-                    rcIntervalStopwatch.Restart();
-                    Debug.WriteLine(String.Format("Ran RC intervals for the last five seconds at: {0:N1} Hz",hertz));
-                }
-                //Scaling factors are -4, just for overflow safety, and no averse effect.
                 /*if (counter >= 2000)
                 {
                     return;
                 }
-                counter++;*/                
-                GlobalData.com.RemoteControl(Convert.ToUInt16(Math.Round(Lift.Clamp(0, 1) * (2^16 - 1))), Convert.ToInt16(Math.Round(RollRate.Clamp(-1, 1) * (2 ^ 15 - 1))),
-                    Convert.ToInt16(Math.Round(PitchRate.Clamp(-1, 1) * (2 ^ 15 - 1))), Convert.ToInt16(Math.Round(YawRate.Clamp(-1,1) * (2 ^ 15 - 1))));
-                /*GlobalData.com.RemoteControl(Convert.ToUInt16(counter), Convert.ToInt16(Math.Round(RollRate * 32764.0)),
-                    Convert.ToInt16(Math.Round(PitchRate * 32764.0)), Convert.ToInt16(Math.Round(YawRate * 32764.0)));*/
+                counter++;    */
+                GlobalData.com.RemoteControl(
+                    Convert.ToUInt16(Math.Round((Lift + LiftTrim).Clamp(0, 1) * UInt16.MaxValue)),
+                    Convert.ToInt16(Math.Round((RollRate + RollTrim).Clamp(-1, 1) * Int16.MaxValue)),
+                    Convert.ToInt16(Math.Round((PitchRate + PitchTrim).Clamp(-1, 1) * Int16.MaxValue)),
+                    Convert.ToInt16(Math.Round((YawRate + YawTrim).Clamp(-1, 1) * Int16.MaxValue)));
+                //GlobalData.com.RemoteControl(Convert.ToUInt16(counter), 0, 0 ,0);
             }
         }
 
@@ -134,21 +120,21 @@ namespace ERTS.Dashboard.Control
         }
         public void HandleAcknowledge(AcknowledgeData data)
         {
-            Debug.WriteLine(String.Format("Processing Acknowledge {0}....",data.Number));
+            Debug.WriteLine(String.Format("Processing Acknowledge {0}....", data.Number));
             GlobalData.com.HandleAcknowledgement(data.Number);
         }
         public void HandleException(ExceptionData data)
         {
-            Debug.WriteLine(String.Format("Processing Exception of type {0} with message: {1}.\n",data.ExceptionType, data.Message));
+            Debug.WriteLine(String.Format("Processing Exception of type {0} with message: {1}.\n", data.ExceptionType, data.Message));
 
         }
-        
+
         #endregion
 
         #region Control Methods
         public void ModeSwitch(FlightMode mode)
         {
-            Debug.WriteLine(String.Format("Switching mode to {0}....",mode));
+            Debug.WriteLine(String.Format("Switching mode to {0}....", mode));
             GlobalData.com.ModeSwitch(mode);
         }
         public void Abort()
@@ -158,7 +144,7 @@ namespace ERTS.Dashboard.Control
         }
         public void SetLift(double _Lift)
         {
-            Lift = GetRcRate(_Lift, 0, 1,GlobalData.cfg.LiftDeadzone);
+            Lift = GetRcRate(_Lift, 0, 1, GlobalData.cfg.LiftDeadzone);
             RaisePropertyChanged("Lift");
         }
         public void SetRoll(double _RollRate)
@@ -183,7 +169,8 @@ namespace ERTS.Dashboard.Control
             {
                 LiftTrim = 0;
             }
-            else if (Direction == true) {
+            else if (Direction == true)
+            {
                 LiftTrim = Math.Min(TRIM_MAX, LiftTrim + TRIM_STEP);
             }
             else if (Direction == false)
@@ -191,7 +178,7 @@ namespace ERTS.Dashboard.Control
                 LiftTrim = Math.Max(TRIM_MIN, LiftTrim - TRIM_STEP);
             }
             RaisePropertyChanged("LiftTrim");
-            Debug.WriteLine(String.Format("Set LiftTrim to {0}",LiftTrim));
+            Debug.WriteLine(String.Format("Set LiftTrim to {0}", LiftTrim));
         }
         public void AdjustRollTrim(bool? Direction)
         {
@@ -246,7 +233,7 @@ namespace ERTS.Dashboard.Control
         }
 
         public void SendAllParameters()
-        {            
+        {
             GlobalData.com.MiscParameters(Convert.ToUInt16(GlobalData.cfg.PanicDecrement), Convert.ToUInt16(GlobalData.cfg.RCInterval), Convert.ToUInt16(GlobalData.cfg.LogDivider), Convert.ToUInt16(GlobalData.cfg.BatteryThreshold), Convert.ToUInt16(GlobalData.cfg.TargetLoopTime));
             //TODO controller params
             //TODO actuation params
@@ -257,7 +244,7 @@ namespace ERTS.Dashboard.Control
 
         double GetRcRate(double _input, double expo = RC_EXPO, double rate = RC_RATE, double deadzone = 0)
         {
-            double rcCommand = _input.Deadzone(-deadzone/100,deadzone/100);                     
+            double rcCommand = _input.Deadzone(-deadzone / 100, deadzone / 100);
 
             if (RC_EXPO > 0)
                 rcCommand = rcCommand * Math.Pow(Math.Abs(rcCommand), 3) * expo + rcCommand * (1 - expo); // Courtesy of CleanFlight/BetaFlight

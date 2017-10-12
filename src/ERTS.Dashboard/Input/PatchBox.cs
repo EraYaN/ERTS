@@ -13,6 +13,7 @@ namespace ERTS.Dashboard.Input
     {
         Guid keyboardGuid = new Guid("6f1d2b61-d5a0-11cf-bfc7-444553540000");
         Guid joystickGuid = new Guid("241e5050-93f0-11e7-8001-444553540000"); // Lab Joystick, ERWIN_LAPTOP
+        
         //Guid joystickGuid = new Guid("46be56e0-a3a5-11e7-8001-444553540000") // Robin Joystick, ROBIN_LAPTOP
         //Guid xboxPadGuid = new Guid("f211f8e0-8dc4-11e7-800f-444553540000"); // xboxPad 1, ERWIN_PC
         Guid xboxPadGuid = new Guid("c701ce90-a648-11e7-8002-444553540000"); // xboxPad 1, ERWIN_LAPTOP
@@ -140,7 +141,6 @@ namespace ERTS.Dashboard.Input
             InputBinding YawPDownBinding = new InputBinding(new ControlActuator[] { keyboardUpArrow }, "YawPDown");
             YawPDownBinding.BindingActuatedEvent += YawPDownBinding_BindingActuatedEvent;
             InputBindings.Add("YawPDown", PitchTrimDownBinding);*/
-
 
             InputBinding ModeSafeBinding = new InputBinding(new ControlActuator[] { keyboard0 }, "ModeSafe");
             ModeSafeBinding.BindingActuatedEvent += ModeSafeBinding_BindingActuatedEvent;

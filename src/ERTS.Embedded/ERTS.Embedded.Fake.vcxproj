@@ -44,11 +44,11 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LibraryPath>$(OutDir);$(LibraryPath)</LibraryPath>
-    <IncludePath>$(SolutionDir)ERTS.Embedded;$(SolutionDir)ERTS.Embedded\invensense;$(SolutionDir)ERTS.Embedded\drivers\fake;$(SolutionDir)ERTS.Embedded\drivers;$(SolutionDir)..\libraries\libcrc-2.0\include;$(SolutionDir)..\libraries\libertscommunication;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir);$(ProjectDir)invensense;$(ProjectDir)drivers\fake;$(ProjectDir)drivers;$(SolutionDir)..\libraries\libcrc-2.0\include;$(SolutionDir)..\libraries\libertscommunication;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LibraryPath>$(OutDir);$(LibraryPath)</LibraryPath>
-    <IncludePath>$(SolutionDir)ERTS.Embedded;$(SolutionDir)ERTS.Embedded\invensense;$(SolutionDir)ERTS.Embedded\drivers\fake;$(SolutionDir)ERTS.Embedded\drivers;$(SolutionDir)..\libraries\libcrc-2.0\include;$(SolutionDir)..\libraries\libertscommunication;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir);$(ProjectDir)invensense;$(ProjectDir)drivers\fake;$(ProjectDir)drivers;$(SolutionDir)..\libraries\libcrc-2.0\include;$(SolutionDir)..\libraries\libertscommunication;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -82,11 +82,13 @@
     <ClCompile Include="..\ERTS.Embedded\drivers\queue.c" />
     <ClCompile Include="..\ERTS.Embedded\erts-quad.cpp" />
     <ClCompile Include="..\ERTS.Embedded\quad.cpp" />
+    <ClCompile Include="flash_wrapper.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\ERTS.Embedded\drivers\driver.h" />
     <ClInclude Include="..\ERTS.Embedded\drivers\fake\serial.h" />
     <ClInclude Include="..\ERTS.Embedded\quad.h" />
+    <ClInclude Include="flash_wrapper.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

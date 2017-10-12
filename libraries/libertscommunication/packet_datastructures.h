@@ -39,6 +39,9 @@ enum messageType_t : byte {
     ControllerParameters = 0x41, ///Expects Acknowledgement.
     MiscParameters = 0x42, ///Expects Acknowledgement.
 
+    //Flash messages (0xA0-0xA9)
+    FlashData = 0xA0, ///Expects Acknowledgement.
+
     //Reserved for future use (0xA0-0xDF)
 
     //Exceptions, system commands and other failure mode related stuff (0xF0 - 0xFD)
@@ -60,6 +63,7 @@ enum flightMode_t {
     Raw = 0x6,
     Height = 0x7,
     Wireless = 0x8,
+    DumpFlash = 0x9,
     None = 0xF
 };
 

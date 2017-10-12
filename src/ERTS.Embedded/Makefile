@@ -1,7 +1,7 @@
 PROJECT_NAME := erts-quad
-
+# The root folder (for toolchainpaths in Shared.mk)
+PROJECT_ROOT := $(realpath $(dir $(realpath $(firstword $(MAKEFILE_LIST))))../../)
 include ../../libraries/Shared.mk
-
 
 export OUTPUT_FILENAME
 #MAKEFILE_NAME := $(CURDIR)/$(word $(words $(MAKEFILE_LIST)),$(MAKEFILE_LIST))
@@ -9,25 +9,24 @@ MAKEFILE_NAME := $(MAKEFILE_LIST)
 MAKEFILE_DIR := $(dir $(MAKEFILE_NAME) )
 
 #source common to all targets
-C_SOURCE_FILES += \
-$(abspath ./drivers/gpio.c) \
-$(abspath ./drivers/timers.c) \
-$(abspath ./drivers/uart.c) \
-$(abspath ./drivers/queue.c) \
-$(abspath ./drivers/twi.c) \
-$(abspath ./drivers/adc.c) \
-$(abspath ./drivers/baro.c) \
-$(abspath ./drivers/ble.c) \
-$(abspath ./drivers/spi_flash.c) \
-$(abspath ./drivers/invensense/inv_mpu.c) \
-$(abspath ./drivers/invensense/inv_mpu_dmp_motion_driver.c) \
-$(abspath ./drivers/invensense/ml.c) \
-$(abspath ./drivers/invensense/mpu_wrapper.c) \
-$(HW_SDK_C_SOURCE_FILES) # from Shared.mk
+C_SOURCE_FILES += $(abspath ./drivers/gpio.c) 
+C_SOURCE_FILES += $(abspath ./drivers/timers.c) 
+C_SOURCE_FILES += $(abspath ./drivers/uart.c) 
+C_SOURCE_FILES += $(abspath ./drivers/queue.c)
+C_SOURCE_FILES += $(abspath ./drivers/twi.c) 
+C_SOURCE_FILES += $(abspath ./drivers/adc.c) 
+C_SOURCE_FILES += $(abspath ./drivers/baro.c) 
+#C_SOURCE_FILES += $(abspath ./drivers/ble.c) 
+C_SOURCE_FILES += $(abspath ./drivers/spi_flash.c) 
+C_SOURCE_FILES += $(abspath ./drivers/invensense/inv_mpu.c) 
+C_SOURCE_FILES += $(abspath ./drivers/invensense/inv_mpu_dmp_motion_driver.c) 
+C_SOURCE_FILES += $(abspath ./drivers/invensense/ml.c) 
+C_SOURCE_FILES += $(abspath ./drivers/invensense/mpu_wrapper.c) 
+C_SOURCE_FILES += $(HW_SDK_C_SOURCE_FILES) # from Shared.mk
 
 CPP_SOURCE_FILES += \
 $(abspath ./$(PROJECT_NAME).cpp) \
-$(abspath ./drivers/flash_wrapper.cpp) \
+$(abspath ./flash_wrapper.cpp) \
 $(abspath ./quad.cpp)
 
 #assembly files common to all targets
@@ -47,7 +46,7 @@ LD_PATHS += $(EXT_DEPS_LD_PATHS) # from Shared.mk
 ifeq ($(OS),Windows_NT)
 OBJECT_DIRECTORY = obj\\
 LISTING_DIRECTORY = $(OBJECT_DIRECTORY)
-OUTPUT_BINARY_DIRECTORY = bin\\ARM\\
+OUTPUT_BINARY_DIRECTORY = bin\\
 
 else
 OBJECT_DIRECTORY = obj/

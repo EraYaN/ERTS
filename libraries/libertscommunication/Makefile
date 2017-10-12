@@ -1,5 +1,6 @@
 PROJECT_NAME := libertscommunication
-
+# The root folder (for toolchainpaths in Shared.mk)
+PROJECT_ROOT := $(realpath $(dir $(realpath $(firstword $(MAKEFILE_LIST))))../../)
 include ../Shared.mk
 
 CPP_SOURCE_FILES += \
@@ -11,6 +12,7 @@ $(abspath ./telemetry_data.cpp) \
 $(abspath ./exception_data.cpp) \
 $(abspath ./actuation_parameter_data.cpp) \
 $(abspath ./controller_parameter_data.cpp) \
+$(abspath ./flashdump_data.cpp) \
 $(abspath ./misc_parameter_data.cpp)
 
 INC_PATHS += -I$(abspath ./)

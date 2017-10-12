@@ -63,7 +63,7 @@
     <ClCompile Include="drivers\invensense\mpu_wrapper.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="drivers\flash_wrapper.cpp">
+    <ClCompile Include="flash_wrapper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -95,7 +95,7 @@
     <ClInclude Include="drivers\invensense\ml.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="drivers\flash_wrapper.h">
+    <ClInclude Include="flash_wrapper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

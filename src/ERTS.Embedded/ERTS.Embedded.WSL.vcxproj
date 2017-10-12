@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|ARM">
+      <Configuration>Debug</Configuration>
+      <Platform>ARM</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|ARM">
+      <Configuration>Release</Configuration>
+      <Platform>ARM</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>15.0</VCProjectVersion>
+    <ProjectGuid>{0161E769-21BF-4BB5-8BD1-2EF8573A3FF4}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
+    <NMakeBuildCommandLine>$(ProjectDir)make.vs.bat</NMakeBuildCommandLine>
+    <NMakeOutput>$(OutDir)erts-quad.out</NMakeOutput>
+    <NMakePreprocessorDefinitions>WSL;WIN32_DEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+    <OutDir>$(ProjectDir)\bin\</OutDir>
+    <NMakeReBuildCommandLine>$(ProjectDir)make-rebuild.vs.bat</NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine>$(ProjectDir)make-clean.vs.bat</NMakeCleanCommandLine>
+    <NMakeIncludeSearchPath>$(ProjectDir);$(ProjectDir)invensense;$(ProjectDir)drivers;$(ProjectDir)drivers\config;$(SolutionDir)..\libraries\libertscommunication;$(SolutionDir)..\libraries\libcrc-2.0\include;$(SolutionDir)..\libraries\nRF51_SDK_10.0.0_dc26b5e\components\device;$(SolutionDir)..\libraries\nRF51_SDK_10.0.0_dc26b5e\components\toolchain\gcc;$(SolutionDir)..\libraries\nRF51_SDK_10.0.0_dc26b5e\components\toolchain;$(SolutionDir)..\libraries\nRF51_SDK_10.0.0_dc26b5e\components\drivers_nrf\hal;$(SolutionDir)..\libraries\nRF51_SDK_10.0.0_dc26b5e\components\drivers_nrf\delay;$(SolutionDir)..\libraries\nRF51_SDK_10.0.0_dc26b5e\components\softdevice\s110\headers;$(SolutionDir)..\libraries\nRF51_SDK_10.0.0_dc26b5e\components\drivers_nrf\config;$(SolutionDir)..\libraries\nRF51_SDK_10.0.0_dc26b5e\components\libraries\util;$(SolutionDir)..\libraries\nRF51_SDK_10.0.0_dc26b5e\components\ble\common;$(SolutionDir)..\libraries\nRF51_SDK_10.0.0_dc26b5e\components\drivers_nrf\pstorage;$(SolutionDir)..\libraries\nRF51_SDK_10.0.0_dc26b5e\components\libraries\timer;$(SolutionDir)..\libraries\nRF51_SDK_10.0.0_dc26b5e\components\ble\ble_services\ble_nus;$(SolutionDir)..\libraries\nRF51_SDK_10.0.0_dc26b5e\components\drivers_nrf\common;$(SolutionDir)..\libraries\nRF51_SDK_10.0.0_dc26b5e\components\ble\ble_advertising;$(SolutionDir)..\libraries\nRF51_SDK_10.0.0_dc26b5e\components\libraries\trace;$(SolutionDir)..\libraries\nRF51_SDK_10.0.0_dc26b5e\components\softdevice\common\softdevice_handler;$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
+    <NMakeBuildCommandLine>$(ProjectDir)make.vs.bat</NMakeBuildCommandLine>
+    <NMakeOutput>$(OutDir)erts-quad.out</NMakeOutput>
+    <NMakePreprocessorDefinitions>WSL;WIN32NDEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+    <OutDir>$(ProjectDir)\bin\</OutDir>
+    <NMakeReBuildCommandLine>$(ProjectDir)make-rebuild.vs.bat</NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine>$(ProjectDir)make-clean.vs.bat</NMakeCleanCommandLine>
+    <NMakeIncludeSearchPath>$(ProjectDir);$(ProjectDir)invensense;$(ProjectDir)drivers;$(ProjectDir)drivers\config;$(SolutionDir)..\libraries\libertscommunication;$(SolutionDir)..\libraries\libcrc-2.0\include;$(SolutionDir)..\libraries\nRF51_SDK_10.0.0_dc26b5e\components\device;$(SolutionDir)..\libraries\nRF51_SDK_10.0.0_dc26b5e\components\toolchain\gcc;$(SolutionDir)..\libraries\nRF51_SDK_10.0.0_dc26b5e\components\toolchain;$(SolutionDir)..\libraries\nRF51_SDK_10.0.0_dc26b5e\components\drivers_nrf\hal;$(SolutionDir)..\libraries\nRF51_SDK_10.0.0_dc26b5e\components\drivers_nrf\delay;$(SolutionDir)..\libraries\nRF51_SDK_10.0.0_dc26b5e\components\softdevice\s110\headers;$(SolutionDir)..\libraries\nRF51_SDK_10.0.0_dc26b5e\components\drivers_nrf\config;$(SolutionDir)..\libraries\nRF51_SDK_10.0.0_dc26b5e\components\libraries\util;$(SolutionDir)..\libraries\nRF51_SDK_10.0.0_dc26b5e\components\ble\common;$(SolutionDir)..\libraries\nRF51_SDK_10.0.0_dc26b5e\components\drivers_nrf\pstorage;$(SolutionDir)..\libraries\nRF51_SDK_10.0.0_dc26b5e\components\libraries\timer;$(SolutionDir)..\libraries\nRF51_SDK_10.0.0_dc26b5e\components\ble\ble_services\ble_nus;$(SolutionDir)..\libraries\nRF51_SDK_10.0.0_dc26b5e\components\drivers_nrf\common;$(SolutionDir)..\libraries\nRF51_SDK_10.0.0_dc26b5e\components\ble\ble_advertising;$(SolutionDir)..\libraries\nRF51_SDK_10.0.0_dc26b5e\components\libraries\trace;$(SolutionDir)..\libraries\nRF51_SDK_10.0.0_dc26b5e\components\softdevice\common\softdevice_handler;$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="drivers\config\nrf_drv_config.h" />
+    <ClInclude Include="drivers\config\pstorage_platform.h" />
+    <ClInclude Include="drivers\driver.h" />
+    <ClInclude Include="drivers\invensense\dmpKey.h" />
+    <ClInclude Include="drivers\invensense\dmpmap.h" />
+    <ClInclude Include="drivers\invensense\inv_mpu.h" />
+    <ClInclude Include="drivers\invensense\inv_mpu_dmp_motion_driver.h" />
+    <ClInclude Include="drivers\invensense\ml.h" />
+    <ClInclude Include="flash_wrapper.h" />
+    <ClInclude Include="quad.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="drivers\adc.c" />
+    <ClCompile Include="drivers\baro.c" />
+    <ClCompile Include="drivers\ble.c" />
+    <ClCompile Include="drivers\gpio.c" />
+    <ClCompile Include="drivers\invensense\inv_mpu.c" />
+    <ClCompile Include="drivers\invensense\inv_mpu_dmp_motion_driver.c" />
+    <ClCompile Include="drivers\invensense\ml.c" />
+    <ClCompile Include="drivers\invensense\mpu_wrapper.c" />
+    <ClCompile Include="drivers\queue.c" />
+    <ClCompile Include="drivers\spi_flash.c" />
+    <ClCompile Include="drivers\timers.c" />
+    <ClCompile Include="drivers\twi.c" />
+    <ClCompile Include="drivers\uart.c" />
+    <ClCompile Include="erts-quad.cpp" />
+    <ClCompile Include="flash_wrapper.cpp" />
+    <ClCompile Include="quad.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Makefile" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

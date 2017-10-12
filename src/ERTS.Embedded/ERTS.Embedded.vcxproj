@@ -28,6 +28,7 @@
     <ClCompile Include="drivers\twi.c" />
     <ClCompile Include="drivers\uart.c" />
     <ClCompile Include="erts-quad.cpp" />
+    <ClCompile Include="flash_wrapper.cpp" />
     <ClCompile Include="quad.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -39,6 +40,7 @@
     <ClInclude Include="drivers\invensense\inv_mpu.h" />
     <ClInclude Include="drivers\invensense\inv_mpu_dmp_motion_driver.h" />
     <ClInclude Include="drivers\invensense\ml.h" />
+    <ClInclude Include="flash_wrapper.h" />
     <ClInclude Include="quad.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -50,6 +52,7 @@
     <ApplicationTypeRevision>1.0</ApplicationTypeRevision>
     <TargetLinuxPlatform>Generic</TargetLinuxPlatform>
     <LinuxProjectType>{FC1A4D80-50E9-41DA-9192-61C0DBAA00D2}</LinuxProjectType>
+    <ProjectName>ERTS.Embedded.Linux</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'" Label="Configuration">

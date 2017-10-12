@@ -169,6 +169,9 @@ namespace ERTS.Dashboard.Communication
         TextWriter tw_tx;
         public CommunicationInterface(string SerialPort, int BaudRate)
         {
+            tw_rx = File.CreateText("rx.bin");
+            tw_tx = File.CreateText("tx.bin");
+
             serialPort = SerialPort;
             baudRate = BaudRate;
             serial = new SerialInterface(SerialPort, BaudRate);
@@ -185,10 +188,7 @@ namespace ERTS.Dashboard.Communication
             BandwitdhTimer = new Timer(1000);
             BandwitdhTimer.Elapsed += BandwitdhTimer_Elapsed;
             BandwitdhTimer.Start();
-            BandwidthStopwatch.Start();
-
-            tw_rx = File.CreateText("rx.bin");
-            tw_tx = File.CreateText("tx.bin");
+            BandwidthStopwatch.Start();            
         }
 
         private void BandwitdhTimer_Elapsed(object sender, ElapsedEventArgs e)

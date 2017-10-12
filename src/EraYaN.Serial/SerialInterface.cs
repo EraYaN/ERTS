@@ -40,14 +40,14 @@ namespace EraYaN.Serial
                 Parity = Parity.None,
                 DataBits = 8,
                 StopBits = StopBits.One,
-                Handshake = Handshake.None,
+                Handshake = Handshake.RequestToSend,
                 ReceivedBytesThreshold = 1,
                 ReadTimeout = 500,
                 WriteTimeout = 500,
                 ReadBufferSize = 512,
                 WriteBufferSize = 512,
                 DtrEnable = false,
-                RtsEnable = false
+                RtsEnable = true
 
             };
             //serialPort.DataReceived += serialPort_DataReceived;
@@ -68,8 +68,11 @@ namespace EraYaN.Serial
                 // free managed resources
                 if (serialPort != null)
                 {
-                    while (serialPort.BytesToWrite > 0) ;
-                    serialPort.Close();
+                    if (serialPort.IsOpen)
+                    {
+                        while (serialPort.BytesToWrite > 0) ;
+                        serialPort.Close();
+                    }
                     serialPort.Dispose();
                 }
             }
