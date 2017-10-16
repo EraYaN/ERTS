@@ -56,6 +56,11 @@ namespace ERTS.Dashboard.Control
 
         public Controller()
         {
+            PYaw = GlobalData.cfg.StartPYaw;
+            PHeight = GlobalData.cfg.StartPHeight;
+            P1RollPitch = GlobalData.cfg.StartP1RollPitch;
+            P2RollPitch = GlobalData.cfg.StartP2RollPitch;
+            PLift = GlobalData.cfg.StartPLift;
 
             RCTimer = new MultimediaTimer(GlobalData.cfg.RCInterval);
 
@@ -243,25 +248,7 @@ namespace ERTS.Dashboard.Control
             RaisePropertyChanged("YawTrim");
             Debug.WriteLine(String.Format("Set YawTrim to {0}", YawTrim));
         }
-
-        public void AdjustPHeigth(bool? Direction)
-        {
-            if (Direction == null)
-            {
-                PHeight = 0;
-            }
-            else if (Direction == true)
-            {
-                PHeight = Math.Min(P_MAX, PHeight + P_STEP);
-            }
-            else if (Direction == false)
-            {
-                PHeight = Math.Max(P_MIN, PHeight - P_STEP);
-            }
-            RaisePropertyChanged("PHeight");
-            Debug.WriteLine(String.Format("Set PHeight to {0}", PHeight));
-        }
-
+         
         public void AdjustPYaw(bool? Direction)
         {
             if (Direction == null)
@@ -278,6 +265,25 @@ namespace ERTS.Dashboard.Control
             }
             RaisePropertyChanged("PYaw");
             Debug.WriteLine(String.Format("Set PYaw to {0}", PYaw));
+            SendControllerParameters();
+        }
+        public void AdjustPHeight(bool? Direction)
+        {
+            if (Direction == null)
+            {
+                PHeight = 0;
+            }
+            else if (Direction == true)
+            {
+                PHeight = Math.Min(P_MAX, PHeight + P_STEP);
+            }
+            else if (Direction == false)
+            {
+                PHeight = Math.Max(P_MIN, PHeight - P_STEP);
+            }
+            RaisePropertyChanged("PHeight");
+            Debug.WriteLine(String.Format("Set PHeight to {0}", PHeight));
+            SendControllerParameters();
         }
 
         public void AdjustP1RollPitch(bool? Direction)
@@ -296,6 +302,7 @@ namespace ERTS.Dashboard.Control
             }
             RaisePropertyChanged("P1RollPitch");
             Debug.WriteLine(String.Format("Set P1RollPitch to {0}", P1RollPitch));
+            SendControllerParameters();
         }
 
         public void AdjustP2RollPitch(bool? Direction)
@@ -314,6 +321,7 @@ namespace ERTS.Dashboard.Control
             }
             RaisePropertyChanged("P2RollPitch");
             Debug.WriteLine(String.Format("Set P2RollPitch to {0}", P2RollPitch));
+            SendControllerParameters();
         }
 
         public void AdjustPLift(bool? Direction)
@@ -332,14 +340,29 @@ namespace ERTS.Dashboard.Control
             }
             RaisePropertyChanged("PLift");
             Debug.WriteLine(String.Format("Set PLift to {0}", PLift));
+            SendControllerParameters();
+        }
+
+        public void SendMiscParameters()
+        {
+            GlobalData.com.MiscParameters(Convert.ToUInt16(GlobalData.cfg.PanicDecrement), Convert.ToUInt16(GlobalData.cfg.RCInterval), Convert.ToUInt16(GlobalData.cfg.LogDivider), Convert.ToUInt16(GlobalData.cfg.BatteryThreshold), Convert.ToUInt16(GlobalData.cfg.TelemetryDivider));
+        }
+
+        public void SendControllerParameters()
+        {
+            GlobalData.com.ControllerParameters(Convert.ToUInt16(PYaw), Convert.ToUInt16(PHeight), Convert.ToUInt16(P1RollPitch), Convert.ToUInt16(P2RollPitch), Convert.ToUInt16(PLift));            
+        }
+
+        public void SendActuationParameters()
+        {
+            //GlobalData.com.ActuationParameters(Convert.ToUInt16(PYaw), Convert.ToUInt16(PHeight), Convert.ToUInt16(P1RollPitch), Convert.ToUInt16(P2RollPitch), Convert.ToUInt16(PLift));
         }
 
         public void SendAllParameters()
         {
-            GlobalData.com.MiscParameters(Convert.ToUInt16(GlobalData.cfg.PanicDecrement), Convert.ToUInt16(GlobalData.cfg.RCInterval), Convert.ToUInt16(GlobalData.cfg.LogDivider), Convert.ToUInt16(GlobalData.cfg.BatteryThreshold), Convert.ToUInt16(GlobalData.cfg.TelemetryDivider));
-            GlobalData.com.ControllerParameters(Convert.ToUInt16(PYaw), Convert.ToUInt16(PHeight), Convert.ToUInt16(P1RollPitch), Convert.ToUInt16(P2RollPitch), Convert.ToUInt16(PLift));
-            //TODO controller params
-            //TODO actuation params
+            SendMiscParameters();
+            SendControllerParameters();
+            SendActuationParameters();
 
         }
 
