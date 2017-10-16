@@ -28,6 +28,11 @@ namespace ERTS.Dashboard.Control
 
         MultimediaTimer RCTimer;
 
+        public bool HasSeenZeroLift { get; set; }
+        public bool HasSeenZeroRoll { get; set; }
+        public bool HasSeenZeroPitch { get; set; }
+        public bool HasSeenZeroYaw { get; set; }
+
         public FlightMode Mode { get; set; }
         public double BatteryVoltage { get; set; }
         public short Phi { get; set; }
@@ -64,6 +69,11 @@ namespace ERTS.Dashboard.Control
             P1RollPitch = GlobalData.cfg.StartP1RollPitch;
             P2RollPitch = GlobalData.cfg.StartP2RollPitch;
             PLift = GlobalData.cfg.StartPLift;
+
+            HasSeenZeroLift = false;
+            HasSeenZeroRoll = false;
+            HasSeenZeroPitch = false;
+            HasSeenZeroYaw = false;
 
             RCTimer = new MultimediaTimer(GlobalData.cfg.RCInterval);
 
@@ -115,11 +125,18 @@ namespace ERTS.Dashboard.Control
                     return;
                 }
                 counter++;    */
-                GlobalData.com.RemoteControl(
-                    Convert.ToUInt16(Math.Round((Lift + LiftTrim).Clamp(0, 1) * UInt16.MaxValue)),
-                    Convert.ToInt16(Math.Round((RollRate + RollTrim).Clamp(-1, 1) * Int16.MaxValue)),
-                    Convert.ToInt16(Math.Round((PitchRate + PitchTrim).Clamp(-1, 1) * Int16.MaxValue)),
-                    Convert.ToInt16(Math.Round((YawRate + YawTrim).Clamp(-1, 1) * Int16.MaxValue)));
+                if (HasSeenZeroLift && HasSeenZeroPitch && HasSeenZeroRoll && HasSeenZeroYaw)
+                {
+                    GlobalData.com.RemoteControl(
+                        Convert.ToUInt16(Math.Round((Lift + LiftTrim).Clamp(0, 1) * UInt16.MaxValue)),
+                        Convert.ToInt16(Math.Round((RollRate + RollTrim).Clamp(-1, 1) * Int16.MaxValue)),
+                        Convert.ToInt16(Math.Round((PitchRate + PitchTrim).Clamp(-1, 1) * Int16.MaxValue)),
+                        Convert.ToInt16(Math.Round((YawRate + YawTrim).Clamp(-1, 1) * Int16.MaxValue)));
+                }
+                else
+                {
+                    GlobalData.com.RemoteControl(0, 0, 0, 0);
+                }
                 //GlobalData.com.RemoteControl(Convert.ToUInt16(counter), 0, 0 ,0);
             }
         }
@@ -170,24 +187,33 @@ namespace ERTS.Dashboard.Control
         public void SetLift(double _Lift)
         {
             Lift = GetRcRate(_Lift, 0, 1, GlobalData.cfg.LiftDeadzone);
+            if (Lift == 0)
+                HasSeenZeroLift = true;
             RaisePropertyChanged("Lift");
         }
         public void SetRoll(double _RollRate)
         {
             RollRate = GetRcRate(_RollRate, RC_EXPO, RC_RATE, GlobalData.cfg.RollDeadzone);
+            if (RollRate == 0)
+                HasSeenZeroRoll = true;
             RaisePropertyChanged("RollRate");
         }
         public void SetPitch(double _PitchRate)
         {
             PitchRate = GetRcRate(_PitchRate, RC_EXPO, RC_RATE, GlobalData.cfg.PitchDeadzone);
+            if (PitchRate == 0)
+                HasSeenZeroPitch = true;
             RaisePropertyChanged("PitchRate");
         }
         public void SetYaw(double _YawRate)
         {
             YawRate = GetRcRate(_YawRate, RC_EXPO, RC_RATE, GlobalData.cfg.YawDeadzone);
+            if (YawRate == 0)
+                HasSeenZeroYaw = true;
             RaisePropertyChanged("YawRate");
         }
         #endregion
+
         #region Trim and Control Adjustment
         public void AdjustLiftTrim(bool? Direction)
         {
@@ -257,7 +283,7 @@ namespace ERTS.Dashboard.Control
             RaisePropertyChanged("YawTrim");
             Debug.WriteLine(String.Format("Set YawTrim to {0}", YawTrim));
         }
-         
+
         public void AdjustPYaw(bool? Direction)
         {
             if (Direction == null)
@@ -359,7 +385,7 @@ namespace ERTS.Dashboard.Control
 
         public void SendControllerParameters()
         {
-            GlobalData.com.ControllerParameters(Convert.ToUInt16(PYaw), Convert.ToUInt16(PHeight), Convert.ToUInt16(P1RollPitch), Convert.ToUInt16(P2RollPitch), Convert.ToUInt16(PLift));            
+            GlobalData.com.ControllerParameters(Convert.ToUInt16(PYaw), Convert.ToUInt16(PHeight), Convert.ToUInt16(P1RollPitch), Convert.ToUInt16(P2RollPitch), Convert.ToUInt16(PLift));
         }
 
         public void SendActuationParameters()
