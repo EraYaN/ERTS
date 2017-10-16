@@ -44,10 +44,12 @@ namespace ERTS.Dashboard.Control
         public double PitchTrim { get; set; }
         public double YawTrim { get; set; }
 
-        public double YawP { get; set; }
-        public double RollPitchP1 { get; set; }
-        public double RollPitchP2 { get; set; }
-        public double LiftP { get; set; }
+        public double PYaw { get; set; }
+        public double PHeight { get; set; }
+        public double P1RollPitch { get; set; }
+        public double P2RollPitch { get; set; }
+        public double PLift { get; set; }
+
 
         //int counter=0;
 
@@ -242,84 +244,103 @@ namespace ERTS.Dashboard.Control
             Debug.WriteLine(String.Format("Set YawTrim to {0}", YawTrim));
         }
 
-        public void AdjustYawP(bool? Direction)
+        public void AdjustPHeigth(bool? Direction)
         {
             if (Direction == null)
             {
-                YawP = 0;
+                PHeight = 0;
             }
             else if (Direction == true)
             {
-                YawP = Math.Min(P_MAX, YawP + P_STEP);
+                PHeight = Math.Min(P_MAX, PHeight + P_STEP);
             }
             else if (Direction == false)
             {
-                YawP = Math.Max(P_MIN, YawP - P_STEP);
+                PHeight = Math.Max(P_MIN, PHeight - P_STEP);
             }
-            RaisePropertyChanged("YawP");
-            Debug.WriteLine(String.Format("Set YawP to {0}", YawTrim));
+            RaisePropertyChanged("PHeight");
+            Debug.WriteLine(String.Format("Set PHeight to {0}", PHeight));
         }
 
-        public void AdjustRollPitchP1(bool? Direction)
+        public void AdjustPYaw(bool? Direction)
         {
             if (Direction == null)
             {
-                RollPitchP1 = 0;
+                PYaw = 0;
             }
             else if (Direction == true)
             {
-                RollPitchP1 = Math.Min(P_MAX, RollPitchP1 + P_STEP);
+                PYaw = Math.Min(P_MAX, PYaw + P_STEP);
             }
             else if (Direction == false)
             {
-                RollPitchP1 = Math.Max(P_MIN, RollPitchP1 - P_STEP);
+                PYaw = Math.Max(P_MIN, PYaw - P_STEP);
             }
-            RaisePropertyChanged("RollPitchP1");
-            Debug.WriteLine(String.Format("Set RollPitchP1 to {0}", YawTrim));
+            RaisePropertyChanged("PYaw");
+            Debug.WriteLine(String.Format("Set PYaw to {0}", PYaw));
         }
 
-        public void AdjustRollPitchP2(bool? Direction)
+        public void AdjustP1RollPitch(bool? Direction)
         {
             if (Direction == null)
             {
-                RollPitchP2 = 0;
+                P1RollPitch = 0;
             }
             else if (Direction == true)
             {
-                RollPitchP2 = Math.Min(P_MAX, RollPitchP2 + P_STEP);
+                P1RollPitch = Math.Min(P_MAX, P1RollPitch + P_STEP);
             }
             else if (Direction == false)
             {
-                RollPitchP2 = Math.Max(P_MIN, RollPitchP2 - P_STEP);
+                P1RollPitch = Math.Max(P_MIN, P1RollPitch - P_STEP);
             }
-            RaisePropertyChanged("RollPitchP2");
-            Debug.WriteLine(String.Format("Set RollPitchP2 to {0}", YawTrim));
+            RaisePropertyChanged("P1RollPitch");
+            Debug.WriteLine(String.Format("Set P1RollPitch to {0}", P1RollPitch));
         }
 
-        public void AdjustLiftP(bool? Direction)
+        public void AdjustP2RollPitch(bool? Direction)
         {
             if (Direction == null)
             {
-                LiftP = 0;
+                P2RollPitch = 0;
             }
             else if (Direction == true)
             {
-                LiftP = Math.Min(P_MAX, LiftP + P_STEP);
+                P2RollPitch = Math.Min(P_MAX, P2RollPitch + P_STEP);
             }
             else if (Direction == false)
             {
-                LiftP = Math.Max(P_MIN, LiftP - P_STEP);
+                P2RollPitch = Math.Max(P_MIN, P2RollPitch - P_STEP);
             }
-            RaisePropertyChanged("LiftP");
-            Debug.WriteLine(String.Format("Set LiftP to {0}", YawTrim));
+            RaisePropertyChanged("P2RollPitch");
+            Debug.WriteLine(String.Format("Set P2RollPitch to {0}", P2RollPitch));
+        }
+
+        public void AdjustPLift(bool? Direction)
+        {
+            if (Direction == null)
+            {
+                PLift = 0;
+            }
+            else if (Direction == true)
+            {
+                PLift = Math.Min(P_MAX, PLift + P_STEP);
+            }
+            else if (Direction == false)
+            {
+                PLift = Math.Max(P_MIN, PLift - P_STEP);
+            }
+            RaisePropertyChanged("PLift");
+            Debug.WriteLine(String.Format("Set PLift to {0}", PLift));
         }
 
         public void SendAllParameters()
         {
-            GlobalData.com.MiscParameters(Convert.ToUInt16(GlobalData.cfg.PanicDecrement), Convert.ToUInt16(GlobalData.cfg.RCInterval), Convert.ToUInt16(GlobalData.cfg.LogDivider), Convert.ToUInt16(GlobalData.cfg.BatteryThreshold), Convert.ToUInt16(GlobalData.cfg.TargetLoopTime));
+            GlobalData.com.MiscParameters(Convert.ToUInt16(GlobalData.cfg.PanicDecrement), Convert.ToUInt16(GlobalData.cfg.RCInterval), Convert.ToUInt16(GlobalData.cfg.LogDivider), Convert.ToUInt16(GlobalData.cfg.BatteryThreshold), Convert.ToUInt16(GlobalData.cfg.TelemetryDivider));
+            GlobalData.com.ControllerParameters(Convert.ToUInt16(PYaw), Convert.ToUInt16(PHeight), Convert.ToUInt16(P1RollPitch), Convert.ToUInt16(P2RollPitch), Convert.ToUInt16(PLift));
             //TODO controller params
             //TODO actuation params
-            //TODO how to send TelemetryDivider. (And Led Divider really, maybe EventLoopParameters together with other dividers.)
+
         }
 
         #endregion

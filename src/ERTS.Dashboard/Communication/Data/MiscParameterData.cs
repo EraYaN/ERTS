@@ -12,7 +12,7 @@ namespace ERTS.Dashboard.Communication.Data
         ushort rcInterval;
         ushort logDivider;
         ushort batteryThreshold;
-        ushort targetLoopTime;
+        ushort telemetryDivider;
         uint ackNumber;
 
         public ushort PanicDecrement {
@@ -27,20 +27,20 @@ namespace ERTS.Dashboard.Communication.Data
         public ushort BatteryThreshold {
             get { return batteryThreshold; }
         }
-        public ushort TargetLoopTime {
-            get { return targetLoopTime; }
+        public ushort TelemetryDivider {
+            get { return telemetryDivider; }
         }
         public uint AckNumber {
             get { return ackNumber; }
         }
 
-        public MiscParameterData(ushort PanicDecrement, ushort RCInterval, ushort LogDivider, ushort BatteryThreshold, ushort TargetLoopTime, uint AckNumber = 0)
+        public MiscParameterData(ushort PanicDecrement, ushort RCInterval, ushort LogDivider, ushort BatteryThreshold, ushort TelemetryDivider, uint AckNumber = 0)
         {
             panicDecrement = PanicDecrement;
             rcInterval = RCInterval;
             logDivider = LogDivider;
             batteryThreshold = BatteryThreshold;
-            targetLoopTime = TargetLoopTime;
+            telemetryDivider = TelemetryDivider;
             ackNumber = AckNumber;
         }
         public MiscParameterData(byte[] data)
@@ -53,7 +53,7 @@ namespace ERTS.Dashboard.Communication.Data
             rcInterval = BitConverter.ToUInt16(data, 6);
             logDivider = BitConverter.ToUInt16(data, 8);
             batteryThreshold = BitConverter.ToUInt16(data, 10);
-            targetLoopTime = BitConverter.ToUInt16(data, 12);
+            telemetryDivider = BitConverter.ToUInt16(data, 12);
         }
         public MiscParameterData()
         {
@@ -78,7 +78,7 @@ namespace ERTS.Dashboard.Communication.Data
             Buffer.BlockCopy(BitConverter.GetBytes(rcInterval), 0, data, 6, sizeof(ushort));
             Buffer.BlockCopy(BitConverter.GetBytes(logDivider), 0, data, 8, sizeof(ushort));
             Buffer.BlockCopy(BitConverter.GetBytes(batteryThreshold), 0, data, 10, sizeof(ushort));
-            Buffer.BlockCopy(BitConverter.GetBytes(targetLoopTime), 0, data, 12, sizeof(ushort));
+            Buffer.BlockCopy(BitConverter.GetBytes(telemetryDivider), 0, data, 12, sizeof(ushort));
             return data;
         }
 

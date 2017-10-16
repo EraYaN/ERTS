@@ -13,6 +13,7 @@ namespace ERTS.Dashboard.Communication.Data
         ushort pHeight;
         ushort p1PitchRoll;
         ushort p2PitchRoll;
+        ushort pLift;
         uint ackNumber;
 
         public ushort PYaw {
@@ -27,16 +28,20 @@ namespace ERTS.Dashboard.Communication.Data
         public ushort P2PitchRoll {
             get { return p2PitchRoll; }
         }
+        public ushort PLift {
+            get { return pLift; }
+        }
         public uint AckNumber {
             get { return ackNumber; }
         }
 
-        public ControllerParameterData(ushort PYaw, ushort PHeight, ushort P1PitchRoll, ushort P2PitchRoll, uint AckNumber = 0)
+        public ControllerParameterData(ushort PYaw, ushort PHeight, ushort P1PitchRoll, ushort P2PitchRoll, ushort PLift, uint AckNumber = 0)
         {
             pYaw = PYaw;
             pHeight = PHeight;
             p1PitchRoll = P1PitchRoll;
             p2PitchRoll = P2PitchRoll;
+            pLift = PLift;
             ackNumber = AckNumber;
         }
         public ControllerParameterData(byte[] data)
@@ -49,13 +54,14 @@ namespace ERTS.Dashboard.Communication.Data
             pHeight = BitConverter.ToUInt16(data, 6);
             p1PitchRoll = BitConverter.ToUInt16(data, 8);
             p2PitchRoll = BitConverter.ToUInt16(data, 10);
+            pLift = BitConverter.ToUInt16(data, 12);
         }
         public ControllerParameterData()
         {
             throw new NotSupportedException();
         }
 
-        public override int Length => 4 * sizeof(ushort) + sizeof(uint);
+        public override int Length => 5 * sizeof(ushort) + sizeof(uint);
 
         public override bool ExpectsAcknowledgement => (true);
 
@@ -73,6 +79,7 @@ namespace ERTS.Dashboard.Communication.Data
             Buffer.BlockCopy(BitConverter.GetBytes(pHeight), 0, data, 6, sizeof(ushort));
             Buffer.BlockCopy(BitConverter.GetBytes(p1PitchRoll), 0, data, 8, sizeof(ushort));
             Buffer.BlockCopy(BitConverter.GetBytes(p2PitchRoll), 0, data, 10, sizeof(ushort));
+            Buffer.BlockCopy(BitConverter.GetBytes(pLift), 0, data, 12, sizeof(ushort));
             return data;
         }
 
