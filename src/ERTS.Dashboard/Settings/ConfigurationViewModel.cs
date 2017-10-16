@@ -78,27 +78,7 @@ namespace ERTS.Dashboard.Configuration {
                 }
             }
         }
-
-        public int TargetLoopTime {
-            get {
-                if (GlobalData.cfg != null)
-                {
-                    return GlobalData.cfg.TargetLoopTime;
-                }
-                return 0;
-            }
-            set {
-                if (GlobalData.cfg != null)
-                {
-                    if (GlobalData.cfg.TargetLoopTime != value)
-                    {
-                        GlobalData.cfg.TargetLoopTime = value;
-                        RaisePropertyChanged("TargetLoopTime");
-                    }
-                }
-            }
-        }
-
+        
         public int BatteryThreshold {
             get {
                 if (GlobalData.cfg != null)
@@ -354,6 +334,106 @@ namespace ERTS.Dashboard.Configuration {
                     {
                         GlobalData.cfg.YawDeadzone = value;
                         RaisePropertyChanged("YawDeadzone");
+                    }
+                }
+            }
+        }
+
+        public double StartPYaw {
+            get {
+                if (GlobalData.cfg != null)
+                {
+                    return GlobalData.cfg.StartPYaw;
+                }
+                return 0;
+            }
+            set {
+                if (GlobalData.cfg != null)
+                {
+                    if (GlobalData.cfg.StartPYaw != value)
+                    {
+                        GlobalData.cfg.StartPYaw = value;
+                        RaisePropertyChanged("StartPYaw");
+                    }
+                }
+            }
+        }
+
+        public double StartPHeight {
+            get {
+                if (GlobalData.cfg != null)
+                {
+                    return GlobalData.cfg.StartPHeight;
+                }
+                return 0;
+            }
+            set {
+                if (GlobalData.cfg != null)
+                {
+                    if (GlobalData.cfg.StartPHeight != value)
+                    {
+                        GlobalData.cfg.StartPHeight = value;
+                        RaisePropertyChanged("StartPHeight");
+                    }
+                }
+            }
+        }
+
+        public double StartP1RollPitch {
+            get {
+                if (GlobalData.cfg != null)
+                {
+                    return GlobalData.cfg.StartP1RollPitch;
+                }
+                return 0;
+            }
+            set {
+                if (GlobalData.cfg != null)
+                {
+                    if (GlobalData.cfg.StartP1RollPitch != value)
+                    {
+                        GlobalData.cfg.StartP1RollPitch = value;
+                        RaisePropertyChanged("StartP1RollPitch");
+                    }
+                }
+            }
+        }
+
+        public double StartP2RollPitch {
+            get {
+                if (GlobalData.cfg != null)
+                {
+                    return GlobalData.cfg.StartP2RollPitch;
+                }
+                return 0;
+            }
+            set {
+                if (GlobalData.cfg != null)
+                {
+                    if (GlobalData.cfg.StartP2RollPitch != value)
+                    {
+                        GlobalData.cfg.StartP2RollPitch = value;
+                        RaisePropertyChanged("StartP2RollPitch");
+                    }
+                }
+            }
+        }
+
+        public double StartPLift {
+            get {
+                if (GlobalData.cfg != null)
+                {
+                    return GlobalData.cfg.StartPLift;
+                }
+                return 0;
+            }
+            set {
+                if (GlobalData.cfg != null)
+                {
+                    if (GlobalData.cfg.StartPLift != value)
+                    {
+                        GlobalData.cfg.StartPLift = value;
+                        RaisePropertyChanged("StartPLift");
                     }
                 }
             }

@@ -70,6 +70,8 @@ namespace ERTS.Dashboard.Input
             ControlActuator keyboardO = new ControlActuator() { DeviceGuid = keyboardGuid, ControlDisplayName = "Keyboard - O", RawOffset = DirectInputRawOffsets.KB_O };
             ControlActuator keyboardL = new ControlActuator() { DeviceGuid = keyboardGuid, ControlDisplayName = "Keyboard - L", RawOffset = DirectInputRawOffsets.KB_L };
 
+            ControlActuator keyboardY = new ControlActuator() { DeviceGuid = keyboardGuid, ControlDisplayName = "Keyboard - Y", RawOffset = DirectInputRawOffsets.KB_Y };
+            ControlActuator keyboardH = new ControlActuator() { DeviceGuid = keyboardGuid, ControlDisplayName = "Keyboard - H", RawOffset = DirectInputRawOffsets.KB_H };
 
             ControlActuator xboxPadX = new ControlActuator() { DeviceGuid = xboxPadGuid, ControlDisplayName = "Xbox 360 - X", RawOffset = DirectInputRawOffsets.XBOX_LEFTSTICK_X };
             ControlActuator xboxPadY = new ControlActuator() { DeviceGuid = xboxPadGuid, ControlDisplayName = "Xbox 360 - Y", RawOffset = DirectInputRawOffsets.XBOX_LEFTSTICK_Y };
@@ -134,13 +136,37 @@ namespace ERTS.Dashboard.Input
             YawTrimDownBinding.BindingActuatedEvent += YawTrimDownBinding_BindingActuatedEvent;
             InputBindings.Add("YawTrimDown", YawTrimDownBinding);
 
-            /*InputBinding YawPUpBinding = new InputBinding(new ControlActuator[] { keyboardDownArrow }, "YawPUp");
-            YawPUpBinding.BindingActuatedEvent += YawPUpBinding_BindingActuatedEvent;
-            InputBindings.Add("YawPUp", YawPUpBinding);
+            InputBinding PYawUpBinding = new InputBinding(new ControlActuator[] { keyboardU }, "PYawUp");
+            PYawUpBinding.BindingActuatedEvent += PYawUpBinding_BindingActuatedEvent;
+            InputBindings.Add("PYawUp", PYawUpBinding);
 
-            InputBinding YawPDownBinding = new InputBinding(new ControlActuator[] { keyboardUpArrow }, "YawPDown");
-            YawPDownBinding.BindingActuatedEvent += YawPDownBinding_BindingActuatedEvent;
-            InputBindings.Add("YawPDown", PitchTrimDownBinding);*/
+            InputBinding PYawDownBinding = new InputBinding(new ControlActuator[] { keyboardJ }, "PYawDown");
+            PYawDownBinding.BindingActuatedEvent += PYawDownBinding_BindingActuatedEvent;
+            InputBindings.Add("PYawDown", PYawDownBinding);
+
+            InputBinding P1RollPitchUpBinding = new InputBinding(new ControlActuator[] { keyboardI }, "P1RollPitchUp");
+            P1RollPitchUpBinding.BindingActuatedEvent += P1RollPitchUpBinding_BindingActuatedEvent;
+            InputBindings.Add("P1RollPitchUp", P1RollPitchUpBinding);
+
+            InputBinding P1RollPitchDownBinding = new InputBinding(new ControlActuator[] { keyboardK }, "P1RollPitchDown");
+            P1RollPitchDownBinding.BindingActuatedEvent += P1RollPitchDownBinding_BindingActuatedEvent;
+            InputBindings.Add("P1RollPitchDown", P1RollPitchDownBinding);
+
+            InputBinding P2RollPitchUpBinding = new InputBinding(new ControlActuator[] { keyboardO }, "P2RollPitchUp");
+            P2RollPitchUpBinding.BindingActuatedEvent += P2RollPitchUpBinding_BindingActuatedEvent;
+            InputBindings.Add("P2RollPitchUp", P2RollPitchUpBinding);
+
+            InputBinding P2RollPitchDownBinding = new InputBinding(new ControlActuator[] { keyboardL }, "P2RollPitchDown");
+            P2RollPitchDownBinding.BindingActuatedEvent += P2RollPitchDownBinding_BindingActuatedEvent;
+            InputBindings.Add("P2RollPitchDown", P2RollPitchDownBinding);
+
+            InputBinding PLiftUpBinding = new InputBinding(new ControlActuator[] { keyboardY }, "PLiftUp");
+            PLiftUpBinding.BindingActuatedEvent += PLiftUpBinding_BindingActuatedEvent;
+            InputBindings.Add("PLiftUp", PLiftUpBinding);
+
+            InputBinding PLiftDownBinding = new InputBinding(new ControlActuator[] { keyboardH }, "PLiftDown");
+            PLiftDownBinding.BindingActuatedEvent += PLiftDownBinding_BindingActuatedEvent;
+            InputBindings.Add("PLiftDown", PLiftDownBinding);
 
             InputBinding ModeSafeBinding = new InputBinding(new ControlActuator[] { keyboard0 }, "ModeSafe");
             ModeSafeBinding.BindingActuatedEvent += ModeSafeBinding_BindingActuatedEvent;
@@ -239,6 +265,54 @@ namespace ERTS.Dashboard.Input
         {
             if (e.InnerEvent.StateUpdate.Value > KeyThreshold)
                 GlobalData.ctr.AdjustYawTrim(false);
+        }
+
+        private void PYawUpBinding_BindingActuatedEvent(object sender, BindingActuatedEventArgs e)
+        {
+            if (e.InnerEvent.StateUpdate.Value > KeyThreshold)
+                GlobalData.ctr.AdjustPYaw(true);
+        }
+
+        private void PYawDownBinding_BindingActuatedEvent(object sender, BindingActuatedEventArgs e)
+        {
+            if (e.InnerEvent.StateUpdate.Value > KeyThreshold)
+                GlobalData.ctr.AdjustPYaw(false);
+        }
+
+        private void P1RollPitchUpBinding_BindingActuatedEvent(object sender, BindingActuatedEventArgs e)
+        {
+            if (e.InnerEvent.StateUpdate.Value > KeyThreshold)
+                GlobalData.ctr.AdjustP1RollPitch(true);
+        }
+
+        private void P1RollPitchDownBinding_BindingActuatedEvent(object sender, BindingActuatedEventArgs e)
+        {
+            if (e.InnerEvent.StateUpdate.Value > KeyThreshold)
+                GlobalData.ctr.AdjustP1RollPitch(false);
+        }
+
+        private void P2RollPitchUpBinding_BindingActuatedEvent(object sender, BindingActuatedEventArgs e)
+        {
+            if (e.InnerEvent.StateUpdate.Value > KeyThreshold)
+                GlobalData.ctr.AdjustP2RollPitch(true);
+        }
+
+        private void P2RollPitchDownBinding_BindingActuatedEvent(object sender, BindingActuatedEventArgs e)
+        {
+            if (e.InnerEvent.StateUpdate.Value > KeyThreshold)
+                GlobalData.ctr.AdjustP2RollPitch(false);
+        }
+
+        private void PLiftUpBinding_BindingActuatedEvent(object sender, BindingActuatedEventArgs e)
+        {
+            if (e.InnerEvent.StateUpdate.Value > KeyThreshold)
+                GlobalData.ctr.AdjustPLift(true);
+        }
+
+        private void PLiftDownBinding_BindingActuatedEvent(object sender, BindingActuatedEventArgs e)
+        {
+            if (e.InnerEvent.StateUpdate.Value > KeyThreshold)
+                GlobalData.ctr.AdjustPLift(false);
         }
 
         private void ModeSafeBinding_BindingActuatedEvent(object sender, BindingActuatedEventArgs e)

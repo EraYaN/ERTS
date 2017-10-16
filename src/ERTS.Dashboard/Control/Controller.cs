@@ -22,6 +22,10 @@ namespace ERTS.Dashboard.Control
         const double TRIM_MAX = 0.5;
         const double TRIM_MIN = -0.5;
 
+        const double P_STEP = 1.0;
+        const double P_MAX = 1000.0;
+        const double P_MIN = 1.0;
+
         MultimediaTimer RCTimer;
 
         public FlightMode Mode { get; set; }
@@ -43,11 +47,23 @@ namespace ERTS.Dashboard.Control
         public double PitchTrim { get; set; }
         public double YawTrim { get; set; }
 
+        public double PYaw { get; set; }
+        public double PHeight { get; set; }
+        public double P1RollPitch { get; set; }
+        public double P2RollPitch { get; set; }
+        public double PLift { get; set; }
+
+
         //int counter=0;
 
 
         public Controller()
         {
+            PYaw = GlobalData.cfg.StartPYaw;
+            PHeight = GlobalData.cfg.StartPHeight;
+            P1RollPitch = GlobalData.cfg.StartP1RollPitch;
+            P2RollPitch = GlobalData.cfg.StartP2RollPitch;
+            PLift = GlobalData.cfg.StartPLift;
 
             RCTimer = new MultimediaTimer(GlobalData.cfg.RCInterval);
 
@@ -171,7 +187,8 @@ namespace ERTS.Dashboard.Control
             YawRate = GetRcRate(_YawRate, RC_EXPO, RC_RATE, GlobalData.cfg.YawDeadzone);
             RaisePropertyChanged("YawRate");
         }
-
+        #endregion
+        #region Trim and Control Adjustment
         public void AdjustLiftTrim(bool? Direction)
         {
             if (Direction == null)
@@ -240,13 +257,122 @@ namespace ERTS.Dashboard.Control
             RaisePropertyChanged("YawTrim");
             Debug.WriteLine(String.Format("Set YawTrim to {0}", YawTrim));
         }
+         
+        public void AdjustPYaw(bool? Direction)
+        {
+            if (Direction == null)
+            {
+                PYaw = 0;
+            }
+            else if (Direction == true)
+            {
+                PYaw = Math.Min(P_MAX, PYaw + P_STEP);
+            }
+            else if (Direction == false)
+            {
+                PYaw = Math.Max(P_MIN, PYaw - P_STEP);
+            }
+            RaisePropertyChanged("PYaw");
+            Debug.WriteLine(String.Format("Set PYaw to {0}", PYaw));
+            SendControllerParameters();
+        }
+        public void AdjustPHeight(bool? Direction)
+        {
+            if (Direction == null)
+            {
+                PHeight = 0;
+            }
+            else if (Direction == true)
+            {
+                PHeight = Math.Min(P_MAX, PHeight + P_STEP);
+            }
+            else if (Direction == false)
+            {
+                PHeight = Math.Max(P_MIN, PHeight - P_STEP);
+            }
+            RaisePropertyChanged("PHeight");
+            Debug.WriteLine(String.Format("Set PHeight to {0}", PHeight));
+            SendControllerParameters();
+        }
+
+        public void AdjustP1RollPitch(bool? Direction)
+        {
+            if (Direction == null)
+            {
+                P1RollPitch = 0;
+            }
+            else if (Direction == true)
+            {
+                P1RollPitch = Math.Min(P_MAX, P1RollPitch + P_STEP);
+            }
+            else if (Direction == false)
+            {
+                P1RollPitch = Math.Max(P_MIN, P1RollPitch - P_STEP);
+            }
+            RaisePropertyChanged("P1RollPitch");
+            Debug.WriteLine(String.Format("Set P1RollPitch to {0}", P1RollPitch));
+            SendControllerParameters();
+        }
+
+        public void AdjustP2RollPitch(bool? Direction)
+        {
+            if (Direction == null)
+            {
+                P2RollPitch = 0;
+            }
+            else if (Direction == true)
+            {
+                P2RollPitch = Math.Min(P_MAX, P2RollPitch + P_STEP);
+            }
+            else if (Direction == false)
+            {
+                P2RollPitch = Math.Max(P_MIN, P2RollPitch - P_STEP);
+            }
+            RaisePropertyChanged("P2RollPitch");
+            Debug.WriteLine(String.Format("Set P2RollPitch to {0}", P2RollPitch));
+            SendControllerParameters();
+        }
+
+        public void AdjustPLift(bool? Direction)
+        {
+            if (Direction == null)
+            {
+                PLift = 0;
+            }
+            else if (Direction == true)
+            {
+                PLift = Math.Min(P_MAX, PLift + P_STEP);
+            }
+            else if (Direction == false)
+            {
+                PLift = Math.Max(P_MIN, PLift - P_STEP);
+            }
+            RaisePropertyChanged("PLift");
+            Debug.WriteLine(String.Format("Set PLift to {0}", PLift));
+            SendControllerParameters();
+        }
+
+        public void SendMiscParameters()
+        {
+            GlobalData.com.MiscParameters(Convert.ToUInt16(GlobalData.cfg.PanicDecrement), Convert.ToUInt16(GlobalData.cfg.RCInterval), Convert.ToUInt16(GlobalData.cfg.LogDivider), Convert.ToUInt16(GlobalData.cfg.BatteryThreshold), Convert.ToUInt16(GlobalData.cfg.TelemetryDivider));
+        }
+
+        public void SendControllerParameters()
+        {
+            GlobalData.com.ControllerParameters(Convert.ToUInt16(PYaw), Convert.ToUInt16(PHeight), Convert.ToUInt16(P1RollPitch), Convert.ToUInt16(P2RollPitch), Convert.ToUInt16(PLift));            
+        }
+
+        public void SendActuationParameters()
+        {
+            //GlobalData.com.ActuationParameters(Convert.ToUInt16(PYaw), Convert.ToUInt16(PHeight), Convert.ToUInt16(P1RollPitch), Convert.ToUInt16(P2RollPitch), Convert.ToUInt16(PLift));
+        }
 
         public void SendAllParameters()
         {
-            GlobalData.com.MiscParameters(Convert.ToUInt16(GlobalData.cfg.PanicDecrement), Convert.ToUInt16(GlobalData.cfg.RCInterval), Convert.ToUInt16(GlobalData.cfg.LogDivider), Convert.ToUInt16(GlobalData.cfg.BatteryThreshold), Convert.ToUInt16(GlobalData.cfg.TargetLoopTime));
-            //TODO controller params
-            //TODO actuation params
-            //TODO how to send TelemetryDivider. (And Led Divider really, maybe EventLoopParameters together with other dividers.)
+            SendMiscParameters();
+            SendControllerParameters();
+            SendActuationParameters();
+
         }
 
         #endregion

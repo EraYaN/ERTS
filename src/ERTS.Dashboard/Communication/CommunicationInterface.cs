@@ -417,16 +417,16 @@ namespace ERTS.Dashboard.Communication
             SendPacket(p);
         }
 
-        public void ControllerParameter(ushort PYaw, ushort PHeight, ushort P1PitchRoll, ushort P2PitchRoll)
+        public void ControllerParameters(ushort PYaw, ushort PHeight, ushort P1PitchRoll, ushort P2PitchRoll, ushort PLift)
         {
             Packet p = new Packet(MessageType.ControllerParameters)
             {
-                Data = new ControllerParameterData(PYaw, PHeight, P1PitchRoll, P2PitchRoll)
+                Data = new ControllerParameterData(PYaw, PHeight, P1PitchRoll, P2PitchRoll, PLift)
             };
             SendPacket(p);
         }
 
-        public void ActuationParameter(ushort RatePitchRollLift, ushort RateYaw, ushort MotorMin, ushort MotorMax)
+        public void ActuationParameters(ushort RatePitchRollLift, ushort RateYaw, ushort MotorMin, ushort MotorMax)
         {
             Packet p = new Packet(MessageType.ActuationParameters)
             {
@@ -475,7 +475,7 @@ namespace ERTS.Dashboard.Communication
         //Parameter messages (0x40-0x9F)
         SetControllerRollPID = 0x40, ///Expects Acknowledgement
         SetControllerPitchPID = 0x41, ///Expects Acknowledgement
-        SetControllerYawPID = 0x42, ///Expects Acknowledgement
+        SetControllerPYawID = 0x42, ///Expects Acknowledgement
         SetControllerHeightPID = 0x43, ///Expects Acknowledgement
         SetMessageFrequencies = 0x44, ///Expects Acknowledgement. TelemetryFrequency, RemoteControlFrequency and LoopFreqency
 

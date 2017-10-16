@@ -16,15 +16,19 @@
                     <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                         <Label Target="{Binding ElementName=comPortsComboBox}" Content="COM Port:" Height="16" Padding="0" Margin="2,0"/>
                         <ComboBox x:Name="comPortsComboBox" Height="20" Padding="4,0,0,0" VerticalContentAlignment="Center" Margin="2" ItemsSource="{Binding ComPorts}" SelectedItem="{Binding ComPort}"/>
+                        
                         <Label Target="{Binding ElementName=baudRateComboBox}" Content="Baudrate:" Height="16" Padding="0" Margin="2,0"/>
                         <ComboBox x:Name="baudRateComboBox" Height="20" Margin="2" Padding="4,0,0,0" VerticalContentAlignment="Center" ItemsSource="{Binding BaudRates}" SelectedItem="{Binding BaudRate}"/>
                         
                         <Label Target="{Binding ElementName=packetCheckResendIntervalTextBox}" Content="Packet Check Resend Interval: (ms)" Height="16" Padding="0" Margin="2,0"/>
                         <TextBox x:Name="packetCheckResendIntervalTextBox" Height="20" Padding="4,0,0,0" VerticalContentAlignment="Center" Margin="2" Text="{Binding PacketCheckResendInterval}"/>
+                        
                         <Label Target="{Binding ElementName=packetResendIntervalTextBox}" Content="Packet Resend Interval: (ms)" Height="16" Padding="0" Margin="2,0"/>
                         <TextBox x:Name="packetResendIntervalTextBox" Height="20" Padding="4,0,0,0" VerticalContentAlignment="Center" Margin="2" Text="{Binding PacketResendInterval}"/>
+                        
                         <Label Target="{Binding ElementName=packetRetransmissionCountTextBox}" Content="Packet Retransmission Count:" Height="16" Padding="0" Margin="2,0"/>
                         <TextBox x:Name="packetRetransmissionCountTextBox" Height="20" Padding="4,0,0,0" VerticalContentAlignment="Center" Margin="2" Text="{Binding PacketRetransmissionCount}"/>
+                        
                         <CheckBox Content="Kill Quad after retransmission fails." IsChecked="{Binding KillAfterRetransmissionFail}" Margin="2"/>
                     </StackPanel>
                 </Grid>
@@ -42,10 +46,13 @@
                     <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Column="1" Margin="0,0,0,0">
                         <Label Target="{Binding ElementName=liftDeadzoneTextbox}" Content="Lift Deadzone: (%)" Height="16" Padding="0" Margin="2,0"/>
                         <TextBox x:Name="liftDeadzoneTextbox" Height="20" Padding="4,0,0,0" VerticalContentAlignment="Center" Margin="2" Text="{Binding LiftDeadzone}"/>
+                        
                         <Label Target="{Binding ElementName=rollDeadzoneTextbox}" Content="Roll Deadzone: (%)" Height="16" Padding="0" Margin="2,0"/>
                         <TextBox x:Name="rollDeadzoneTextbox" Height="20" Padding="4,0,0,0" VerticalContentAlignment="Center" Margin="2" Text="{Binding RollDeadzone}"/>
+                        
                         <Label Target="{Binding ElementName=pitchDeadzoneTextbox}" Content="Pitch Deadzone: (%)" Height="16" Padding="0" Margin="2,0"/>
                         <TextBox x:Name="pitchDeadzoneTextbox" Height="20" Padding="4,0,0,0" VerticalContentAlignment="Center" Margin="2" Text="{Binding PitchDeadzone}"/>
+                        
                         <Label Target="{Binding ElementName=yawDeadzoneTextbox}" Content="Yaw Deadzone: (%)" Height="16" Padding="0" Margin="2,0"/>
                         <TextBox x:Name="yawDeadzoneTextbox" Height="20" Padding="4,0,0,0" VerticalContentAlignment="Center" Margin="2" Text="{Binding YawDeadzone}"/>
                     </StackPanel>
@@ -59,19 +66,34 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,0,0">
-                        <Label Target="{Binding ElementName=targetLoopTimeTextBox}" Content="Target Loop Time: (us)" Height="16" Padding="0" Margin="2,0"/>
-                        <TextBox x:Name="targetLoopTimeTextBox" Height="20" Padding="4,0,0,0" VerticalContentAlignment="Center" Margin="2" Text="{Binding TargetLoopTime}"/>
+                    <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,0,0">                        
                         <Label Target="{Binding ElementName=batteryThresholdTextBox}" Content="Battery Threshold: (cV)" Height="16" Padding="0" Margin="2,0"/>
                         <TextBox x:Name="batteryThresholdTextBox" Height="20" Padding="4,0,0,0" VerticalContentAlignment="Center" Margin="2" Text="{Binding BatteryThreshold}"/>
+                        
                         <Label Target="{Binding ElementName=panicDecrementTextBox}" Content="Panic Decrement:" Height="16" Padding="0" Margin="2,0"/>
                         <TextBox x:Name="panicDecrementTextBox" Height="20" Padding="4,0,0,0" VerticalContentAlignment="Center" Margin="2" Text="{Binding PanicDecrement}"/>
-                    </StackPanel>
-                    <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Column="1" Margin="0,0,0,0">
-                        <Label Target="{Binding ElementName=telemetryDividerTextBox}" Content="Telemetry Divider: (loop times)" Height="16" Padding="0" Margin="2,0"/>                        
+                        
+                        <Label Target="{Binding ElementName=telemetryDividerTextBox}" Content="Telemetry Divider: (loop times)" Height="16" Padding="0" Margin="2,0"/>
                         <TextBox x:Name="telemetryDividerTextBox" Height="20" Padding="4,0,0,0" VerticalContentAlignment="Center" Margin="2" Text="{Binding TelemetryDivider}"/>
+                        
                         <Label Target="{Binding ElementName=logDividerTextBox}" Content="Log Divider: (loop times)" Height="16" Padding="0" Margin="2,0"/>
                         <TextBox x:Name="logDividerTextBox" Height="20" Padding="4,0,0,0" VerticalContentAlignment="Center" Margin="2" Text="{Binding LogDivider}"/>
+                    </StackPanel>
+                    <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Column="1" Margin="0,0,0,0">
+                        <Label Target="{Binding ElementName=startPYawTextbox}" Content="Start PYaw:" Height="16" Padding="0" Margin="2,0"/>
+                        <TextBox x:Name="startPYawTextbox" Height="20" Padding="4,0,0,0" VerticalContentAlignment="Center" Margin="2" Text="{Binding StartPYaw}"/>
+                        
+                        <Label Target="{Binding ElementName=startPHeightTextBox}" Content="Start PHeight:" Height="16" Padding="0" Margin="2,0"/>
+                        <TextBox x:Name="startPHeightTextBox" Height="20" Padding="4,0,0,0" VerticalContentAlignment="Center" Margin="2" Text="{Binding StartPHeight}"/>
+                        
+                        <Label Target="{Binding ElementName=startP1RollPitchTextbox}" Content="Start P1RollPitch:" Height="16" Padding="0" Margin="2,0"/>
+                        <TextBox x:Name="startP1RollPitchTextbox" Height="20" Padding="4,0,0,0" VerticalContentAlignment="Center" Margin="2" Text="{Binding StartP1RollPitch}"/>
+                        
+                        <Label Target="{Binding ElementName=startP2RollPitchTextbox}" Content="Start P2RollPitch:" Height="16" Padding="0" Margin="2,0"/>
+                        <TextBox x:Name="startP2RollPitchTextbox" Height="20" Padding="4,0,0,0" VerticalContentAlignment="Center" Margin="2" Text="{Binding StartP2RollPitch}"/>
+                        
+                        <Label Target="{Binding ElementName=startPLiftTextbox}" Content="Start PLift:" Height="16" Padding="0" Margin="2,0"/>
+                        <TextBox x:Name="startPLiftTextbox" Height="20" Padding="4,0,0,0" VerticalContentAlignment="Center" Margin="2" Text="{Binding StartPLift}"/>
                     </StackPanel>
                 </Grid>
             </TabItem>

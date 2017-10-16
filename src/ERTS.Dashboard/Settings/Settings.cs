@@ -25,14 +25,6 @@ namespace ERTS.Dashboard.Configuration
             get;
             set;
         }
-        /// <summary>
-        /// The target loop time on the Embedded System in microseconds
-        /// </summary>
-        [DefaultValue(1000)]
-        public int TargetLoopTime {
-            get;
-            set;
-        }
 
         /// <summary>
         /// The lower battery cutoff voltage
@@ -146,6 +138,53 @@ namespace ERTS.Dashboard.Configuration
             set;
         }
 
+        /// <summary>
+        /// The start value for PYaw
+        /// </summary>
+        [DefaultValue(1.0)]
+        public double StartPYaw {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// The start value for PHeight
+        /// </summary>
+        [DefaultValue(1.0)]
+        public double StartPHeight {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// The start value for P1RollPitch
+        /// </summary>
+        [DefaultValue(1.0)]
+        public double StartP1RollPitch {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// The start value for P2RollPitch
+        /// </summary>
+        [DefaultValue(1.0)]
+        public double StartP2RollPitch {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// The start value for PLift
+        /// </summary>
+        [DefaultValue(1.0)]
+        public double StartPLift {
+            get;
+            set;
+        }
+
+
+
         public void SetDefaults(String Property = "")
         {
             if (Property == "ComPort" || Property == "")
@@ -155,11 +194,7 @@ namespace ERTS.Dashboard.Configuration
             if (Property == "BaudRate" || Property == "")
             {
                 BaudRate = (int)(TypeDescriptor.GetProperties(this)["BaudRate"].Attributes[typeof(DefaultValueAttribute)] as DefaultValueAttribute).Value;
-            }
-            if (Property == "TargetLoopTime" || Property == "")
-            {
-                TargetLoopTime = (int)(TypeDescriptor.GetProperties(this)["TargetLoopTime"].Attributes[typeof(DefaultValueAttribute)] as DefaultValueAttribute).Value;
-            }
+            }            
             if (Property == "BatteryThreshold" || Property == "")
             {
                 BatteryThreshold = (int)(TypeDescriptor.GetProperties(this)["BatteryThreshold"].Attributes[typeof(DefaultValueAttribute)] as DefaultValueAttribute).Value;
@@ -212,6 +247,26 @@ namespace ERTS.Dashboard.Configuration
             {
                 YawDeadzone = (double)(TypeDescriptor.GetProperties(this)["YawDeadzone"].Attributes[typeof(DefaultValueAttribute)] as DefaultValueAttribute).Value;
             }
+            if (Property == "StartPYaw" || Property == "")
+            {
+                StartPYaw = (double)(TypeDescriptor.GetProperties(this)["StartPYaw"].Attributes[typeof(DefaultValueAttribute)] as DefaultValueAttribute).Value;
+            }
+            if (Property == "StartPHeight" || Property == "")
+            {
+                StartPHeight = (double)(TypeDescriptor.GetProperties(this)["StartPHeight"].Attributes[typeof(DefaultValueAttribute)] as DefaultValueAttribute).Value;
+            }
+            if (Property == "StartP1RollPitch" || Property == "")
+            {
+                StartP1RollPitch = (double)(TypeDescriptor.GetProperties(this)["StartP1RollPitch"].Attributes[typeof(DefaultValueAttribute)] as DefaultValueAttribute).Value;
+            }
+            if (Property == "StartP2RollPitch" || Property == "")
+            {
+                StartP2RollPitch = (double)(TypeDescriptor.GetProperties(this)["StartP2RollPitch"].Attributes[typeof(DefaultValueAttribute)] as DefaultValueAttribute).Value;
+            }
+            if (Property == "StartPLift" || Property == "")
+            {
+                StartPLift = (double)(TypeDescriptor.GetProperties(this)["StartPLift"].Attributes[typeof(DefaultValueAttribute)] as DefaultValueAttribute).Value;
+            }
         }
 
         public Settings(bool defaults = false)
@@ -234,7 +289,6 @@ namespace ERTS.Dashboard.Configuration
         {
             try { ComPort = info.GetString("ComPort"); } catch { SetDefaults("ComPort"); }
             try { BaudRate = info.GetInt32("BaudRate"); } catch { SetDefaults("BaudRate"); }
-            try { TargetLoopTime = info.GetInt32("TargetLoopTime"); } catch { SetDefaults("TargetLoopTime"); }
             try { BatteryThreshold = info.GetInt32("BatteryThreshold"); } catch { SetDefaults("BatteryThreshold"); }
             try { PanicDecrement = info.GetInt32("PanicDecrement"); } catch { SetDefaults("PanicDecrement"); }
             try { RCInterval = info.GetInt32("RCInterval"); } catch { SetDefaults("RCInterval"); }
@@ -248,6 +302,11 @@ namespace ERTS.Dashboard.Configuration
             try { RollDeadzone = info.GetDouble("RollDeadzone"); } catch { SetDefaults("RollDeadzone"); }
             try { PitchDeadzone = info.GetDouble("PitchDeadzone"); } catch { SetDefaults("PitchDeadzone"); }
             try { YawDeadzone = info.GetDouble("YawDeadzone"); } catch { SetDefaults("YawDeadzone"); }
+            try { StartPYaw = info.GetDouble("StartPYaw"); } catch { SetDefaults("StartPYaw"); }
+            try { StartPHeight = info.GetDouble("StartPHeight"); } catch { SetDefaults("StartPHeight"); }
+            try { StartP1RollPitch = info.GetDouble("StartP1RollPitch"); } catch { SetDefaults("StartP1RollPitch"); }
+            try { StartP2RollPitch = info.GetDouble("StartP2RollPitch"); } catch { SetDefaults("StartP2RollPitch"); }
+            try { StartPLift = info.GetDouble("StartPLift"); } catch { SetDefaults("StartPLift"); }
 
         }
         [SecurityPermission(SecurityAction.Demand,
@@ -257,7 +316,6 @@ namespace ERTS.Dashboard.Configuration
         {
             info.AddValue("ComPort", ComPort);
             info.AddValue("BaudRate", BaudRate);
-            info.AddValue("TargetLoopTime", TargetLoopTime);
             info.AddValue("BatteryThreshold", BatteryThreshold);
             info.AddValue("PanicDecrement", PanicDecrement);
             info.AddValue("RCInterval", RCInterval);
@@ -271,6 +329,11 @@ namespace ERTS.Dashboard.Configuration
             info.AddValue("RollDeadzone", RollDeadzone);
             info.AddValue("PitchDeadzone", PitchDeadzone);
             info.AddValue("YawDeadzone", YawDeadzone);
+            info.AddValue("StartPYaw", StartPYaw);
+            info.AddValue("StartPHeight", StartPHeight);
+            info.AddValue("StartP1RollPitch", StartP1RollPitch);
+            info.AddValue("StartP2RollPitch", StartP2RollPitch);
+            info.AddValue("StartPLift", StartPLift);
         }
     }
 }
