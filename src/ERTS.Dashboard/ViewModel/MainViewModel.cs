@@ -65,6 +65,50 @@ namespace ERTS.Dashboard.ViewModel
         public string ModeDescriptionString { get { return Mode.GetDescription(); } }
         public string VoltageString { get { return Voltage.ToString() + " V"; } }
 
+        public string PhiString
+        {
+            get
+            {
+                if (GlobalData.ctr != null)
+                    return String.Format("{0:N2}", GlobalData.ctr.Phi);
+                else
+                    return "-";
+            }
+        }
+
+        public string ThetaString
+        {
+            get
+            {
+                if (GlobalData.ctr != null)
+                    return String.Format("{0:N2}", GlobalData.ctr.Theta);
+                else
+                    return "-";
+            }
+        }
+
+        public string PsiString
+        {
+            get
+            {
+                if (GlobalData.ctr != null)
+                    return String.Format("{0:N2}", GlobalData.ctr.Psi);
+                else
+                    return "-";
+            }
+        }
+
+        public string HeightString
+        {
+            get
+            {
+                //if (GlobalData.ctr != null)
+                //    return String.Format("{0:N2}", GlobalData.ctr.Psi);
+                //else
+                    return "-";
+            }
+        }
+
         public string LiftString {
             get {
                 if (GlobalData.ctr != null)
@@ -481,6 +525,26 @@ namespace ERTS.Dashboard.ViewModel
             else if (e.PropertyName == "BatteryVoltage")
             {
                 RaisePropertyChanged("VoltageString");
+                return;
+            }
+            else if (e.PropertyName == "Phi")
+            {
+                RaisePropertyChanged("PhiString");
+                return;
+            }
+            else if (e.PropertyName == "Theta")
+            {
+                RaisePropertyChanged("ThetaString");
+                return;
+            }
+            else if (e.PropertyName == "Psi")
+            {
+                RaisePropertyChanged("PsiString");
+                return;
+            }
+            else if (e.PropertyName == "Height")
+            {
+                RaisePropertyChanged("HeightString");
                 return;
             }
             else if (e.PropertyName == "LoopTime")

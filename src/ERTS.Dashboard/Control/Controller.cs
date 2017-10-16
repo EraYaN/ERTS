@@ -26,6 +26,9 @@ namespace ERTS.Dashboard.Control
 
         public FlightMode Mode { get; set; }
         public double BatteryVoltage { get; set; }
+        public short Phi { get; set; }
+        public short Theta { get; set; }
+        public short Psi { get; set; }
 
         public double LoopTime { get; set; }
 
@@ -116,6 +119,12 @@ namespace ERTS.Dashboard.Control
             RaisePropertyChanged("LoopTime");
             Mode = data.FlightMode;
             RaisePropertyChanged("Mode");
+            Phi = data.Phi;
+            RaisePropertyChanged("Phi");
+            Theta = data.Theta;
+            RaisePropertyChanged("Theta");
+            Psi = data.Psi;
+            RaisePropertyChanged("Psi");
 
         }
         public void HandleAcknowledge(AcknowledgeData data)

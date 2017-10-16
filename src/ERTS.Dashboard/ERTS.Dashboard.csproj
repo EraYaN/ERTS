@@ -80,7 +80,7 @@
     <Compile Include="Communication\Data\MiscParameterData.cs" />
     <Compile Include="Communication\Data\ModeSwitchData.cs" />
     <Compile Include="Communication\Data\RemoteControlData.cs" />
-    <Compile Include="Communication\Data\TelemeteryData.cs" />
+    <Compile Include="Communication\Data\TelemetryData.cs" />
     <Compile Include="Communication\Enumerations\ExceptionType.cs" />
     <Compile Include="Communication\Enumerations\FlightMode.cs" />
     <Compile Include="Communication\Enumerations\MessageType.cs" />

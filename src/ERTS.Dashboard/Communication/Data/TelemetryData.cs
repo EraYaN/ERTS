@@ -10,7 +10,7 @@ namespace ERTS.Dashboard.Communication.Data
         FlightMode flightMode; // 4 bits
         short phi;
         short theta;
-        short p;
+        short psi;
         short q;
         short r;
         ushort loopTime;
@@ -27,12 +27,14 @@ namespace ERTS.Dashboard.Communication.Data
         public short Theta {
             get { return theta; }
         }
-        public short P {
-            get { return p; }
+        public short Psi {
+            get { return psi; }
         }
+        // Unused
         public short Q {
             get { return q; }
         }
+        // Unused
         public short R {
             get { return r; }
         }
@@ -41,13 +43,13 @@ namespace ERTS.Dashboard.Communication.Data
         }
 
 
-        public TelemetryData(ushort BatteryVoltage, FlightMode FlightMode, short Phi, short Theta, short P, short Q, short R, ushort LoopTime)
+        public TelemetryData(ushort BatteryVoltage, FlightMode FlightMode, short Phi, short Theta, short Psi, short Q, short R, ushort LoopTime)
         {
             batteryVoltage = BatteryVoltage;
             flightMode = FlightMode;
             phi = Phi;
             theta = Theta;
-            p = P;
+            psi = Psi;
             q = Q;
             r = R;
             loopTime = LoopTime;
@@ -67,7 +69,7 @@ namespace ERTS.Dashboard.Communication.Data
 
             phi = BitConverter.ToInt16(data, sizeof(short));
             theta = BitConverter.ToInt16(data, sizeof(short) * 2);
-            p = BitConverter.ToInt16(data, sizeof(short) * 3);
+            psi = BitConverter.ToInt16(data, sizeof(short) * 3);
             q = BitConverter.ToInt16(data, sizeof(short) * 4);
             r = BitConverter.ToInt16(data, sizeof(short) * 5);
             loopTime = BitConverter.ToUInt16(data, sizeof(ushort) * 6);
@@ -98,7 +100,7 @@ namespace ERTS.Dashboard.Communication.Data
             //theta
             Buffer.BlockCopy(BitConverter.GetBytes(theta), 0, data, sizeof(ushort) * 2, sizeof(ushort));
             //rotations
-            Buffer.BlockCopy(BitConverter.GetBytes(p), 0, data, sizeof(ushort) * 3, sizeof(ushort));
+            Buffer.BlockCopy(BitConverter.GetBytes(psi), 0, data, sizeof(ushort) * 3, sizeof(ushort));
             Buffer.BlockCopy(BitConverter.GetBytes(q), 0, data, sizeof(ushort) * 4, sizeof(ushort));
             Buffer.BlockCopy(BitConverter.GetBytes(r), 0, data, sizeof(ushort) * 5, sizeof(ushort));
             //loopTime
@@ -113,7 +115,7 @@ namespace ERTS.Dashboard.Communication.Data
             sb.AppendFormat("FlightMode: {0}\n", flightMode);
             sb.AppendFormat("Phi: {0}\n", phi);
             sb.AppendFormat("Theta: {0}\n", theta);
-            sb.AppendFormat("P: {0}\n", p);
+            sb.AppendFormat("Psi: {0}\n", psi);
             sb.AppendFormat("Q: {0}\n", q);
             sb.AppendFormat("R: {0}\n", r);
             sb.AppendFormat("Loop Time: {0}\n", loopTime);

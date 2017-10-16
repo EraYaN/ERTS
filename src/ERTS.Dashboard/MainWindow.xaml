@@ -45,6 +45,10 @@
                         <ColumnDefinition Width="39*"/>
                         <ColumnDefinition Width="39*"/>
                         <ColumnDefinition Width="39*"/>
+                        <ColumnDefinition Width="39*"/>
+                        <ColumnDefinition Width="39*"/>
+                        <ColumnDefinition Width="39*"/>
+                        <ColumnDefinition Width="39*"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="1*"/>
@@ -53,10 +57,18 @@
                     <Label Content="Mode" Grid.Column="0" Grid.Row="0" Width="100" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top" HorizontalContentAlignment="Center" Grid.ColumnSpan="2"/>
                     <Label Content="Battery voltage" Grid.Column="2" Grid.Row="0" Width="100" HorizontalAlignment="Left" VerticalAlignment="Top" HorizontalContentAlignment="Center"/>
                     <Label Content="Loop time" Grid.Column="3" Grid.Row="0" Width="100" HorizontalAlignment="Left" VerticalAlignment="Top" HorizontalContentAlignment="Center"/>
+                    <Label Content="Phi" Grid.Column="4" Grid.Row="0" Width="100" HorizontalAlignment="Left" VerticalAlignment="Top" HorizontalContentAlignment="Center"/>
+                    <Label Content="Theta" Grid.Column="5" Grid.Row="0" Width="100" HorizontalAlignment="Left" VerticalAlignment="Top" HorizontalContentAlignment="Center"/>
+                    <Label Content="Psi" Grid.Column="6" Grid.Row="0" Width="100" HorizontalAlignment="Left" VerticalAlignment="Top" HorizontalContentAlignment="Center"/>
+                    <Label Content="Height" Grid.Column="7" Grid.Row="0" Width="100" HorizontalAlignment="Left" VerticalAlignment="Top" HorizontalContentAlignment="Center"/>
                     <Label Content="{Binding ModeString}" Grid.Column="0" Grid.Row="1" HorizontalContentAlignment="Center" Margin="0,2,0,0" VerticalAlignment="Top" FontSize="18" Grid.ColumnSpan="2"/>
                     <Label Content="{Binding ModeDescriptionString}" Grid.Column="0" Grid.Row="1" HorizontalContentAlignment="Center" Margin="0,27,0,0" VerticalAlignment="Top" FontSize="12" Foreground="#FFA4A4A4" Grid.ColumnSpan="2"/>
                     <Label Content="{Binding VoltageString}" Grid.Column="2" Grid.Row="1" HorizontalContentAlignment="Center" Margin="0,2,0,0" VerticalAlignment="Top" FontSize="18"/>
                     <Label Content="{Binding LoopTimeString}" Grid.Column="3" Grid.Row="1" HorizontalContentAlignment="Center" Margin="0,2,0,0" VerticalAlignment="Top" FontSize="18"/>
+                    <Label Content="{Binding PhiString}" Grid.Column="4" Grid.Row="1" HorizontalContentAlignment="Center" Margin="0,2,0,0" VerticalAlignment="Top" FontSize="18"/>
+                    <Label Content="{Binding ThetaString}" Grid.Column="5" Grid.Row="1" HorizontalContentAlignment="Center" Margin="0,2,0,0" VerticalAlignment="Top" FontSize="18"/>
+                    <Label Content="{Binding PsiString}" Grid.Column="6" Grid.Row="1" HorizontalContentAlignment="Center" Margin="0,2,0,0" VerticalAlignment="Top" FontSize="18"/>
+                    <Label Content="{Binding HeightString}" Grid.Column="7" Grid.Row="1" HorizontalContentAlignment="Center" Margin="0,2,0,0" VerticalAlignment="Top" FontSize="18"/>
                 </Grid>
             </GroupBox>
 
