@@ -22,6 +22,10 @@ namespace ERTS.Dashboard.Control
         const double TRIM_MAX = 0.5;
         const double TRIM_MIN = -0.5;
 
+        const double P_STEP = 1.0;
+        const double P_MAX = 1000.0;
+        const double P_MIN = 1.0;
+
         MultimediaTimer RCTimer;
 
         public FlightMode Mode { get; set; }
@@ -39,6 +43,11 @@ namespace ERTS.Dashboard.Control
         public double RollTrim { get; set; }
         public double PitchTrim { get; set; }
         public double YawTrim { get; set; }
+
+        public double YawP { get; set; }
+        public double RollPitchP1 { get; set; }
+        public double RollPitchP2 { get; set; }
+        public double LiftP { get; set; }
 
         //int counter=0;
 
@@ -162,7 +171,8 @@ namespace ERTS.Dashboard.Control
             YawRate = GetRcRate(_YawRate, RC_EXPO, RC_RATE, GlobalData.cfg.YawDeadzone);
             RaisePropertyChanged("YawRate");
         }
-
+        #endregion
+        #region Trim and Control Adjustment
         public void AdjustLiftTrim(bool? Direction)
         {
             if (Direction == null)
@@ -230,6 +240,78 @@ namespace ERTS.Dashboard.Control
             }
             RaisePropertyChanged("YawTrim");
             Debug.WriteLine(String.Format("Set YawTrim to {0}", YawTrim));
+        }
+
+        public void AdjustYawP(bool? Direction)
+        {
+            if (Direction == null)
+            {
+                YawP = 0;
+            }
+            else if (Direction == true)
+            {
+                YawP = Math.Min(P_MAX, YawP + P_STEP);
+            }
+            else if (Direction == false)
+            {
+                YawP = Math.Max(P_MIN, YawP - P_STEP);
+            }
+            RaisePropertyChanged("YawP");
+            Debug.WriteLine(String.Format("Set YawP to {0}", YawTrim));
+        }
+
+        public void AdjustRollPitchP1(bool? Direction)
+        {
+            if (Direction == null)
+            {
+                RollPitchP1 = 0;
+            }
+            else if (Direction == true)
+            {
+                RollPitchP1 = Math.Min(P_MAX, RollPitchP1 + P_STEP);
+            }
+            else if (Direction == false)
+            {
+                RollPitchP1 = Math.Max(P_MIN, RollPitchP1 - P_STEP);
+            }
+            RaisePropertyChanged("RollPitchP1");
+            Debug.WriteLine(String.Format("Set RollPitchP1 to {0}", YawTrim));
+        }
+
+        public void AdjustRollPitchP2(bool? Direction)
+        {
+            if (Direction == null)
+            {
+                RollPitchP2 = 0;
+            }
+            else if (Direction == true)
+            {
+                RollPitchP2 = Math.Min(P_MAX, RollPitchP2 + P_STEP);
+            }
+            else if (Direction == false)
+            {
+                RollPitchP2 = Math.Max(P_MIN, RollPitchP2 - P_STEP);
+            }
+            RaisePropertyChanged("RollPitchP2");
+            Debug.WriteLine(String.Format("Set RollPitchP2 to {0}", YawTrim));
+        }
+
+        public void AdjustLiftP(bool? Direction)
+        {
+            if (Direction == null)
+            {
+                LiftP = 0;
+            }
+            else if (Direction == true)
+            {
+                LiftP = Math.Min(P_MAX, LiftP + P_STEP);
+            }
+            else if (Direction == false)
+            {
+                LiftP = Math.Max(P_MIN, LiftP - P_STEP);
+            }
+            RaisePropertyChanged("LiftP");
+            Debug.WriteLine(String.Format("Set LiftP to {0}", YawTrim));
         }
 
         public void SendAllParameters()
