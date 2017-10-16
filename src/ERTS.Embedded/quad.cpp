@@ -202,7 +202,7 @@ void Quadrupel::heartbeat() {
 
     _accum_loop_time = 0;
     auto packet = new Packet(Telemetry);
-    auto data = new TelemetryData(bat_volt, phi, theta, sp, sq, sr, loop_time, _mode);
+    auto data = new TelemetryData(bat_volt, current_state.roll, current_state.pitch, current_state.yaw, 0, 0, loop_time, _mode);
     packet->set_data(data);
 
     send(packet);
@@ -321,7 +321,7 @@ void Quadrupel::tick() {
 
     }
 
-    //TODO Height should be a seperate switch
+    //TODO Height should be a separate switch
     if (_mode == Height) {
         read_baro();
     }
@@ -343,8 +343,8 @@ void Quadrupel::tick() {
 #ifdef FAKE_DRIVERS
                 std::cout << "Battery low, entering panic mode." << std::endl;
 #endif
-                exception(UnknownException, "Battery Low..");
-                set_mode(Panic);
+                //exception(UnknownException, "Battery Low..");
+                //set_mode(Panic);
 
             }
         }
@@ -356,7 +356,12 @@ void Quadrupel::tick() {
     }
 
     if (_mode == Calibration) {
-        calibrate();
+        if (calibration_state.steps > 500) {
+            set_mode(Safe);
+        }
+        else {
+            calibrate();
+        }
     }
     else {
         control();
@@ -501,7 +506,7 @@ void Quadrupel::control() {
 
     if (_mode == Panic) {
         if (_initial_panic) {
-            // Set all motors equal to the current minimum value.
+            // Set all motors equal to the current average value.
             ae[0] = ae[1] = ae[2] = ae[3] = (ae[0] + ae[1] + ae[2] + ae[3]) / 4;
             _initial_panic = false;
         }
@@ -566,17 +571,21 @@ void Quadrupel::control() {
 }
 
 void Quadrupel::calibrate(bool finalize) {
-    calibration_offsets.roll += phi;//sp;
-    calibration_offsets.pitch += theta;//sq;
-    calibration_offsets.yaw += sr;
-    calibration_steps++;
+    calibration_state.roll += phi;
+    calibration_state.pitch += theta;
+//    calibration_state.yaw += sr;
+    calibration_state.steps++;
 
     if (finalize) {
         _is_calibrated = true;
-        calibration_offsets.roll /= calibration_steps;
-        calibration_offsets.pitch /= calibration_steps;
-        calibration_offsets.yaw /= calibration_steps;
-        calibration_steps = 0;
+        calibration_offsets.roll = (int16_t)(calibration_state.roll / calibration_state.steps);
+        calibration_offsets.pitch = (int16_t)(calibration_state.pitch / calibration_state.steps);
+
+        // Reset.
+        calibration_state.steps = 0;
+        calibration_state.roll = 0;
+        calibration_state.pitch = 0;
+        calibration_state.yaw = 0;
     }
 }
 
@@ -633,7 +642,7 @@ void Quadrupel::set_current_state() {
     // TODO: Add lift.
     current_state.roll = phi - calibration_offsets.roll;
     current_state.pitch = theta - calibration_offsets.pitch;
-    current_state.yaw = sr - calibration_offsets.yaw;
+    current_state.yaw = sr; // - calibration_offsets.yaw;
 }
 
 

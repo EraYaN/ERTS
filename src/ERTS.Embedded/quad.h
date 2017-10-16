@@ -33,6 +33,13 @@ typedef struct {
     int16_t roll = 0;
 } quad_state_t;
 
+typedef struct {
+    uint32_t lift = 0;
+    int32_t yaw = 0;
+    int32_t pitch = 0;
+    int32_t roll = 0;
+    int32_t steps = 0;
+} calibration_state_t;
 
 typedef struct {
     uint16_t rate_yaw = 256;
@@ -71,7 +78,7 @@ class Quadrupel {
     bool _is_calibrated = false;
     uint32_t _accum_loop_time;
     quad_state_t target_state, current_state, calibration_offsets;
-    uint32_t calibration_steps = 0;
+    calibration_state_t calibration_state;
 
     // Comm
     uint32_t counterHB = 1;
