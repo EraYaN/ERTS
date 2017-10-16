@@ -159,11 +159,16 @@ namespace ERTS.Dashboard
             if (InitCommunicationInterface())
                 Debug.WriteLine("Started CommunicationInterface.", "DATA");
             else
-                Debug.WriteLine("Starting CommunicationInterface failed.", "DATA");            
+                Debug.WriteLine("Starting CommunicationInterface failed.", "DATA");
             if (InitController())
+            {
+                input.EngageInput();
                 Debug.WriteLine("Started Controller.", "DATA");
+            }
             else
                 Debug.WriteLine("Starting Controller failed.", "DATA");
+
+            
             return;
         }
 
@@ -187,6 +192,7 @@ namespace ERTS.Dashboard
 
         public static void DisposeStageTwo()
         {
+            input.DisengageInput();
             if (ctr != null)
             {
                 ctr.Dispose();

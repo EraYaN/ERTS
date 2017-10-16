@@ -2,7 +2,7 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 		xmlns:local="clr-namespace:ERTS.Dashboard.Configuration"
-        Title="ERTS.Dashboard Settings" Height="350" Width="388" Closing="Window_Closing" SizeToContent="Height" ResizeMode="CanMinimize" Deactivated="Window_Deactivated" Activated="Window_Activated">
+        Title="ERTS.Dashboard Settings" Height="350" Width="388" Closing="Window_Closing" SizeToContent="Height" ResizeMode="CanMinimize">
     <Window.DataContext>
         <local:ConfigurationViewModel/>
     </Window.DataContext>
@@ -10,25 +10,25 @@
         <local:ControlActuatorToStringConverter x:Key="ControlConverter" />
     </Window.Resources>
     <Grid>
-        <TabControl x:Name="SettingsTabControl" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0,1,0,0" SelectionChanged="SettingsTabControl_SelectionChanged" Margin="0,0,0,34">
+        <TabControl x:Name="SettingsTabControl" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0,1,0,0" Margin="0,0,0,34">
             <TabItem Header="Communication">
                 <Grid>
                     <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                         <Label Target="{Binding ElementName=comPortsComboBox}" Content="COM Port:" Height="16" Padding="0" Margin="2,0"/>
                         <ComboBox x:Name="comPortsComboBox" Height="20" Padding="4,0,0,0" VerticalContentAlignment="Center" Margin="2" ItemsSource="{Binding ComPorts}" SelectedItem="{Binding ComPort}"/>
-                        
+
                         <Label Target="{Binding ElementName=baudRateComboBox}" Content="Baudrate:" Height="16" Padding="0" Margin="2,0"/>
                         <ComboBox x:Name="baudRateComboBox" Height="20" Margin="2" Padding="4,0,0,0" VerticalContentAlignment="Center" ItemsSource="{Binding BaudRates}" SelectedItem="{Binding BaudRate}"/>
-                        
+
                         <Label Target="{Binding ElementName=packetCheckResendIntervalTextBox}" Content="Packet Check Resend Interval: (ms)" Height="16" Padding="0" Margin="2,0"/>
                         <TextBox x:Name="packetCheckResendIntervalTextBox" Height="20" Padding="4,0,0,0" VerticalContentAlignment="Center" Margin="2" Text="{Binding PacketCheckResendInterval}"/>
-                        
+
                         <Label Target="{Binding ElementName=packetResendIntervalTextBox}" Content="Packet Resend Interval: (ms)" Height="16" Padding="0" Margin="2,0"/>
                         <TextBox x:Name="packetResendIntervalTextBox" Height="20" Padding="4,0,0,0" VerticalContentAlignment="Center" Margin="2" Text="{Binding PacketResendInterval}"/>
-                        
+
                         <Label Target="{Binding ElementName=packetRetransmissionCountTextBox}" Content="Packet Retransmission Count:" Height="16" Padding="0" Margin="2,0"/>
                         <TextBox x:Name="packetRetransmissionCountTextBox" Height="20" Padding="4,0,0,0" VerticalContentAlignment="Center" Margin="2" Text="{Binding PacketRetransmissionCount}"/>
-                        
+
                         <CheckBox Content="Kill Quad after retransmission fails." IsChecked="{Binding KillAfterRetransmissionFail}" Margin="2"/>
                     </StackPanel>
                 </Grid>
@@ -41,18 +41,18 @@
                     </Grid.ColumnDefinitions>
                     <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,0,0">
                         <Label Target="{Binding ElementName=rcIntervalTextBox}" Content="RC Interval: (ms)" Height="16" Padding="0" Margin="2,0"/>
-                        <TextBox x:Name="rcIntervalTextBox" Height="20" Padding="4,0,0,0" VerticalContentAlignment="Center" Margin="2" Text="{Binding RCInterval}"/>                      
+                        <TextBox x:Name="rcIntervalTextBox" Height="20" Padding="4,0,0,0" VerticalContentAlignment="Center" Margin="2" Text="{Binding RCInterval}"/>
                     </StackPanel>
                     <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Column="1" Margin="0,0,0,0">
                         <Label Target="{Binding ElementName=liftDeadzoneTextbox}" Content="Lift Deadzone: (%)" Height="16" Padding="0" Margin="2,0"/>
                         <TextBox x:Name="liftDeadzoneTextbox" Height="20" Padding="4,0,0,0" VerticalContentAlignment="Center" Margin="2" Text="{Binding LiftDeadzone}"/>
-                        
+
                         <Label Target="{Binding ElementName=rollDeadzoneTextbox}" Content="Roll Deadzone: (%)" Height="16" Padding="0" Margin="2,0"/>
                         <TextBox x:Name="rollDeadzoneTextbox" Height="20" Padding="4,0,0,0" VerticalContentAlignment="Center" Margin="2" Text="{Binding RollDeadzone}"/>
-                        
+
                         <Label Target="{Binding ElementName=pitchDeadzoneTextbox}" Content="Pitch Deadzone: (%)" Height="16" Padding="0" Margin="2,0"/>
                         <TextBox x:Name="pitchDeadzoneTextbox" Height="20" Padding="4,0,0,0" VerticalContentAlignment="Center" Margin="2" Text="{Binding PitchDeadzone}"/>
-                        
+
                         <Label Target="{Binding ElementName=yawDeadzoneTextbox}" Content="Yaw Deadzone: (%)" Height="16" Padding="0" Margin="2,0"/>
                         <TextBox x:Name="yawDeadzoneTextbox" Height="20" Padding="4,0,0,0" VerticalContentAlignment="Center" Margin="2" Text="{Binding YawDeadzone}"/>
                     </StackPanel>
@@ -66,32 +66,32 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,0,0">                        
+                    <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,0,0">
                         <Label Target="{Binding ElementName=batteryThresholdTextBox}" Content="Battery Threshold: (cV)" Height="16" Padding="0" Margin="2,0"/>
                         <TextBox x:Name="batteryThresholdTextBox" Height="20" Padding="4,0,0,0" VerticalContentAlignment="Center" Margin="2" Text="{Binding BatteryThreshold}"/>
-                        
+
                         <Label Target="{Binding ElementName=panicDecrementTextBox}" Content="Panic Decrement:" Height="16" Padding="0" Margin="2,0"/>
                         <TextBox x:Name="panicDecrementTextBox" Height="20" Padding="4,0,0,0" VerticalContentAlignment="Center" Margin="2" Text="{Binding PanicDecrement}"/>
-                        
+
                         <Label Target="{Binding ElementName=telemetryDividerTextBox}" Content="Telemetry Divider: (loop times)" Height="16" Padding="0" Margin="2,0"/>
                         <TextBox x:Name="telemetryDividerTextBox" Height="20" Padding="4,0,0,0" VerticalContentAlignment="Center" Margin="2" Text="{Binding TelemetryDivider}"/>
-                        
+
                         <Label Target="{Binding ElementName=logDividerTextBox}" Content="Log Divider: (loop times)" Height="16" Padding="0" Margin="2,0"/>
                         <TextBox x:Name="logDividerTextBox" Height="20" Padding="4,0,0,0" VerticalContentAlignment="Center" Margin="2" Text="{Binding LogDivider}"/>
                     </StackPanel>
                     <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Column="1" Margin="0,0,0,0">
                         <Label Target="{Binding ElementName=startPYawTextbox}" Content="Start PYaw:" Height="16" Padding="0" Margin="2,0"/>
                         <TextBox x:Name="startPYawTextbox" Height="20" Padding="4,0,0,0" VerticalContentAlignment="Center" Margin="2" Text="{Binding StartPYaw}"/>
-                        
+
                         <Label Target="{Binding ElementName=startPHeightTextBox}" Content="Start PHeight:" Height="16" Padding="0" Margin="2,0"/>
                         <TextBox x:Name="startPHeightTextBox" Height="20" Padding="4,0,0,0" VerticalContentAlignment="Center" Margin="2" Text="{Binding StartPHeight}"/>
-                        
+
                         <Label Target="{Binding ElementName=startP1RollPitchTextbox}" Content="Start P1RollPitch:" Height="16" Padding="0" Margin="2,0"/>
                         <TextBox x:Name="startP1RollPitchTextbox" Height="20" Padding="4,0,0,0" VerticalContentAlignment="Center" Margin="2" Text="{Binding StartP1RollPitch}"/>
-                        
+
                         <Label Target="{Binding ElementName=startP2RollPitchTextbox}" Content="Start P2RollPitch:" Height="16" Padding="0" Margin="2,0"/>
                         <TextBox x:Name="startP2RollPitchTextbox" Height="20" Padding="4,0,0,0" VerticalContentAlignment="Center" Margin="2" Text="{Binding StartP2RollPitch}"/>
-                        
+
                         <Label Target="{Binding ElementName=startPLiftTextbox}" Content="Start PLift:" Height="16" Padding="0" Margin="2,0"/>
                         <TextBox x:Name="startPLiftTextbox" Height="20" Padding="4,0,0,0" VerticalContentAlignment="Center" Margin="2" Text="{Binding StartPLift}"/>
                     </StackPanel>
@@ -99,7 +99,11 @@
             </TabItem>
             <TabItem Header="Input">
                 <Grid>
-                    <TextBlock TextWrapping="Wrap" Margin="10">All devices have been aquired, look in the Debug log for more information on RawOffsets and GUIDs.</TextBlock>
+                    <TextBlock x:Name="StoppedControlDiscoveryTextBox" TextWrapping="Wrap" Margin="10,10,10,0" Height="34" VerticalAlignment="Top">Normal input operation.</TextBlock>
+                    <TextBlock x:Name="StartedControlDiscoveryTextBox" Visibility="Hidden" TextWrapping="Wrap" Margin="10,10,10,216" Height="34" VerticalAlignment="Top">All devices have been aquired, look in the Debug log for more information on RawOffsets and GUIDs.</TextBlock>
+                    <Button x:Name="StartControlDiscoveryButton" Content="Start Control Discovery" HorizontalAlignment="Left" Margin="25,49,0,0" VerticalAlignment="Top" Width="150" Click="StartControlDiscoveryButton_Click"/>
+                    <Button x:Name="StopControlDiscoveryButton" IsEnabled="False" Content="Stop Control Discovery" Margin="0,49,25,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="150" Click="StopControlDiscoveryButton_Click"/>
+                    <TextBlock x:Name="LastInputDiscoveryTextBox" TextWrapping="Wrap" Margin="10,74,10,5"></TextBlock>
                 </Grid>
             </TabItem>
         </TabControl>

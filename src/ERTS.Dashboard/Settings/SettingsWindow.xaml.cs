@@ -26,6 +26,8 @@ namespace ERTS.Dashboard.Configuration
     public partial class SettingsWindow : Window
     {
         const int CONTROL_TAB_INDEX = 3;
+
+        bool IsInDiscovery = false;
         //TODO make handle class member of InputManager instead
         IntPtr MainWindowHandle;
 
@@ -44,84 +46,63 @@ namespace ERTS.Dashboard.Configuration
         }
         private void SettingsDialogCloseButton_Click(object sender, RoutedEventArgs e)
         {
-            this.Hide();
+            if (IsInDiscovery)
+            {
+                e.Handled = true;
+            }
+            else
+            {
+                this.Hide();
+            }
         }
 
         private void Window_Closing(object sender, CancelEventArgs e)
         {
             e.Cancel = true;
-            this.Hide();
-        }
-
-        private void SettingsTabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            switch ((sender as TabControl).SelectedIndex)
+            if (!IsInDiscovery)
             {
-                case CONTROL_TAB_INDEX:
-                    //Controls
-                    StartControlsTab();
-                    break;
-                default:
-                    StopControlsTab();
-                    break;
+                this.Hide();
             }
         }
 
-        private void Window_Deactivated(object sender, EventArgs e)
-        {
-            if (SettingsTabControl.SelectedIndex == CONTROL_TAB_INDEX)
-            {
-                if (GlobalData.input != null)
-                {
-                    StopControlsTab();
-                }
-            }
-        }
-
-        private void Window_Activated(object sender, EventArgs e)
-        {
-            if (SettingsTabControl.SelectedIndex == CONTROL_TAB_INDEX)
-            {
-                StartControlsTab();
-            }
-        }
-
-        void StartControlsTab()
+        void StartControlDicovery()
         {
             if (GlobalData.input != null)
             {
                 if (GlobalData.input.IsInputEngaged)
                 {
                     GlobalData.input.DisengageInput();
-                    GlobalData.input.InputEvent += Input_InputEvent;
-                    Debug.WriteLine("Aquire all devices.");
-                    GlobalData.input.AquireAllDevices(MainWindowHandle);
                 }
+                GlobalData.input.InputEvent += Input_InputEvent;
+                Debug.WriteLine("Aquire all devices.");
+                GlobalData.input.AquireAllDevices(MainWindowHandle);
 
             }
         }
 
         private void Input_InputEvent(object sender, Input.InputEventArgs e)
         {
-            Debug.WriteLine(String.Format("Got input for binding. Device: {0}, Offset: {1}, Value: {2}", e.DeviceGuid, e.StateUpdate.RawOffset, e.StateUpdate.Value));
+            string text = String.Format("Device: {0}, Offset: {1}, Value: {2}", e.DeviceGuid, e.StateUpdate.RawOffset, e.StateUpdate.Value);
+            Debug.WriteLine(text);
+            LastInputDiscoveryTextBox.Dispatcher.Invoke(() => { LastInputDiscoveryTextBox.Text = text; });
         }
 
-        void StopControlsTab()
+        void StopControlDiscovery()
         {
             if (GlobalData.input != null)
             {
                 GlobalData.input.InputEvent -= Input_InputEvent;
-                if (!GlobalData.input.IsInputEngaged)
+                if (!GlobalData.input.IsInputEngaged && GlobalData.ctr != null)
                 {
-                    GlobalData.input.EngageInput();
-                    if (GlobalData.patchbox != null)
-                    {
-                        Debug.WriteLine("Unaquire all devices and aquire required devices.");
-                        GlobalData.input.UnaquireAllDevices();
-                        GlobalData.input.AquireDevices(GlobalData.patchbox.DeviceGuids, MainWindowHandle);
-                    }
-                }
 
+                    GlobalData.input.EngageInput();
+                }
+                if (GlobalData.patchbox != null)
+                {
+                    Debug.WriteLine("Unaquire all devices and aquire required devices.");
+                    GlobalData.input.UnaquireAllDevices();
+                    GlobalData.input.AquireDevices(GlobalData.patchbox.DeviceGuids, MainWindowHandle);
+                }                
             }
         }
 
@@ -132,6 +113,30 @@ namespace ERTS.Dashboard.Configuration
                 GlobalData.cfg.Save();
             }
             this.Hide();
+        }
+
+        private void StartControlDiscoveryButton_Click(object sender, RoutedEventArgs e)
+        {
+            IsInDiscovery = true;
+            StartControlDiscoveryButton.IsEnabled = false;
+            StopControlDiscoveryButton.IsEnabled = true;
+            SettingsSaveButton.IsEnabled = false;
+            StartControlDicovery();
+            StartedControlDiscoveryTextBox.Visibility = Visibility.Visible;
+            //LastInputDiscoveryTextBox.Visibility = Visibility.Visible;
+            StoppedControlDiscoveryTextBox.Visibility = Visibility.Hidden;
+        }
+
+        private void StopControlDiscoveryButton_Click(object sender, RoutedEventArgs e)
+        {
+            IsInDiscovery = false;
+            StartControlDiscoveryButton.IsEnabled = true;
+            StopControlDiscoveryButton.IsEnabled = false;
+            SettingsSaveButton.IsEnabled = true;
+            StopControlDiscovery();
+            StartedControlDiscoveryTextBox.Visibility = Visibility.Hidden;
+            //LastInputDiscoveryTextBox.Visibility = Visibility.Hidden;
+            StoppedControlDiscoveryTextBox.Visibility = Visibility.Visible;
         }
     }
 }

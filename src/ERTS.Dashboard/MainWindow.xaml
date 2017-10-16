@@ -3,13 +3,10 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:utility="clr-namespace:ERTS.Dashboard.Utility"
         xmlns:viewmodel="clr-namespace:ERTS.Dashboard.ViewModel"
         mc:Ignorable="d"
-        Title="{Binding WindowTitle}" Height="800" Width="1000" PreviewKeyDown="Window_PreviewKeyDown" ResizeMode="NoResize" Initialized="Window_Initialized" Closing="Window_Closing">
-    <Window.Resources>
-        <utility:DeviceInstanceToStringConverter x:Key="deviceInstanceToStringConverter" />
-    </Window.Resources>
+        Title="{Binding WindowTitle}" MinWidth="850" MinHeight="650" Height="900" Width="900" PreviewKeyDown="Window_PreviewKeyDown" Initialized="Window_Initialized" Closing="Window_Closing">
+
     <Window.DataContext>
         <viewmodel:MainViewModel/>
     </Window.DataContext>
@@ -25,15 +22,7 @@
                 <MenuItem Header="About..." Name="AboutMenuItem" Click="AboutMenuItem_Click"/>
             </MenuItem>
         </Menu>
-        <StackPanel Margin="0,28,0,272">
-            <ComboBox x:Name="ControllerComboBox" Margin="10,5" VerticalAlignment="Top" ItemsSource="{Binding Devices}" SelectedItem="{Binding SelectedDevice}">
-                <ComboBox.ItemTemplate>
-                    <DataTemplate>
-                        <TextBlock Text="{Binding Converter={StaticResource deviceInstanceToStringConverter}}"/>
-                    </DataTemplate>
-                </ComboBox.ItemTemplate>
-            </ComboBox>
-            <Button x:Name="UseControllerButton" Content="Use" Margin="10,5" VerticalAlignment="Top" Height="22" Command="{Binding BindInput}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}" HorizontalAlignment="Left" Width="100"/>
+        <WrapPanel Margin="0,28,0,272">
             <Button x:Name="StartAllButton" Content="Start Stage Two" Margin="10,5" VerticalAlignment="Top" Height="22" HorizontalAlignment="Left" Width="100" Command="{Binding StartStageTwo}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}"/>
             <Button x:Name="StopStageTwoButton" Content="Stop Stage Two" Margin="10,5" VerticalAlignment="Top" Height="22" HorizontalAlignment="Left" Width="100" Command="{Binding StopStageTwo}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}"/>
             <Button x:Name="SendAllParametersButton" Content="Send All Parameters" Margin="10,5" VerticalAlignment="Top" Height="22" HorizontalAlignment="Left" Width="100" Command="{Binding SendAllParameters}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}"/>
@@ -79,9 +68,6 @@
                         <ColumnDefinition Width="1*"/>
                         <ColumnDefinition Width="1*"/>
                     </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="1*"/>
-                    </Grid.RowDefinitions>
 
                     <!-- TODO: Bind all the stuff below when joystick data becomes available. -->
                     <Canvas HorizontalAlignment="Left" Grid.Column="0" Height="100" Margin="10,10,10,10" VerticalAlignment="Top" Width="115">
@@ -101,22 +87,48 @@
                     </Canvas>
 
                     <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                        <Label Content="Roll:"/>
-                        <Label Content="Pitch:"/>
-                        <Label Content="Yaw:"/>
-                        <Label Content="Lift:"/>
+                        <Label Content="Roll:" Foreground="{Binding RollColor, Mode=OneWay}"/>
+                        <Label Content="Pitch:" Foreground="{Binding PitchColor, Mode=OneWay}"/>
+                        <Label Content="Yaw:" Foreground="{Binding YawColor, Mode=OneWay}"/>
+                        <Label Content="Lift:" Foreground="{Binding LiftColor, Mode=OneWay}"/>
                     </StackPanel>
 
                     <StackPanel Grid.Column="2" VerticalAlignment="Center">
-                        <Label Content="{Binding RollString}"/>
-                        <Label Content="{Binding PitchString}"/>
-                        <Label Content="{Binding YawString}"/>
-                        <Label Content="{Binding LiftString}"/>
+                        <Label Content="{Binding RollString}" Foreground="{Binding RollColor, Mode=OneWay}"/>
+                        <Label Content="{Binding PitchString}" Foreground="{Binding PitchColor, Mode=OneWay}"/>
+                        <Label Content="{Binding YawString}" Foreground="{Binding YawColor, Mode=OneWay}"/>
+                        <Label Content="{Binding LiftString}" Foreground="{Binding LiftColor, Mode=OneWay}"/>
                     </StackPanel>
                 </Grid>
 
             </GroupBox>
-        </StackPanel>
+
+            <GroupBox Header="Control" HorizontalAlignment="Left" VerticalAlignment="Top" Width="Auto" Margin="10,0,0,0">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                        <Label Content="PYaw:"/>
+                        <Label Content="PHeight:"/>
+                        <Label Content="P1RollPitch:"/>
+                        <Label Content="P2RollPitch:"/>
+                        <Label Content="PLift:"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                        <Label Content="{Binding PYawString}"/>
+                        <Label Content="{Binding PHeightString}"/>
+                        <Label Content="{Binding P1RollPitchString}"/>
+                        <Label Content="{Binding P2RollPitchString}"/>
+                        <Label Content="{Binding PLiftString}"/>
+                    </StackPanel>
+                </Grid>
+
+            </GroupBox>
+        </WrapPanel>
         <TextBox Name="DebugTraceTextBox" TextWrapping="Wrap" Margin="10,0,10,31" Height="236" VerticalAlignment="Bottom" Text="{Binding DebugInfo, Mode=OneWay}" />
         <StatusBar Grid.ColumnSpan="3" Height="26" VerticalAlignment="Bottom" Grid.Row="1">
             <StatusBarItem x:Name="statusBarSerialStatus" Width="120" Content="{Binding SerialPortStatus, Mode=OneWay}" Foreground="{Binding SerialPortStatusColor, Mode=OneWay}" HorizontalContentAlignment="Center" HorizontalAlignment="Left"/>

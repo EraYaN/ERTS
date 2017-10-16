@@ -18,7 +18,7 @@ namespace ERTS.Dashboard.Input
         List<Device> UsedDevices = new List<Device>();
         List<WaitHandle> WaitHandles = new List<WaitHandle>();
 
-        bool isInputEngaged = true;
+        bool isInputEngaged = false;
 
         public bool IsInputEngaged {
             get { return isInputEngaged; }

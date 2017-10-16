@@ -18,27 +18,6 @@ namespace ERTS.Dashboard.ViewModel
 {
     public class MainViewModel : ObservableObject
     {
-        private List<DeviceInstance> _devices;
-
-        public List<DeviceInstance> Devices {
-            get { return _devices; }
-            set {
-                _devices = value;
-                RaisePropertyChanged("Devices");
-            }
-        }
-
-        private DeviceInstance _selectedDevice;
-
-        public DeviceInstance SelectedDevice {
-            get { return _selectedDevice; }
-            set {
-                _selectedDevice = value;
-                RaisePropertyChanged("SelectedDevice");
-            }
-        }
-
-
         public FlightMode Mode {
             get {
                 if (GlobalData.ctr != null)
@@ -139,6 +118,111 @@ namespace ERTS.Dashboard.ViewModel
             get {
                 if (GlobalData.ctr != null)
                     return String.Format("{0:N2} ({1:+0.00;-0.00;+0}) 1/s", GlobalData.ctr.YawRate, GlobalData.ctr.YawTrim);
+                else
+                    return "-";
+            }
+        }
+
+        public Brush LiftColor {
+            get {
+                if (GlobalData.ctr == null)
+                    return Brushes.Red;
+                if (GlobalData.ctr.HasSeenZeroLift)
+                {
+                    return Brushes.Black;
+                }
+                else
+                {
+                    return Brushes.OrangeRed;
+                }
+            }
+        }
+
+        public Brush RollColor {
+            get {
+                if (GlobalData.ctr == null)
+                    return Brushes.Red;
+                if (GlobalData.ctr.HasSeenZeroRoll)
+                {
+                    return Brushes.Black;
+                }
+                else
+                {
+                    return Brushes.OrangeRed;
+                }
+            }
+        }
+
+        public Brush PitchColor {
+            get {
+                if (GlobalData.ctr == null)
+                    return Brushes.Red;
+                if (GlobalData.ctr.HasSeenZeroPitch)
+                {
+                    return Brushes.Black;
+                }
+                else
+                {
+                    return Brushes.OrangeRed;
+                }
+            }
+        }
+
+        public Brush YawColor {
+            get {
+                if (GlobalData.ctr == null)
+                    return Brushes.Red;
+                if (GlobalData.ctr.HasSeenZeroYaw)
+                {
+                    return Brushes.Black;
+                }
+                else
+                {
+                    return Brushes.OrangeRed;
+                }
+            }
+        }
+
+        public string PYawString {
+            get {
+                if (GlobalData.ctr != null)
+                    return String.Format("{0:N0}", GlobalData.ctr.PYaw);
+                else
+                    return "-";
+            }
+        }
+
+        public string PHeightString {
+            get {
+                if (GlobalData.ctr != null)
+                    return String.Format("{0:N0}", GlobalData.ctr.PHeight);
+                else
+                    return "-";
+            }
+        }
+
+        public string P1RollPitchString {
+            get {
+                if (GlobalData.ctr != null)
+                    return String.Format("{0:N0}", GlobalData.ctr.P1RollPitch);
+                else
+                    return "-";
+            }
+        }
+
+        public string P2RollPitchString {
+            get {
+                if (GlobalData.ctr != null)
+                    return String.Format("{0:N0}", GlobalData.ctr.P2RollPitch);
+                else
+                    return "-";
+            }
+        }
+
+        public string PLiftString {
+            get {
+                if (GlobalData.ctr != null)
+                    return String.Format("{0:N0}", GlobalData.ctr.PLift);
                 else
                     return "-";
             }
@@ -412,12 +496,7 @@ namespace ERTS.Dashboard.ViewModel
         }
 
         public void InitStageOne()
-        {
-            if (GlobalData.input != null)
-                Devices = GlobalData.input.EnumerateControllers();
-            else
-                Devices = new List<DeviceInstance>();
-            SelectedDevice = null;
+        {            
 
             if (GlobalData.input != null)
                 GlobalData.input.PropertyChanged += Input_PropertyChanged;
@@ -496,24 +575,28 @@ namespace ERTS.Dashboard.ViewModel
                 RaisePropertyChanged("LiftTrimOffset");
                 RaisePropertyChanged("LiftString");
                 RaisePropertyChanged("Lift");
+                RaisePropertyChanged("LiftColor");
                 return;
             }
             else if (e.PropertyName == "RollRate")
             {
                 RaisePropertyChanged("RollString");
                 RaisePropertyChanged("Roll");
+                RaisePropertyChanged("RollColor");
                 return;
             }
             else if (e.PropertyName == "PitchRate")
             {
                 RaisePropertyChanged("PitchString");
                 RaisePropertyChanged("Pitch");
+                RaisePropertyChanged("PitchColor");
                 return;
             }
             else if (e.PropertyName == "YawRate")
             {
                 RaisePropertyChanged("YawString");
                 RaisePropertyChanged("Yaw");
+                RaisePropertyChanged("YawColor");
                 return;
             }
             else if (e.PropertyName == "Mode")
@@ -572,25 +655,33 @@ namespace ERTS.Dashboard.ViewModel
                 RaisePropertyChanged("YawTrim");
                 RaisePropertyChanged("YawString");
             }
+            else if (e.PropertyName == "PYaw")
+            {
+                RaisePropertyChanged("PYawString");
+            }
+            else if (e.PropertyName == "PHeight")
+            {
+                RaisePropertyChanged("PHeightString");
+            }
+            else if (e.PropertyName == "P1RollPitch")
+            {
+                RaisePropertyChanged("P1RollPitchString");
+            }
+            else if (e.PropertyName == "P2RollPitch")
+            {
+                RaisePropertyChanged("P2RollPitchString");
+            }
+            else if (e.PropertyName == "PLift")
+            {
+                RaisePropertyChanged("PLiftString");
+            }
             else
             {
                 Debug.WriteLine("Got unsupported binding name from Controller " + e.PropertyName + ".");
             }
 
         }
-
-        void BindInputExecute(object obj)
-        {
-            if (SelectedDevice != null)
-            {
-                GlobalData.input.AquireDevice(SelectedDevice, new WindowInteropHelper(obj as Window).Handle);
-            }
-        }
-
-        bool CanBindInputExecute(object obj)
-        {
-            return SelectedDevice != null && !GlobalData.input.IsDeviceInUse(SelectedDevice);
-        }
+        
         void StartStageTwoExecute(object obj)
         {
             GlobalData.InitStageTwo();
@@ -629,9 +720,7 @@ namespace ERTS.Dashboard.ViewModel
         {
             return CanStopStageTwoExecute(obj);
         }
-
-        public ICommand BindInput { get { return new RelayCommand<MainWindow>(BindInputExecute, CanBindInputExecute); } }
-
+        
         public ICommand StartStageTwo { get { return new RelayCommand<MainWindow>(StartStageTwoExecute, CanStartStageTwoExecute); } }
 
         public ICommand StopStageTwo { get { return new RelayCommand<MainWindow>(StopStageTwoExecute, CanStopStageTwoExecute); } }
