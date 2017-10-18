@@ -209,7 +209,7 @@ namespace ERTS.Dashboard.Input
             WirelessSwitchBinding.BindingActuatedEvent += WirelessSwitchBinding_BindingActuatedEvent;
             InputBindings.Add("WirelessSwitch", WirelessSwitchBinding);
 
-            InputBinding ModeFlashDumpBinding = new InputBinding(new ControlActuator[] { keyboard7 }, "ModeFlashDump");
+            InputBinding ModeFlashDumpBinding = new InputBinding(new ControlActuator[] { keyboard9 }, "ModeFlashDump");
             ModeFlashDumpBinding.BindingActuatedEvent += ModeFlashDumpBinding_BindingActuatedEvent;
             InputBindings.Add("ModeFlashDump", ModeFlashDumpBinding);
 

@@ -128,6 +128,19 @@
                 </Grid>
 
             </GroupBox>
+            <GroupBox Header="Flash Dump" HorizontalAlignment="Left" VerticalAlignment="Top" Width="Auto" Margin="10,0,0,0">
+                <Grid>
+                    
+                    <StackPanel VerticalAlignment="Center">
+                        <Label Content="{Binding FlashDumpStatus}"/>
+                        <ProgressBar Maximum="{Binding FlashDumpMax, Mode=OneWay}" Value="{Binding FlashDumpValue, Mode=OneWay}" Width="150" Height="20" Margin="5,5"/>
+
+                    </StackPanel>
+
+                    
+                </Grid>
+
+            </GroupBox>
         </WrapPanel>
         <TextBox Name="DebugTraceTextBox" TextWrapping="Wrap" Margin="10,0,10,31" Height="236" VerticalAlignment="Bottom" Text="{Binding DebugInfo, Mode=OneWay}" />
         <StatusBar Grid.ColumnSpan="3" Height="26" VerticalAlignment="Bottom" Grid.Row="1">
