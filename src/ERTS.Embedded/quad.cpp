@@ -304,6 +304,8 @@ void Quadrupel::tick() {
 
     counter_hb++;
 
+    read_baro();
+
     if (_mode != Panic && _mode != Safe && _mode != Calibration) {
         if ((get_time_us() - last_received) > (p_misc.comm_timeout >> 1)) {
             nrf_gpio_pin_clear(RED);
@@ -327,16 +329,10 @@ void Quadrupel::tick() {
         dumpflash(); // blocking function, turns off heartbeats and sends a lot of messages
     }
 
-    if (_mode == Height) {
-        read_baro();
 
-        if (target_state.lift != current_state.lift) {
+    if (_mode == Height && target_state.lift != current_state.lift) {
             // Revert to full control upon throttle movement.
             set_mode(FullControl);
-        }
-    }
-    else {
-        pressure = PRESSURE_SEA_LEVEL;
     }
 
     if (counter_led == LED_INTERVAL) {
@@ -349,6 +345,7 @@ void Quadrupel::tick() {
             }
         }
     }
+
     if (counter_hb == p_misc.telemetry_divider) {
         adc_request_sample(); // Really only needed once per heartbeat
         if (_mode != Panic && _mode != Safe) {
@@ -480,9 +477,6 @@ int Quadrupel::set_mode(flightMode_t new_mode) {
                     // Set setpoint and pin lift.
                     target_state.pressure = current_state.pressure;
                     current_state.lift = target_state.lift;
-                    char c[14];
-                    snprintf(c, 14, "%d", target_state.pressure);
-                    exception(UnknownException, c);
                 }
                 case Safe:
                 case Panic: {
