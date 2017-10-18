@@ -22,7 +22,7 @@ namespace ERTS.Dashboard.Control
         const double P_MAX = 1000.0;
         const double P_MIN = 1.0;
 
-        const int FLASH_MAX_ADDRESS = 0x01FFFF;
+        public const int FLASH_MAX_ADDRESS = 0x01FFFF;
 
         MultimediaTimer RCTimer;
 
@@ -60,6 +60,12 @@ namespace ERTS.Dashboard.Control
         public double FlashPosition {
             get {
                 return dumpPosition;
+            }
+        }
+
+        public bool FlashFileIsOpen {
+            get {
+                return flashFile != null;
             }
         }
 
@@ -182,17 +188,25 @@ namespace ERTS.Dashboard.Control
                     Debug.WriteLine("Received FlashDump packet had a sequence number that was too high.");
                     return;
                 }
-                flashFile.Seek(packetPosition, SeekOrigin.Begin);
+                if (flashFile.BaseStream.Position != packetPosition)
+                {
+                    Debug.WriteLine(String.Format("Seeking in flash dump file from {0} to {1}, might miss a packet.", flashFile.BaseStream.Position, packetPosition));
+                    flashFile.Seek(packetPosition, SeekOrigin.Begin);
+                }
                 if (data.SequenceNumber > Math.Floor((double)FLASH_MAX_ADDRESS / FlashData.MAX_DATA_LENGTH))
                 {
                     //last packet
                     flashFile.Write(data.FlashBytes,0, FLASH_MAX_ADDRESS % FlashData.MAX_DATA_LENGTH);
+
+                    EndFlashDump();
                 }
                 else
                 {
                     flashFile.Write(data.FlashBytes, 0, FlashData.MAX_DATA_LENGTH);
                 }
-
+                dumpPosition = packetPosition;
+                RaisePropertyChanged("FlashPosition");
+                RaisePropertyChanged("FlashFileIsOpen");
             }
         }
 
@@ -226,7 +240,11 @@ namespace ERTS.Dashboard.Control
             FileStream fs = File.Open(String.Format("flash-{0}.bin", DateTime.Now.Ticks), FileMode.Create);
             fs.SetLength(FLASH_MAX_ADDRESS);
             flashFile = new BinaryWriter(fs);
+
             dumpPosition = 0;
+            RaisePropertyChanged("FlashPosition");
+
+            RaisePropertyChanged("FlashFileIsOpen");
         }
 
         public void EndFlashDump()
@@ -238,6 +256,11 @@ namespace ERTS.Dashboard.Control
                 flashFile.Close();
                 flashFile = null;
             }
+
+            dumpPosition = FLASH_MAX_ADDRESS;
+            RaisePropertyChanged("FlashPosition");
+
+            RaisePropertyChanged("FlashFileIsOpen");
         }
 
         public void ModeSwitch(FlightMode mode)

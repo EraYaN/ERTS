@@ -1,4 +1,5 @@
 ﻿using ERTS.Dashboard.Communication.Enumerations;
+using ERTS.Dashboard.Control;
 using ERTS.Dashboard.Utility;
 using MicroMvvm;
 using SharpDX.DirectInput;
@@ -44,10 +45,8 @@ namespace ERTS.Dashboard.ViewModel
         public string ModeDescriptionString { get { return Mode.GetDescription(); } }
         public string VoltageString { get { return Voltage.ToString() + " V"; } }
 
-        public string PhiString
-        {
-            get
-            {
+        public string PhiString {
+            get {
                 if (GlobalData.ctr != null)
                     return String.Format("{0}", GlobalData.ctr.Phi);
                 else
@@ -55,10 +54,8 @@ namespace ERTS.Dashboard.ViewModel
             }
         }
 
-        public string ThetaString
-        {
-            get
-            {
+        public string ThetaString {
+            get {
                 if (GlobalData.ctr != null)
                     return String.Format("{0}", GlobalData.ctr.Theta);
                 else
@@ -66,10 +63,8 @@ namespace ERTS.Dashboard.ViewModel
             }
         }
 
-        public string PsiString
-        {
-            get
-            {
+        public string PsiString {
+            get {
                 if (GlobalData.ctr != null)
                     return String.Format("{0}", GlobalData.ctr.Psi);
                 else
@@ -311,6 +306,40 @@ namespace ERTS.Dashboard.ViewModel
             }
         }
 
+        public string FlashDumpStatus {
+            get {
+                if (GlobalData.ctr != null)
+                    if (GlobalData.ctr.FlashFileIsOpen)
+                    {
+                        return "Flash Dump in Progess...";
+                    }
+                    else
+                    {
+                        return "Idle.";
+                    }
+                else
+                    return "ctr in null";
+            }
+        }
+
+        public double FlashDumpMax {
+            get {
+                if (GlobalData.ctr != null)
+                    return Controller.FLASH_MAX_ADDRESS;
+                else
+                    return 100;
+            }
+        }
+
+        public double FlashDumpValue {
+            get {
+                if (GlobalData.ctr != null)
+                    return GlobalData.ctr.FlashPosition;
+                else
+                    return 0;
+            }
+        }
+
         public string WindowTitle {
             get {
                 Assembly currAss = Assembly.GetExecutingAssembly();
@@ -330,8 +359,8 @@ namespace ERTS.Dashboard.ViewModel
                 StringBuilder sb = new StringBuilder();
                 if (GlobalData.com != null)
                 {
-                    sb.AppendFormat("Bytes Received: {0} ({1:N2} kbit/s)\n", GlobalData.com.BytesReceived, GlobalData.com.ReceivedBandwidth/125);
-                    sb.AppendFormat("Bytes Sent: {0} ({1:N2} kbit/s)\n", GlobalData.com.BytesSent, GlobalData.com.SentBandwidth/125);
+                    sb.AppendFormat("Bytes Received: {0} ({1:N2} kbit/s)\n", GlobalData.com.BytesReceived, GlobalData.com.ReceivedBandwidth / 125);
+                    sb.AppendFormat("Bytes Sent: {0} ({1:N2} kbit/s)\n", GlobalData.com.BytesSent, GlobalData.com.SentBandwidth / 125);
                     sb.AppendFormat("Packets Received: {0} ({1:N1} pps)\n", GlobalData.com.PacketsReceived, GlobalData.com.PacketsReceivedPerSecond);
                     sb.AppendFormat("Packets Sent: {0} ({1:N1} pps)\n", GlobalData.com.PacketsSent, GlobalData.com.PacketsSentPerSecond);
                 }
@@ -496,7 +525,7 @@ namespace ERTS.Dashboard.ViewModel
         }
 
         public void InitStageOne()
-        {            
+        {
 
             if (GlobalData.input != null)
                 GlobalData.input.PropertyChanged += Input_PropertyChanged;
@@ -560,6 +589,16 @@ namespace ERTS.Dashboard.ViewModel
             {
                 RaisePropertyChanged("UnacknowlegdedPackets");
                 RaisePropertyChanged("UnacknowlegdedPacketsColor");
+                return;
+            }
+            else if (e.PropertyName == "FlashPosition")
+            {
+                RaisePropertyChanged("FlashDumpValue");
+            }
+            else if (e.PropertyName == "FlashFileIsOpen")
+            {
+                RaisePropertyChanged("FlashDumpStatus");
+                RaisePropertyChanged("FlashDumpMax");
                 return;
             }
             else
@@ -681,7 +720,7 @@ namespace ERTS.Dashboard.ViewModel
             }
 
         }
-        
+
         void StartStageTwoExecute(object obj)
         {
             GlobalData.InitStageTwo();
@@ -711,7 +750,8 @@ namespace ERTS.Dashboard.ViewModel
 
         void SendAllParametersExecute(object obj)
         {
-            if (GlobalData.ctr != null) {
+            if (GlobalData.ctr != null)
+            {
                 GlobalData.ctr.SendAllParameters();
             }
         }
@@ -720,7 +760,7 @@ namespace ERTS.Dashboard.ViewModel
         {
             return CanStopStageTwoExecute(obj);
         }
-        
+
         public ICommand StartStageTwo { get { return new RelayCommand<MainWindow>(StartStageTwoExecute, CanStartStageTwoExecute); } }
 
         public ICommand StopStageTwo { get { return new RelayCommand<MainWindow>(StopStageTwoExecute, CanStopStageTwoExecute); } }
