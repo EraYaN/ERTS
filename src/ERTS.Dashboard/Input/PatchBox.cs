@@ -48,6 +48,11 @@ namespace ERTS.Dashboard.Input
             ControlActuator keyboard3 = new ControlActuator() { DeviceGuid = keyboardGuid, ControlDisplayName = "Keyboard - 3", RawOffset = DirectInputRawOffsets.KB_3 };
             ControlActuator keyboard4 = new ControlActuator() { DeviceGuid = keyboardGuid, ControlDisplayName = "Keyboard - 4", RawOffset = DirectInputRawOffsets.KB_4 };
             ControlActuator keyboard5 = new ControlActuator() { DeviceGuid = keyboardGuid, ControlDisplayName = "Keyboard - 5", RawOffset = DirectInputRawOffsets.KB_5 };
+            ControlActuator keyboard6 = new ControlActuator() { DeviceGuid = keyboardGuid, ControlDisplayName = "Keyboard - 6", RawOffset = DirectInputRawOffsets.KB_6 };
+            ControlActuator keyboard7 = new ControlActuator() { DeviceGuid = keyboardGuid, ControlDisplayName = "Keyboard - 7", RawOffset = DirectInputRawOffsets.KB_7 };
+            ControlActuator keyboard8 = new ControlActuator() { DeviceGuid = keyboardGuid, ControlDisplayName = "Keyboard - 8", RawOffset = DirectInputRawOffsets.KB_8 };
+
+            ControlActuator keyboard9 = new ControlActuator() { DeviceGuid = keyboardGuid, ControlDisplayName = "Keyboard - 9", RawOffset = DirectInputRawOffsets.KB_9 };
 
             ControlActuator keyboardA = new ControlActuator() { DeviceGuid = keyboardGuid, ControlDisplayName = "Keyboard - A", RawOffset = DirectInputRawOffsets.KB_A };
             ControlActuator keyboardZ = new ControlActuator() { DeviceGuid = keyboardGuid, ControlDisplayName = "Keyboard - Z", RawOffset = DirectInputRawOffsets.KB_Z };
@@ -191,6 +196,22 @@ namespace ERTS.Dashboard.Input
             InputBinding ModeFullControlBinding = new InputBinding(new ControlActuator[] { keyboard5 }, "ModeFullControl");
             ModeFullControlBinding.BindingActuatedEvent += ModeFullControlBinding_BindingActuatedEvent;
             InputBindings.Add("ModeFullControl", ModeFullControlBinding);
+
+            InputBinding RawSwitchBinding = new InputBinding(new ControlActuator[] { keyboard6 }, "RawSwitch");
+            RawSwitchBinding.BindingActuatedEvent += RawSwitchBinding_BindingActuatedEvent;
+            InputBindings.Add("RawSwitch", RawSwitchBinding);
+
+            InputBinding ModeHeightBinding = new InputBinding(new ControlActuator[] { keyboard7 }, "ModeHeight");
+            ModeHeightBinding.BindingActuatedEvent += ModeHeightBinding_BindingActuatedEvent;
+            InputBindings.Add("ModeHeight", ModeHeightBinding);
+
+            InputBinding WirelessSwitchBinding = new InputBinding(new ControlActuator[] { keyboard8 }, "WirelessSwitch");
+            WirelessSwitchBinding.BindingActuatedEvent += WirelessSwitchBinding_BindingActuatedEvent;
+            InputBindings.Add("WirelessSwitch", WirelessSwitchBinding);
+
+            InputBinding ModeFlashDumpBinding = new InputBinding(new ControlActuator[] { keyboard7 }, "ModeFlashDump");
+            ModeFlashDumpBinding.BindingActuatedEvent += ModeFlashDumpBinding_BindingActuatedEvent;
+            InputBindings.Add("ModeFlashDump", ModeFlashDumpBinding);
 
         }
         private void LiftInputBinding_BindingActuatedEvent(object sender, BindingActuatedEventArgs e)
@@ -348,6 +369,30 @@ namespace ERTS.Dashboard.Input
         {
             if (e.InnerEvent.StateUpdate.Value > KeyThreshold)
                 GlobalData.ctr.ModeSwitch(FlightMode.FullControl);
+        }
+
+        private void RawSwitchBinding_BindingActuatedEvent(object sender, BindingActuatedEventArgs e)
+        {
+            if (e.InnerEvent.StateUpdate.Value > KeyThreshold)
+                GlobalData.ctr.RawSwitch();
+        }
+
+        private void ModeHeightBinding_BindingActuatedEvent(object sender, BindingActuatedEventArgs e)
+        {
+            if (e.InnerEvent.StateUpdate.Value > KeyThreshold)
+                GlobalData.ctr.ModeSwitch(FlightMode.Height);
+        }
+
+        private void WirelessSwitchBinding_BindingActuatedEvent(object sender, BindingActuatedEventArgs e)
+        {
+            if (e.InnerEvent.StateUpdate.Value > KeyThreshold)
+                GlobalData.ctr.WirelessSwitch();
+        }
+
+        private void ModeFlashDumpBinding_BindingActuatedEvent(object sender, BindingActuatedEventArgs e)
+        {
+            if (e.InnerEvent.StateUpdate.Value > KeyThreshold)
+                GlobalData.ctr.StartFlashDump();
         }
         
     }

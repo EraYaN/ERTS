@@ -5,12 +5,8 @@ using ERTS.Dashboard.Helpers;
 using ERTS.Dashboard.Utility;
 using MicroMvvm;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Timers;
+using System.IO;
 
 namespace ERTS.Dashboard.Control
 {
@@ -25,6 +21,8 @@ namespace ERTS.Dashboard.Control
         const double P_STEP = 1.0;
         const double P_MAX = 1000.0;
         const double P_MIN = 1.0;
+
+        const int FLASH_MAX_ADDRESS = 0x01FFFF;
 
         MultimediaTimer RCTimer;
 
@@ -58,7 +56,14 @@ namespace ERTS.Dashboard.Control
         public double P2RollPitch { get; set; }
         public double PLift { get; set; }
 
+        public double FlashPosition {
+            get {
+                return dumpPosition;
+            }
+        }
 
+        BinaryWriter flashFile;
+        int dumpPosition = 0;
         //int counter=0;
 
 
@@ -103,6 +108,9 @@ namespace ERTS.Dashboard.Control
                     break;
                 case MessageType.RemoteControl:
                     //testing.
+                    break;
+                case MessageType.FlashData:
+                    HandleFlashData((FlashData)p.Data);
                     break;
                 case MessageType.ModeSwitch:
                 case MessageType.ActuationParameters:
@@ -160,6 +168,31 @@ namespace ERTS.Dashboard.Control
             RaisePropertyChanged("Psi");
 
         }
+
+        public void HandleFlashData(FlashData data)
+        {
+            if (flashFile != null)
+            {
+                int packetPosition = data.SequenceNumber * FlashData.MAX_DATA_LENGTH;
+                if (packetPosition > FLASH_MAX_ADDRESS)
+                {
+                    Debug.WriteLine("Received FlashDump packet had a sequence number that was too high.");
+                    return;
+                }
+                flashFile.Seek(packetPosition, SeekOrigin.Begin);
+                if (data.SequenceNumber > Math.Floor((double)FLASH_MAX_ADDRESS / FlashData.MAX_DATA_LENGTH))
+                {
+                    //last packet
+                    flashFile.Write(data.FlashData,0, FLASH_MAX_ADDRESS % FlashData.MAX_DATA_LENGTH);
+                }
+                else
+                {
+                    flashFile.Write(data.FlashData, 0, FlashData.MAX_DATA_LENGTH);
+                }
+
+            }
+        }
+
         public void HandleAcknowledge(AcknowledgeData data)
         {
             Debug.WriteLine(String.Format("Processing Acknowledge {0}....", data.Number));
@@ -168,12 +201,42 @@ namespace ERTS.Dashboard.Control
         public void HandleException(ExceptionData data)
         {
             Debug.WriteLine(String.Format("Processing Exception of type {0} with message: {1}.\n", data.ExceptionType, data.Message));
-
         }
 
         #endregion
 
         #region Control Methods
+
+        public void StartFlashDump()
+        {
+            if (flashFile != null)
+            {
+                flashFile.Close();
+                flashFile = null;
+                Debug.WriteLine("Restarting flash dump....");
+            }
+            else
+            {
+                Debug.WriteLine("Starting flash dump....");
+            }            
+            GlobalData.com.ModeSwitch(FlightMode.DumpFlash);
+            FileStream fs = File.Open(String.Format("flash-{0}.bin", DateTime.Now.Ticks), FileMode.Create);
+            fs.SetLength(FLASH_MAX_ADDRESS);
+            flashFile = new BinaryWriter(fs);
+            dumpPosition = 0;
+        }
+
+        public void EndFlashDump()
+        {
+            Debug.WriteLine("Ending flash dump....");
+            GlobalData.com.ModeSwitch(FlightMode.Safe);
+            if (flashFile != null)
+            {
+                flashFile.Close();
+                flashFile = null;
+            }
+        }
+
         public void ModeSwitch(FlightMode mode)
         {
             Debug.WriteLine(String.Format("Switching mode to {0}....", mode));
@@ -211,6 +274,14 @@ namespace ERTS.Dashboard.Control
             if (YawRate == 0)
                 HasSeenZeroYaw = true;
             RaisePropertyChanged("YawRate");
+        }
+        public void RawSwitch()
+        {
+            throw new NotImplementedException();
+        }
+        public void WirelessSwitch()
+        {
+            throw new NotImplementedException();
         }
         #endregion
 
