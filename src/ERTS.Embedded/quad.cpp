@@ -321,6 +321,11 @@ void Quadrupel::tick() {
 
     }
 
+    // print flash to UART
+    if (_mode == DumpFlash) {
+        dumpflash(); // blocking function, turns off heartbeats and sends a lot of messages
+    }
+
     //TODO Height should be a seperate switch
     if (_mode == Height) {
         read_baro();
@@ -392,6 +397,7 @@ int Quadrupel::set_mode(flightMode_t new_mode) {
         case Panic: {
             _initial_panic = true;
         }
+        case DumpFlash:
         case Calibration:
         case Manual: {
             result = MODE_SWITCH_OK;
@@ -498,6 +504,8 @@ void Quadrupel::control() {
     int32_t oo1, oo2, oo3, oo4;
     uint16_t lift;
     int16_t roll, pitch, yaw, p_s, q_s;
+
+    flash_write_remote(get_time_us(), _mode, target_state.lift, target_state.roll, target_state.pitch, target_state.yaw);
 
     if (_mode == Panic) {
         if (_initial_panic) {
@@ -641,8 +649,11 @@ void Quadrupel::dumpflash() {
     uint16_t seqNumber = 0;
     uint8_t dataFlash[DATA_SIZE];
     auto packet = new Packet(FlashData);
+    uint16_t telemetry_divider_old = p_misc.telemetry_divider;
 
-    //TODO:Turn off heartbeats/interupts
+    // Turn off heartbeats 
+    // (interupts stay on, because of motor timers. GUI should just not send telemetry now)
+    p_misc.telemetry_divider = 0;
 
     for (seqNumber = 0; seqNumber <= FLASH_PACKETS; seqNumber++) {
         flash_read_bytes(seqNumber*FLASH_BYTES_PER_UART_PACKET, dataFlash, FLASH_BYTES_PER_UART_PACKET);
@@ -650,7 +661,9 @@ void Quadrupel::dumpflash() {
         packet->set_data(data);
         send(packet);
     }
-    //TODO:Turn off heartbeats/interupts
+
+    // Turn on heartbeats
+    p_misc.telemetry_divider = telemetry_divider_old;
 
     delete packet;
 }
