@@ -42,9 +42,9 @@ Packet::Packet(const byte* packet)
         case Kill:
             // Nothing
             break;
-        case ActuationParameters:
+        /*case ActuationParameters:
             _data = new ActuationParameterData(&packet[5]);
-            break;
+            break;*/
         case ControllerParameters:
             _data = new ControllerParameterData(&packet[5]);
             break;

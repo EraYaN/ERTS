@@ -43,11 +43,11 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>F:\Users\Erwin\Documents\GitHub\ERTS\libraries\libcrc-2.0\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)..\libraries\libcrc-2.0\include;$(IncludePath)</IncludePath>
     <TargetExt>.lib</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>F:\Users\Erwin\Documents\GitHub\ERTS\libraries\libcrc-2.0\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)..\libraries\libcrc-2.0\include;$(IncludePath)</IncludePath>
     <TargetExt>.lib</TargetExt>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">

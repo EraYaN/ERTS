@@ -1,4 +1,5 @@
-﻿using ERTS.Dashboard.Communication.Enumerations;
+﻿using ERTS.Dashboard.Communication.Data;
+using ERTS.Dashboard.Communication.Enumerations;
 using ERTS.Dashboard.Control;
 using ERTS.Dashboard.Utility;
 using MicroMvvm;
@@ -121,7 +122,7 @@ namespace ERTS.Dashboard.ViewModel
         public Brush LiftColor {
             get {
                 if (GlobalData.ctr == null)
-                    return Brushes.Red;
+                    return Brushes.DarkRed;
                 if (GlobalData.ctr.HasSeenZeroLift)
                 {
                     return Brushes.Black;
@@ -136,7 +137,7 @@ namespace ERTS.Dashboard.ViewModel
         public Brush RollColor {
             get {
                 if (GlobalData.ctr == null)
-                    return Brushes.Red;
+                    return Brushes.DarkRed;
                 if (GlobalData.ctr.HasSeenZeroRoll)
                 {
                     return Brushes.Black;
@@ -151,7 +152,7 @@ namespace ERTS.Dashboard.ViewModel
         public Brush PitchColor {
             get {
                 if (GlobalData.ctr == null)
-                    return Brushes.Red;
+                    return Brushes.DarkRed;
                 if (GlobalData.ctr.HasSeenZeroPitch)
                 {
                     return Brushes.Black;
@@ -166,7 +167,7 @@ namespace ERTS.Dashboard.ViewModel
         public Brush YawColor {
             get {
                 if (GlobalData.ctr == null)
-                    return Brushes.Red;
+                    return Brushes.DarkRed;
                 if (GlobalData.ctr.HasSeenZeroYaw)
                 {
                     return Brushes.Black;
@@ -174,6 +175,51 @@ namespace ERTS.Dashboard.ViewModel
                 else
                 {
                     return Brushes.OrangeRed;
+                }
+            }
+        }
+
+        public Brush FuncRawColor {
+            get {
+                if (GlobalData.ctr == null)
+                    return Brushes.Transparent;
+                if (GlobalData.ctr.FuncRawEnabled)
+                {
+                    return Brushes.DarkGreen;
+                }
+                else
+                {
+                    return Brushes.DarkRed;
+                }
+            }
+        }
+
+        public Brush FuncLoggingColor {
+            get {
+                if (GlobalData.ctr == null)
+                    return Brushes.Transparent;
+                if (GlobalData.ctr.FuncLoggingEnabled)
+                {
+                    return Brushes.DarkGreen;
+                }
+                else
+                {
+                    return Brushes.DarkRed;
+                }
+            }
+        }
+
+        public Brush FuncWirelessColor {
+            get {
+                if (GlobalData.ctr == null)
+                    return Brushes.Transparent;
+                if (GlobalData.ctr.FuncWirelessEnabled)
+                {
+                    return Brushes.DarkGreen;
+                }
+                else
+                {
+                    return Brushes.DarkRed;
                 }
             }
         }
@@ -716,6 +762,21 @@ namespace ERTS.Dashboard.ViewModel
                 RaisePropertyChanged("FlashDumpMax");
                 return;
             }
+            else if (e.PropertyName == "FuncRawEnabled")
+            {
+                RaisePropertyChanged("FuncRawColor");               
+                return;
+            }
+            else if (e.PropertyName == "FuncLoggingEnabled")
+            {
+                RaisePropertyChanged("FuncLoggingColor");
+                return;
+            }
+            else if (e.PropertyName == "FuncWirelessEnabled")
+            {
+                RaisePropertyChanged("FuncWirelessColor");
+                return;
+            }
             else
             {
                 Debug.WriteLine("Got unsupported binding name from Controller " + e.PropertyName + ".");
@@ -763,11 +824,46 @@ namespace ERTS.Dashboard.ViewModel
             return CanStopStageTwoExecute(obj);
         }
 
+        void ToggleRawExecute(object obj)
+        {
+            if (GlobalData.ctr != null)
+            {
+                GlobalData.ctr.ToggleRaw();
+            }
+        }
+
+        void ToggleLoggingExecute(object obj)
+        {
+            if (GlobalData.ctr != null)
+            {
+                GlobalData.ctr.ToggleLogging();
+            }
+        }
+
+        void ToggleWirelessExecute(object obj)
+        {
+            if (GlobalData.ctr != null)
+            {
+                GlobalData.ctr.ToggleWireless();
+            }
+        }
+
+        bool CanToggleExecute(object obj)
+        {
+            return GlobalData.ctr != null;
+        }
+
         public ICommand StartStageTwo { get { return new RelayCommand<MainWindow>(StartStageTwoExecute, CanStartStageTwoExecute); } }
 
         public ICommand StopStageTwo { get { return new RelayCommand<MainWindow>(StopStageTwoExecute, CanStopStageTwoExecute); } }
 
         public ICommand SendAllParameters { get { return new RelayCommand<MainWindow>(SendAllParametersExecute, CanSendAllParametersExecute); } }
+
+        public ICommand ToggleRaw { get { return new RelayCommand<MainWindow>(ToggleRawExecute, CanToggleExecute); } }
+
+        public ICommand ToggleLogging { get { return new RelayCommand<MainWindow>(ToggleLoggingExecute, CanToggleExecute); } }
+
+        public ICommand ToggleWireless { get { return new RelayCommand<MainWindow>(ToggleWirelessExecute, CanToggleExecute); } }
 
     }
 }

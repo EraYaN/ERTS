@@ -374,7 +374,7 @@ namespace ERTS.Dashboard.Input
         private void RawSwitchBinding_BindingActuatedEvent(object sender, BindingActuatedEventArgs e)
         {
             if (e.InnerEvent.StateUpdate.Value > KeyThreshold)
-                GlobalData.ctr.RawSwitch();
+                GlobalData.ctr.ToggleRaw();
         }
 
         private void ModeHeightBinding_BindingActuatedEvent(object sender, BindingActuatedEventArgs e)
@@ -386,7 +386,7 @@ namespace ERTS.Dashboard.Input
         private void WirelessSwitchBinding_BindingActuatedEvent(object sender, BindingActuatedEventArgs e)
         {
             if (e.InnerEvent.StateUpdate.Value > KeyThreshold)
-                GlobalData.ctr.WirelessSwitch();
+                GlobalData.ctr.ToggleWireless();
         }
 
         private void ModeFlashDumpBinding_BindingActuatedEvent(object sender, BindingActuatedEventArgs e)

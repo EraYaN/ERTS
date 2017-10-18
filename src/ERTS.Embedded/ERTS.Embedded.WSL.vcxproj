@@ -69,6 +69,7 @@
     <ClInclude Include="drivers\invensense\ml.h" />
     <ClInclude Include="flash_wrapper.h" />
     <ClInclude Include="quad.h" />
+    <ClInclude Include="quad_config.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="drivers\adc.c" />

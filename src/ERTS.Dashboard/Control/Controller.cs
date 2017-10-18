@@ -57,6 +57,10 @@ namespace ERTS.Dashboard.Control
         public double P2RollPitch { get; set; }
         public double PLift { get; set; }
 
+        public bool FuncRawEnabled { get; set; }
+        public bool FuncLoggingEnabled { get; set; }
+        public bool FuncWirelessEnabled { get; set; }
+
         public double FlashPosition {
             get {
                 return dumpPosition;
@@ -71,7 +75,7 @@ namespace ERTS.Dashboard.Control
 
         BinaryWriter flashFile;
         int dumpPosition = 0;
-        int flashDumpTerminateCounter=0;
+        int flashDumpTerminateCounter = 0;
 
 
         public Controller()
@@ -120,7 +124,7 @@ namespace ERTS.Dashboard.Control
                     HandleFlashData((FlashData)p.Data);
                     break;
                 case MessageType.ModeSwitch:
-                case MessageType.ActuationParameters:
+                //case MessageType.ActuationParameters:
                 case MessageType.ControllerParameters:
                 case MessageType.MiscParameters:
                 case MessageType.Reset:
@@ -163,7 +167,7 @@ namespace ERTS.Dashboard.Control
             //Debug.WriteLine(data.ToString());
             BatteryVoltage = data.BatteryVoltage / 100.0;
             RaisePropertyChanged("BatteryVoltage");
-            LoopTime = data.LoopTime / 1000.0;
+            LoopTime = data.LoopTime/1000;
             RaisePropertyChanged("LoopTime");
             Mode = data.FlightMode;
             RaisePropertyChanged("Mode");
@@ -175,10 +179,11 @@ namespace ERTS.Dashboard.Control
             RaisePropertyChanged("Psi");
             Pressure = data.Pressure;
             RaisePropertyChanged("Pressure");
+            //Debug.WriteLine(String.Format("Tel. Function status: {0}.", Convert.ToString(data.R, 2))); 
 
-            if (Mode != FlightMode.DumpFlash && FlashFileIsOpen && flashDumpTerminateCounter>10)
+            if (Mode != FlightMode.DumpFlash && FlashFileIsOpen && flashDumpTerminateCounter < 10)
             {
-                if (flashDumpTerminateCounter > 10)
+                if (flashDumpTerminateCounter >= 10)
                 {
                     Debug.WriteLine("Got a mode that is not DumpFlash, while the flash dump was activated, stopping flash dump.");
                     EndFlashDump();
@@ -187,7 +192,7 @@ namespace ERTS.Dashboard.Control
                 {
                     flashDumpTerminateCounter++;
                 }
-            } 
+            }
         }
 
         public void HandleFlashData(FlashData data)
@@ -195,9 +200,10 @@ namespace ERTS.Dashboard.Control
             if (flashFile != null)
             {
                 int packetPosition = data.SequenceNumber * FlashData.MAX_DATA_LENGTH;
+                //Debug.WriteLine(String.Format("Got pack ({0} out of {1})", data.SequenceNumber, Math.Floor((double)FLASH_MAX_ADDRESS / FlashData.MAX_DATA_LENGTH) + 1));
                 if (packetPosition > FLASH_MAX_ADDRESS)
                 {
-                    Debug.WriteLine("Received FlashDump packet had a sequence number that was too high.");
+                    Debug.WriteLine(String.Format("Received FlashDump packet had a sequence number that was too high. ({0} out of {1})", packetPosition, FLASH_MAX_ADDRESS));
                     return;
                 }
                 if (flashFile.BaseStream.Position != packetPosition)
@@ -205,11 +211,12 @@ namespace ERTS.Dashboard.Control
                     Debug.WriteLine(String.Format("Seeking in flash dump file from {0} to {1}, might miss a packet.", flashFile.BaseStream.Position, packetPosition));
                     flashFile.Seek(packetPosition, SeekOrigin.Begin);
                 }
-                if (data.SequenceNumber > Math.Floor((double)FLASH_MAX_ADDRESS / FlashData.MAX_DATA_LENGTH))
+                if (packetPosition > FLASH_MAX_ADDRESS - FlashData.MAX_DATA_LENGTH)
                 {
                     //last packet
-                    flashFile.Write(data.FlashBytes,0, FLASH_MAX_ADDRESS % FlashData.MAX_DATA_LENGTH);
-
+                    flashFile.Write(data.FlashBytes, 0, FLASH_MAX_ADDRESS - packetPosition);                    
+                    Debug.WriteLine(String.Format("Last packet of length {0} received, stopping dump and closing file handle.", FLASH_MAX_ADDRESS - packetPosition));
+                    packetPosition = FLASH_MAX_ADDRESS;
                     EndFlashDump();
                 }
                 else
@@ -234,6 +241,56 @@ namespace ERTS.Dashboard.Control
 
         #endregion
 
+        #region Quad Function Control Methods
+        public void ToggleRaw()
+        {
+            FuncRawEnabled = !FuncRawEnabled;
+            SendMiscParameters();
+        }
+        public void EnableRaw()
+        {
+            FuncRawEnabled = true;
+            SendMiscParameters();
+        }
+        public void DisableRaw()
+        {
+            FuncRawEnabled = false;
+            SendMiscParameters();
+        }
+
+        public void ToggleLogging()
+        {
+            FuncLoggingEnabled = !FuncLoggingEnabled;
+            SendMiscParameters();
+        }
+        public void EnableLogging()
+        {
+            FuncLoggingEnabled = true;
+            SendMiscParameters();
+        }
+        public void DisableLogging()
+        {
+            FuncLoggingEnabled = false;
+            SendMiscParameters();
+        }
+
+        public void ToggleWireless()
+        {
+            FuncWirelessEnabled = !FuncWirelessEnabled;
+            SendMiscParameters();
+        }
+        public void EnableWireless()
+        {
+            FuncWirelessEnabled = true;
+            SendMiscParameters();
+        }
+        public void DisableWireless()
+        {
+            FuncWirelessEnabled = false;
+            SendMiscParameters();
+        }
+        #endregion
+
         #region Control Methods
 
         public void StartFlashDump()
@@ -247,7 +304,7 @@ namespace ERTS.Dashboard.Control
             else
             {
                 Debug.WriteLine("Starting flash dump....");
-            }            
+            }
             GlobalData.com.ModeSwitch(FlightMode.DumpFlash);
             FileStream fs = File.Open(String.Format("flash-{0}.bin", DateTime.Now.Ticks), FileMode.Create);
             fs.SetLength(FLASH_MAX_ADDRESS);
@@ -263,13 +320,11 @@ namespace ERTS.Dashboard.Control
         public void EndFlashDump()
         {
             Debug.WriteLine("Ending flash dump....");
-            GlobalData.com.ModeSwitch(FlightMode.Safe);
             if (flashFile != null)
             {
                 flashFile.Close();
                 flashFile = null;
             }
-
             dumpPosition = FLASH_MAX_ADDRESS;
             RaisePropertyChanged("FlashPosition");
 
@@ -313,14 +368,6 @@ namespace ERTS.Dashboard.Control
             if (YawRate == 0)
                 HasSeenZeroYaw = true;
             RaisePropertyChanged("YawRate");
-        }
-        public void RawSwitch()
-        {
-            throw new NotImplementedException();
-        }
-        public void WirelessSwitch()
-        {
-            throw new NotImplementedException();
         }
         #endregion
 
@@ -487,10 +534,15 @@ namespace ERTS.Dashboard.Control
             Debug.WriteLine(String.Format("Set PLift to {0}", PLift));
             SendControllerParameters();
         }
+        #endregion
 
+        #region Parameter Methods
         public void SendMiscParameters()
         {
-            GlobalData.com.MiscParameters(Convert.ToUInt16(GlobalData.cfg.PanicDecrement), Convert.ToUInt16(GlobalData.cfg.RCInterval), Convert.ToUInt16(GlobalData.cfg.LogDivider), Convert.ToUInt16(GlobalData.cfg.BatteryThreshold), Convert.ToUInt16(GlobalData.cfg.TelemetryDivider));
+            RaisePropertyChanged("FuncRawEnabled");
+            RaisePropertyChanged("FuncLoggingEnabled");
+            RaisePropertyChanged("FuncWirelessEnabled");
+            GlobalData.com.MiscParameters(Convert.ToByte(FuncRawEnabled), Convert.ToByte(FuncLoggingEnabled), Convert.ToByte(FuncWirelessEnabled));
         }
 
         public void SendControllerParameters()
@@ -508,11 +560,11 @@ namespace ERTS.Dashboard.Control
             SendMiscParameters();
             SendControllerParameters();
             SendActuationParameters();
-
         }
 
         #endregion
 
+        #region Helper Methods
         double GetRcRate(double _input, double expo = RC_EXPO, double rate = RC_RATE, double deadzone = 0)
         {
             double rcCommand = _input.Deadzone(-deadzone / 100, deadzone / 100);
@@ -522,6 +574,7 @@ namespace ERTS.Dashboard.Control
             double rcRate = rcCommand * rate;
             return rcRate;
         }
+        #endregion
 
         #region IDisposable Support
         private bool disposedValue = false; // To detect redundant calls

@@ -23,9 +23,9 @@
             </MenuItem>
         </Menu>
         <WrapPanel Margin="0,28,0,272">
-            <Button x:Name="StartAllButton" Content="Start Stage Two" Margin="10,5" VerticalAlignment="Top" Height="22" HorizontalAlignment="Left" Width="100" Command="{Binding StartStageTwo}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}"/>
-            <Button x:Name="StopStageTwoButton" Content="Stop Stage Two" Margin="10,5" VerticalAlignment="Top" Height="22" HorizontalAlignment="Left" Width="100" Command="{Binding StopStageTwo}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}"/>
-            <Button x:Name="SendAllParametersButton" Content="Send All Parameters" Margin="10,5" VerticalAlignment="Top" Height="22" HorizontalAlignment="Left" Width="100" Command="{Binding SendAllParameters}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}"/>
+            <Button x:Name="StartAllButton" Content="Start Stage Two" Margin="10,5,5,5" VerticalAlignment="Top" Height="23" HorizontalAlignment="Left" Width="120" Command="{Binding StartStageTwo}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}"/>
+            <Button x:Name="StopStageTwoButton" Content="Stop Stage Two" Margin="10,5,5,5" VerticalAlignment="Top" Height="23" HorizontalAlignment="Left" Width="120" Command="{Binding StopStageTwo}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}"/>
+            <Button x:Name="SendAllParametersButton" Content="Send All Parameters" Margin="10,5,5,5" VerticalAlignment="Top" Height="23" HorizontalAlignment="Left" Width="120" Command="{Binding SendAllParameters}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}"/>
 
             <GroupBox Header="Status" HorizontalAlignment="Left" Height="100" VerticalAlignment="Top" Width="Auto" Margin="10,5">
                 <Grid>
@@ -50,6 +50,7 @@
                     <Label Content="Yaw" Grid.Column="5" Grid.Row="0" Width="100" HorizontalAlignment="Left" VerticalAlignment="Top" HorizontalContentAlignment="Center"/>
                     <Label Content="Roll" Grid.Column="6" Grid.Row="0" Width="100" HorizontalAlignment="Left" VerticalAlignment="Top" HorizontalContentAlignment="Center"/>
                     <Label Content="Rel. pressure" Grid.Column="7" Grid.Row="0" Width="100" HorizontalAlignment="Left" VerticalAlignment="Top" HorizontalContentAlignment="Center"/>
+                    
                     <Label Content="{Binding ModeString}" Grid.Column="0" Grid.Row="1" HorizontalContentAlignment="Center" Margin="0,2,0,0" VerticalAlignment="Top" FontSize="18" Grid.ColumnSpan="2"/>
                     <Label Content="{Binding ModeDescriptionString}" Grid.Column="0" Grid.Row="1" HorizontalContentAlignment="Center" Margin="0,27,0,0" VerticalAlignment="Top" FontSize="12" Foreground="#FFA4A4A4" Grid.ColumnSpan="2"/>
                     <Label Content="{Binding VoltageString}" Grid.Column="2" Grid.Row="1" HorizontalContentAlignment="Center" Margin="0,2,0,0" VerticalAlignment="Top" FontSize="18"/>
@@ -138,6 +139,26 @@
                     </StackPanel>
 
                     
+                </Grid>
+
+            </GroupBox>
+            <GroupBox Header="Functions" HorizontalAlignment="Left" VerticalAlignment="Top" Width="Auto" Margin="10,0,0,0">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                        <Label Content="Raw:" Margin="0,5"/>
+                        <Label Content="Logging:" Margin="0,5"/>
+                        <Label Content="Wireless:" Margin="0,5"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                        <Button Height="20" Width="40" Background="{Binding FuncRawColor, Mode=OneWay}" Margin="10,8" BorderBrush="DarkGray" BorderThickness="1" Command="{Binding ToggleRaw}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}"/>
+                        <Button Height="20" Width="40" Background="{Binding FuncLoggingColor, Mode=OneWay}" Margin="10,8" BorderBrush="DarkGray" BorderThickness="1" Command="{Binding ToggleLogging}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}"/>
+                        <Button Height="20" Width="40" Background="{Binding FuncWirelessColor, Mode=OneWay}" Margin="10,8" BorderBrush="DarkGray" BorderThickness="1" Command="{Binding ToggleWireless}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}"/>
+                    </StackPanel>
                 </Grid>
 
             </GroupBox>

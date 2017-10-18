@@ -67,17 +67,17 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,0,0">
-                        <Label Target="{Binding ElementName=batteryThresholdTextBox}" Content="Battery Threshold: (cV)" Height="16" Padding="0" Margin="2,0"/>
-                        <TextBox x:Name="batteryThresholdTextBox" Height="20" Padding="4,0,0,0" VerticalContentAlignment="Center" Margin="2" Text="{Binding BatteryThreshold}"/>
+                        <Label Target="{Binding ElementName=batteryThresholdTextBox}" Content="Battery Threshold: (cV)" Height="16" Padding="0" Margin="2,0" IsEnabled="False"/>
+                        <TextBox x:Name="batteryThresholdTextBox" Height="20" Padding="4,0,0,0" VerticalContentAlignment="Center" Margin="2" Text="{Binding BatteryThreshold}" IsEnabled="False"/>
 
-                        <Label Target="{Binding ElementName=panicDecrementTextBox}" Content="Panic Decrement:" Height="16" Padding="0" Margin="2,0"/>
-                        <TextBox x:Name="panicDecrementTextBox" Height="20" Padding="4,0,0,0" VerticalContentAlignment="Center" Margin="2" Text="{Binding PanicDecrement}"/>
+                        <Label Target="{Binding ElementName=panicDecrementTextBox}" Content="Panic Decrement:" Height="16" Padding="0" Margin="2,0" IsEnabled="False"/>
+                        <TextBox x:Name="panicDecrementTextBox" Height="20" Padding="4,0,0,0" VerticalContentAlignment="Center" Margin="2" Text="{Binding PanicDecrement}" IsEnabled="False"/>
 
-                        <Label Target="{Binding ElementName=telemetryDividerTextBox}" Content="Telemetry Divider: (loop times)" Height="16" Padding="0" Margin="2,0"/>
-                        <TextBox x:Name="telemetryDividerTextBox" Height="20" Padding="4,0,0,0" VerticalContentAlignment="Center" Margin="2" Text="{Binding TelemetryDivider}"/>
+                        <Label Target="{Binding ElementName=telemetryDividerTextBox}" Content="Telemetry Divider: (loop times)" Height="16" Padding="0" Margin="2,0" IsEnabled="False"/>
+                        <TextBox x:Name="telemetryDividerTextBox" Height="20" Padding="4,0,0,0" VerticalContentAlignment="Center" Margin="2" Text="{Binding TelemetryDivider}" IsEnabled="False"/>
 
-                        <Label Target="{Binding ElementName=logDividerTextBox}" Content="Log Divider: (loop times)" Height="16" Padding="0" Margin="2,0"/>
-                        <TextBox x:Name="logDividerTextBox" Height="20" Padding="4,0,0,0" VerticalContentAlignment="Center" Margin="2" Text="{Binding LogDivider}"/>
+                        <Label Target="{Binding ElementName=logDividerTextBox}" Content="Log Divider: (loop times)" Height="16" Padding="0" Margin="2,0" IsEnabled="False"/>
+                        <TextBox x:Name="logDividerTextBox" Height="20" Padding="4,0,0,0" VerticalContentAlignment="Center" Margin="2" Text="{Binding LogDivider}" IsEnabled="False"/>
                     </StackPanel>
                     <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Column="1" Margin="0,0,0,0">
                         <Label Target="{Binding ElementName=startPYawTextbox}" Content="Start PYaw:" Height="16" Padding="0" Margin="2,0"/>

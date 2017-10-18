@@ -35,7 +35,7 @@ enum messageType_t : byte {
     RemoteControl = 0x31, ///Expects no Acknowledgement
 
     //Parameter messages (0x40-0x9F)
-    ActuationParameters = 0x40, ///Expects Acknowledgement.
+    //ActuationParameters = 0x40, ///Expects Acknowledgement.
     ControllerParameters = 0x41, ///Expects Acknowledgement.
     MiscParameters = 0x42, ///Expects Acknowledgement.
 

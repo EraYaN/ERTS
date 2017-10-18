@@ -81,18 +81,10 @@ namespace ERTS.Dashboard.Communication {
                 case MessageType.FlashData:
                     Data = new FlashData(dataSegment);
                     break;
-                case MessageType.ActuationParameters:
-                    throw new NotImplementedException();
-                    break;
-                case MessageType.ControllerParameters:
-                    throw new NotImplementedException();
-                    break;
-                case MessageType.MiscParameters:
-                    throw new NotImplementedException();
-                    break;                
-                case MessageType.Reset:
-                    throw new NotImplementedException();
-                    break;
+                //case MessageType.ActuationParameters:                    
+                case MessageType.ControllerParameters:                    
+                case MessageType.MiscParameters:                                  
+                case MessageType.Reset:                    
                 case MessageType.Kill:
                     throw new NotImplementedException();
                     break;

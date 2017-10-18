@@ -408,11 +408,11 @@ namespace ERTS.Dashboard.Communication
             SendPacket(p);
         }
 
-        public void MiscParameters(ushort PanicDecrement, ushort RCInterval, ushort LogDivider, ushort BatteryThreshold, ushort TargetLoopTime)
+        public void MiscParameters(byte FuncRaw, byte FuncLogging, byte FuncWireless)
         {
             Packet p = new Packet(MessageType.MiscParameters)
             {
-                Data = new MiscParameterData(PanicDecrement, RCInterval, LogDivider, BatteryThreshold, TargetLoopTime)
+                Data = new MiscParameterData(FuncRaw, FuncLogging, FuncWireless)
             };
             SendPacket(p);
         }
@@ -426,14 +426,14 @@ namespace ERTS.Dashboard.Communication
             SendPacket(p);
         }
 
-        public void ActuationParameters(ushort RatePitchRollLift, ushort RateYaw, ushort MotorMin, ushort MotorMax)
+        /*public void ActuationParameters(ushort RatePitchRollLift, ushort RateYaw, ushort MotorMin, ushort MotorMax)
         {
             Packet p = new Packet(MessageType.ActuationParameters)
             {
                 Data = new ActuationParameterData(RatePitchRollLift, RateYaw, MotorMin, MotorMax)
             };
             SendPacket(p);
-        }
+        }*/
 
         public void Acknowledge(uint Number = 0)
         {

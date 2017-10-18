@@ -45,6 +45,9 @@
     <ClInclude Include="flash_wrapper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="quad_config.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="drivers\adc.c">

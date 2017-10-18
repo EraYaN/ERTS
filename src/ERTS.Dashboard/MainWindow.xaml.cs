@@ -79,10 +79,10 @@ namespace ERTS.Dashboard
             base.OnClosed(e);
 
             Application.Current.Shutdown();
-        }        
+        }
+
 
         #endregion
-
-
+        
     }
 }
