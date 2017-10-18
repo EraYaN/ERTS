@@ -590,19 +590,7 @@ namespace ERTS.Dashboard.ViewModel
                 RaisePropertyChanged("UnacknowlegdedPackets");
                 RaisePropertyChanged("UnacknowlegdedPacketsColor");
                 return;
-            }
-            else if (e.PropertyName == "FlashPosition")
-            {
-                RaisePropertyChanged("FlashDumpValue");
-                RaisePropertyChanged("FlashDumpStatus");
-                return;
-            }
-            else if (e.PropertyName == "FlashFileIsOpen")
-            {
-                RaisePropertyChanged("FlashDumpStatus");
-                RaisePropertyChanged("FlashDumpMax");
-                return;
-            }
+            }           
             else
             {
                 Debug.WriteLine("Got unsupported binding name from CommunicationInterface " + e.PropertyName + ".");
@@ -715,6 +703,18 @@ namespace ERTS.Dashboard.ViewModel
             else if (e.PropertyName == "PLift")
             {
                 RaisePropertyChanged("PLiftString");
+            }
+            else if (e.PropertyName == "FlashPosition")
+            {
+                RaisePropertyChanged("FlashDumpValue");
+                RaisePropertyChanged("FlashDumpStatus");
+                return;
+            }
+            else if (e.PropertyName == "FlashFileIsOpen")
+            {
+                RaisePropertyChanged("FlashDumpStatus");
+                RaisePropertyChanged("FlashDumpMax");
+                return;
             }
             else
             {
