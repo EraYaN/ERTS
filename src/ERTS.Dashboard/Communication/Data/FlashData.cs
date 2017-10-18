@@ -10,15 +10,15 @@ namespace ERTS.Dashboard.Communication.Data
     {
         public const int MAX_DATA_LENGTH = Packet.DATA_SIZE - 2;
         ushort sequenceNumber;
-        byte[] flashData;
+        byte[] flashBytes;
 
 
         public ushort SequenceNumber {
             get { return sequenceNumber; }
         }
 
-        public byte[] FlashData {
-            get { return flashData; }
+        public byte[] FlashBytes {
+            get { return flashBytes; }
         }
 
         public FlashData(ushort SequenceNumber, byte[] FlashData)
@@ -28,7 +28,7 @@ namespace ERTS.Dashboard.Communication.Data
             {
                 throw new ArgumentException(String.Format("Data can only be {0} bytes long.", Packet.DATA_SIZE - 2), "Data");
             }
-            flashData = FlashData;
+            flashBytes = FlashData;
         }
 
         public FlashData(byte[] data)
@@ -37,7 +37,7 @@ namespace ERTS.Dashboard.Communication.Data
                 throw new ArgumentException("Data is not long enough.", "data");            
 
             sequenceNumber = BitConverter.ToUInt16(data, 0);
-            flashData = new ArraySegment<byte>(data, 2, MAX_DATA_LENGTH).ToArray());
+            flashBytes = new ArraySegment<byte>(data, 2, MAX_DATA_LENGTH).ToArray();
         }
         public FlashData()
         {
@@ -57,7 +57,7 @@ namespace ERTS.Dashboard.Communication.Data
         {
             byte[] data = new byte[Length];
             Buffer.BlockCopy(BitConverter.GetBytes(sequenceNumber), 0, data, sizeof(ushort) * 0, sizeof(ushort));
-            Buffer.BlockCopy(flashData, 0, data, sizeof(ushort), MAX_DATA_LENGTH);
+            Buffer.BlockCopy(flashBytes, 0, data, sizeof(ushort), MAX_DATA_LENGTH);
             return data;
         }
 

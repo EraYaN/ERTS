@@ -183,11 +183,11 @@ namespace ERTS.Dashboard.Control
                 if (data.SequenceNumber > Math.Floor((double)FLASH_MAX_ADDRESS / FlashData.MAX_DATA_LENGTH))
                 {
                     //last packet
-                    flashFile.Write(data.FlashData,0, FLASH_MAX_ADDRESS % FlashData.MAX_DATA_LENGTH);
+                    flashFile.Write(data.FlashBytes,0, FLASH_MAX_ADDRESS % FlashData.MAX_DATA_LENGTH);
                 }
                 else
                 {
-                    flashFile.Write(data.FlashData, 0, FlashData.MAX_DATA_LENGTH);
+                    flashFile.Write(data.FlashBytes, 0, FlashData.MAX_DATA_LENGTH);
                 }
 
             }
