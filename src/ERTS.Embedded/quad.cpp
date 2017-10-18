@@ -202,7 +202,7 @@ void Quadrupel::heartbeat() {
 
     _accum_loop_time = 0;
     auto packet = new Packet(Telemetry);
-    auto data = new TelemetryData(bat_volt, current_state.roll, current_state.pitch, current_state.yaw, 0, 0, loop_time, _mode);
+    auto data = new TelemetryData(bat_volt, current_state.roll, current_state.pitch, current_state.yaw, current_state.pressure, 0, loop_time, _mode);
     packet->set_data(data);
 
     send(packet);
@@ -234,7 +234,7 @@ bool Quadrupel::handle_packet(Packet *packet) {
     case RemoteControl: {
         auto *data = dynamic_cast<RemoteControlData *>(packet->get_data());
 
-        target_state.lift = data->get_lift();
+        target_state.pressure = data->get_lift();
         target_state.roll = data->get_roll();
         target_state.pitch = data->get_pitch();
         target_state.yaw = data->get_yaw();
@@ -299,9 +299,9 @@ void Quadrupel::busywork() {
 void Quadrupel::tick() {
     uint32_t timestamp = get_time_us();
 
-    counterLED++;
+    counter_led++;
 
-    counterHB++;
+    counter_hb++;
 
     if (_mode != Panic && _mode != Safe && _mode != Calibration) {
         if ((get_time_us() - last_received) > (p_misc.comm_timeout >> 1)) {
@@ -321,14 +321,21 @@ void Quadrupel::tick() {
 
     }
 
-    //TODO Height should be a separate switch
     if (_mode == Height) {
         read_baro();
+
+        if (target_state.lift != current_state.lift) {
+            // Revert to full control upon throttle movement.
+            set_mode(FullControl);
+        }
+    }
+    else {
+        pressure = PRESSURE_SEA_LEVEL;
     }
 
-    if (counterLED == LED_INTERVAL) {
+    if (counter_led == LED_INTERVAL) {
 
-        counterLED = 1;
+        counter_led = 1;
         if (LED_INTERVAL != 0) {
             nrf_gpio_pin_toggle(BLUE);
             if (_mode == Panic) {
@@ -336,7 +343,7 @@ void Quadrupel::tick() {
             }
         }
     }
-    if (counterHB == p_misc.telemetry_divider) {
+    if (counter_hb == p_misc.telemetry_divider) {
         adc_request_sample(); // Really only needed once per heartbeat
         if (_mode != Panic && _mode != Safe) {
             if (bat_volt < p_misc.battery_threshold) {
@@ -349,7 +356,7 @@ void Quadrupel::tick() {
             }
         }
 
-        counterHB = 1;
+        counter_hb = 1;
         if (p_misc.telemetry_divider != 0) {
             heartbeat();
         }
@@ -380,105 +387,132 @@ int Quadrupel::set_mode(flightMode_t new_mode) {
 
     switch (_mode) {
         // Transitions from safe mode.
-    case Safe: {
-        // Disallow mode switch when any of the inputs is non-zero.
-        if (new_mode != Panic
-            && (target_state.lift != 0
-                || target_state.roll != 0
-                || target_state.pitch != 0
-                || target_state.yaw != 0
+        case Safe: {
+            // Disallow mode switch when any of the inputs is non-zero.
+            if (new_mode != Panic
+                && (target_state.lift != 0
+                    || target_state.roll != 0
+                    || target_state.pitch != 0
+                    || target_state.yaw != 0
                 )) {
-            result = MODE_SWITCH_NOT_ALLOWED;
-            break;
-        }
+                result = MODE_SWITCH_NOT_ALLOWED;
+                break;
+            }
 
-        switch (new_mode) {
-            // Always OK.
-        case Panic: {
-            _initial_panic = true;
-        }
-        case Calibration:
-        case Manual: {
-            result = MODE_SWITCH_OK;
+            switch (new_mode) {
+                case Panic: {
+                    _initial_panic = true;
+                }
+
+                case DumpFlash:
+                case Calibration:
+                case Manual: {
+                    result = MODE_SWITCH_OK;
+                    break;
+                }
+
+                case YawControl:
+                case FullControl:
+                case Raw:
+                case Wireless: {
+                    if (_is_calibrated) {
+                        result = MODE_SWITCH_OK;
+                    }
+                    else {
+                        result = MODE_SWITCH_UNSUPPORTED;
+                    }
+                    break;
+                }
+
+                case Height: {
+                    result = MODE_SWITCH_NOT_ALLOWED;
+                    break;
+                }
+
+                default: {
+                    result = MODE_SWITCH_UNSUPPORTED;
+                    break;
+                }
+
+            }
             break;
         }
-                     // Requires calibration.
+        case Panic: {
+            switch (new_mode) {
+                // Always OK.
+                case Safe: {
+                    result = MODE_SWITCH_OK;
+                    break;
+                }
+                default: {
+                    result = MODE_SWITCH_UNSUPPORTED;
+                    break;
+                }
+            }
+            break;
+        }
+        case Calibration: {
+            switch (new_mode) {
+                case Safe:
+                    calibrate(true);
+                case Panic: {
+                    result = MODE_SWITCH_OK;
+                    break;
+                }
+
+                default: {
+                    result = MODE_SWITCH_UNSUPPORTED;
+                    break;
+                }
+            }
+            break;
+        }
+        case FullControl: {
+            switch (new_mode) {
+                case Height: {
+                    // Set setpoint and pin lift.
+                    target_state.pressure = current_state.pressure;
+                    current_state.lift = target_state.lift;
+                    char c[14];
+                    snprintf(c, 14, "%d", target_state.pressure);
+                    exception(UnknownException, c);
+                }
+                case Safe:
+                case Panic: {
+                    result = MODE_SWITCH_OK;
+                    break;
+                }
+
+                default: {
+                    result = MODE_SWITCH_UNSUPPORTED;
+                    break;
+                }
+            }
+            break;
+        }
+        case Manual:
         case YawControl:
-        case FullControl:
         case Raw:
         case Height:
         case Wireless: {
-            if (_is_calibrated) {
-                result = MODE_SWITCH_OK;
-            }
-            else {
-                result = MODE_SWITCH_UNSUPPORTED;
-            }
-            break;
-        }
-                       // Unknown transition.
-        default: {
-            result = MODE_SWITCH_UNSUPPORTED;
-            break;
-        }
+            switch (new_mode) {
+                case Safe:
+                case Panic: {
+                    result = MODE_SWITCH_OK;
+                    break;
+                }
 
-        }
-        break;
-    }
-               // Never transition from panic mode.
-    case Panic: {
-        switch (new_mode) {
-            // Always OK.
-        case Safe: {
-            result = MODE_SWITCH_OK;
+                default: {
+                    result = MODE_SWITCH_UNSUPPORTED;
+                    break;
+                }
+            }
             break;
         }
         default: {
             result = MODE_SWITCH_UNSUPPORTED;
             break;
         }
-        }
-        break;
-    }
-                // Finalize calibration upon switching back to safe mode.
-    case Calibration:
-        switch (new_mode) {
-        case Safe:
-            calibrate(true);
-        case Panic: {
-            result = MODE_SWITCH_OK;
-            break;
-        }
-        default: {
-            result = MODE_SWITCH_UNSUPPORTED;
-            break;
-        }
-                 break;
-        }
-        // Other modes can only transition to safe or panic mode.
-    case Manual:
-    case YawControl:
-    case FullControl:
-    case Raw:
-    case Height:
-    case Wireless: {
-        switch (new_mode) {
-        case Safe:
-        case Panic: {
-            result = MODE_SWITCH_OK;
-            break;
-        }
-        default: {
-            result = MODE_SWITCH_UNSUPPORTED;
-            break;
-        }
-        }
-        break;
-    }
-    default: {
-        result = MODE_SWITCH_UNSUPPORTED;
-        break;
-    }
     }
 
     if (result == MODE_SWITCH_OK) {
@@ -501,8 +535,7 @@ void Quadrupel::update_motors() {
 void Quadrupel::control() {
     // Equations to get desired lift, roll rate, pitch rate and yaw rate.
     int32_t oo1, oo2, oo3, oo4;
-    uint16_t lift;
-    int16_t roll, pitch, yaw, p_s, q_s;
+    int16_t lift, roll, pitch, yaw, p_s, q_s;
 
     if (_mode == Panic) {
         if (_initial_panic) {
@@ -530,8 +563,7 @@ void Quadrupel::control() {
 
             yaw = p_ctr.p_yaw * (target_state.yaw - current_state.yaw);
         }
-        else if (_mode == FullControl) {
-            lift = target_state.lift;
+        else if (_mode == FullControl || _mode == Height) {
 
             p_s = p_ctr.p1_pitch_roll * (target_state.roll - current_state.roll);
             roll = p_ctr.p2_pitch_roll * (p_s - sp);
@@ -540,6 +572,11 @@ void Quadrupel::control() {
             pitch = p_ctr.p2_pitch_roll * (q_s - sq);
 
             yaw = p_ctr.p_yaw * (target_state.yaw - current_state.yaw);
+
+            if (_mode == Height)
+                lift = p_ctr.p_height * (target_state.pressure - current_state.pressure);
+            else
+                lift = target_state.lift;
         }
         else {
             lift = 0;
@@ -573,7 +610,6 @@ void Quadrupel::control() {
 void Quadrupel::calibrate(bool finalize) {
     calibration_state.roll += phi;
     calibration_state.pitch += theta;
-//    calibration_state.yaw += sr;
     calibration_state.steps++;
 
     if (finalize) {
@@ -585,7 +621,6 @@ void Quadrupel::calibrate(bool finalize) {
         calibration_state.steps = 0;
         calibration_state.roll = 0;
         calibration_state.pitch = 0;
-        calibration_state.yaw = 0;
     }
 }
 
@@ -606,7 +641,7 @@ uint16_t Quadrupel::scale_motor(int32_t value) {
 
     // Offset
     value += p_act.motor_min;
-    if (target_state.lift < 100)
+    if (target_state.pressure < 100)
         return 0;
     else
         return (uint16_t)value;
@@ -639,10 +674,15 @@ void Quadrupel::set_p_misc(MiscParameterData *data) {
 }
 
 void Quadrupel::set_current_state() {
-    // TODO: Add lift.
+    // Center barometer output around normal sea level atmospheric pressure, so it fits in an int16_t.
+    auto norm_pressure = static_cast<int16_t>(pressure - PRESSURE_SEA_LEVEL);
+
     current_state.roll = phi - calibration_offsets.roll;
     current_state.pitch = theta - calibration_offsets.pitch;
-    current_state.yaw = sr; // - calibration_offsets.yaw;
+    current_state.yaw = sr;
+
+    // Apply moving average filter.
+    current_state.pressure = static_cast<int16_t>((current_state.pressure * (BARO_WINDOW_SIZE - 1) + norm_pressure) / BARO_WINDOW_SIZE);
 }
 
 

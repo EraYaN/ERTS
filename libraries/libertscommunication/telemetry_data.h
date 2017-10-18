@@ -8,12 +8,12 @@ class TelemetryData : public PacketData {
 	int16_t _phi;
 	int16_t _theta;
 	int16_t _psi;
-	int16_t _q; // Unused
+	int16_t _pressure;
 	int16_t _r; // Unused
 	uint16_t _loop_time;
 
 public:
-    TelemetryData(uint16_t battery_voltage, int16_t phi, int16_t theta, int16_t psi, int16_t q, int16_t r,
+    TelemetryData(uint16_t battery_voltage, int16_t phi, int16_t theta, int16_t psi, int16_t pressure, int16_t r,
                   uint16_t loop_time, flightMode_t flight_mode);
 
 	int get_length() override {

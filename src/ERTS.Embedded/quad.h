@@ -26,16 +26,18 @@ extern "C"
 #define MODE_SWITCH_UNSUPPORTED 1
 #define MODE_SWITCH_NOT_ALLOWED 2
 
+#define PRESSURE_SEA_LEVEL 101325
+#define BARO_WINDOW_SIZE 8
+
 typedef struct {
     uint16_t lift = 0;
+    int16_t pressure = 0;
     int16_t yaw = 0;
     int16_t pitch = 0;
     int16_t roll = 0;
 } quad_state_t;
 
 typedef struct {
-    uint32_t lift = 0;
-    int32_t yaw = 0;
     int32_t pitch = 0;
     int32_t roll = 0;
     int32_t steps = 0;
@@ -74,15 +76,14 @@ class Quadrupel {
     // State
     bool _initial_panic = false;
     flightMode_t _mode = Safe;
-    flightMode_t _new_mode = Safe;
     bool _is_calibrated = false;
     uint32_t _accum_loop_time;
     quad_state_t target_state, current_state, calibration_offsets;
     calibration_state_t calibration_state;
 
     // Comm
-    uint32_t counterHB = 1;
-    uint32_t counterLED = 1;
+    uint32_t counter_hb = 1;
+    uint32_t counter_led = 1;
     uint16_t last_two_bytes = 0;
     bool _receiving = false;
     uint8_t comm_buffer[MAX_PACKET_SIZE];
