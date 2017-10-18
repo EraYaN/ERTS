@@ -133,7 +133,7 @@ namespace ERTS.Dashboard.Control
 
         private void RCTimer_Elapsed(object sender, EventArgs e)
         {
-            if (GlobalData.com != null)
+            if (GlobalData.com != null && !FlashFileIsOpen)
             {
                 /*if (counter >= 2000)
                 {
@@ -176,6 +176,11 @@ namespace ERTS.Dashboard.Control
             Pressure = data.Pressure;
             RaisePropertyChanged("Pressure");
 
+            if (Mode != FlightMode.DumpFlash && FlashFileIsOpen)
+            {
+                Debug.WriteLine("Got a mode that is not DumpFlash, while the flash dump was activated, stopping flash dump.");
+                EndFlashDump();
+            }
         }
 
         public void HandleFlashData(FlashData data)

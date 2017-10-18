@@ -78,6 +78,9 @@ namespace ERTS.Dashboard.Communication {
                 case MessageType.RemoteControl:
                     Data = new RemoteControlData(dataSegment);
                     break;
+                case MessageType.FlashData:
+                    Data = new FlashData(dataSegment);
+                    break;
                 case MessageType.ActuationParameters:
                     throw new NotImplementedException();
                     break;
