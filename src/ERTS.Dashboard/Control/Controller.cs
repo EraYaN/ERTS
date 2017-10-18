@@ -38,6 +38,7 @@ namespace ERTS.Dashboard.Control
         public short Phi { get; set; }
         public short Theta { get; set; }
         public short Psi { get; set; }
+        public short Pressure { get; set; }
 
         public double LoopTime { get; set; }
 
@@ -158,6 +159,8 @@ namespace ERTS.Dashboard.Control
             RaisePropertyChanged("Theta");
             Psi = data.Psi;
             RaisePropertyChanged("Psi");
+            Pressure = data.Pressure;
+            RaisePropertyChanged("Pressure");
 
         }
         public void HandleAcknowledge(AcknowledgeData data)

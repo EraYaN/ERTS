@@ -49,7 +49,7 @@ namespace ERTS.Dashboard.ViewModel
             get
             {
                 if (GlobalData.ctr != null)
-                    return String.Format("{0:N2}", GlobalData.ctr.Phi);
+                    return String.Format("{0}", GlobalData.ctr.Phi);
                 else
                     return "-";
             }
@@ -60,7 +60,7 @@ namespace ERTS.Dashboard.ViewModel
             get
             {
                 if (GlobalData.ctr != null)
-                    return String.Format("{0:N2}", GlobalData.ctr.Theta);
+                    return String.Format("{0}", GlobalData.ctr.Theta);
                 else
                     return "-";
             }
@@ -71,19 +71,19 @@ namespace ERTS.Dashboard.ViewModel
             get
             {
                 if (GlobalData.ctr != null)
-                    return String.Format("{0:N2}", GlobalData.ctr.Psi);
+                    return String.Format("{0}", GlobalData.ctr.Psi);
                 else
                     return "-";
             }
         }
 
-        public string HeightString
+        public string PressureString
         {
             get
             {
-                //if (GlobalData.ctr != null)
-                //    return String.Format("{0:N2}", GlobalData.ctr.Psi);
-                //else
+                if (GlobalData.ctr != null)
+                    return String.Format("{0}", GlobalData.ctr.Pressure);
+                else
                     return "-";
             }
         }
@@ -625,9 +625,9 @@ namespace ERTS.Dashboard.ViewModel
                 RaisePropertyChanged("PsiString");
                 return;
             }
-            else if (e.PropertyName == "Height")
+            else if (e.PropertyName == "Pressure")
             {
-                RaisePropertyChanged("HeightString");
+                RaisePropertyChanged("PressureString");
                 return;
             }
             else if (e.PropertyName == "LoopTime")

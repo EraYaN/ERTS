@@ -11,7 +11,7 @@ namespace ERTS.Dashboard.Communication.Data
         short phi;
         short theta;
         short psi;
-        short q;
+        short pressure;
         short r;
         ushort loopTime;
 
@@ -31,8 +31,8 @@ namespace ERTS.Dashboard.Communication.Data
             get { return psi; }
         }
         // Unused
-        public short Q {
-            get { return q; }
+        public short Pressure {
+            get { return pressure; }
         }
         // Unused
         public short R {
@@ -43,14 +43,14 @@ namespace ERTS.Dashboard.Communication.Data
         }
 
 
-        public TelemetryData(ushort BatteryVoltage, FlightMode FlightMode, short Phi, short Theta, short Psi, short Q, short R, ushort LoopTime)
+        public TelemetryData(ushort BatteryVoltage, FlightMode FlightMode, short Phi, short Theta, short Psi, short Pressure, short R, ushort LoopTime)
         {
             batteryVoltage = BatteryVoltage;
             flightMode = FlightMode;
             phi = Phi;
             theta = Theta;
             psi = Psi;
-            q = Q;
+            pressure = Pressure;
             r = R;
             loopTime = LoopTime;
         }
@@ -70,7 +70,7 @@ namespace ERTS.Dashboard.Communication.Data
             phi = BitConverter.ToInt16(data, sizeof(short));
             theta = BitConverter.ToInt16(data, sizeof(short) * 2);
             psi = BitConverter.ToInt16(data, sizeof(short) * 3);
-            q = BitConverter.ToInt16(data, sizeof(short) * 4);
+            pressure = BitConverter.ToInt16(data, sizeof(short) * 4);
             r = BitConverter.ToInt16(data, sizeof(short) * 5);
             loopTime = BitConverter.ToUInt16(data, sizeof(ushort) * 6);
         }
@@ -101,7 +101,7 @@ namespace ERTS.Dashboard.Communication.Data
             Buffer.BlockCopy(BitConverter.GetBytes(theta), 0, data, sizeof(ushort) * 2, sizeof(ushort));
             //rotations
             Buffer.BlockCopy(BitConverter.GetBytes(psi), 0, data, sizeof(ushort) * 3, sizeof(ushort));
-            Buffer.BlockCopy(BitConverter.GetBytes(q), 0, data, sizeof(ushort) * 4, sizeof(ushort));
+            Buffer.BlockCopy(BitConverter.GetBytes(pressure), 0, data, sizeof(ushort) * 4, sizeof(ushort));
             Buffer.BlockCopy(BitConverter.GetBytes(r), 0, data, sizeof(ushort) * 5, sizeof(ushort));
             //loopTime
             Buffer.BlockCopy(BitConverter.GetBytes(loopTime), 0, data, sizeof(ushort) * 6, sizeof(ushort));
@@ -116,7 +116,7 @@ namespace ERTS.Dashboard.Communication.Data
             sb.AppendFormat("Phi: {0}\n", phi);
             sb.AppendFormat("Theta: {0}\n", theta);
             sb.AppendFormat("Psi: {0}\n", psi);
-            sb.AppendFormat("Q: {0}\n", q);
+            sb.AppendFormat("Rel. pressure: {0}\n", pressure);
             sb.AppendFormat("R: {0}\n", r);
             sb.AppendFormat("Loop Time: {0}\n", loopTime);
             
