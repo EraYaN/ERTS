@@ -7,7 +7,7 @@ class FlashDumpData : public PacketData {
     uint8_t _data[DATA_SIZE-2];
 
 public:
-    FlashDumpData(uint16_t seqNumber, uint8_t data[DATA_SIZE-2]);
+    FlashDumpData(uint16_t seqNumber, uint8_t* data);
 
     int get_length() override {
         return DATA_SIZE;

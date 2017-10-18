@@ -1,7 +1,7 @@
 #include <cstring>
 #include "flashdump_data.h"
 
-FlashDumpData::FlashDumpData(uint16_t seqNumber, uint8_t data[DATA_SIZE-2]){
+FlashDumpData::FlashDumpData(uint16_t seqNumber, uint8_t* data){
     _seqNumber = seqNumber;
     memcpy(_data, data, DATA_SIZE-2);
 }

@@ -94,6 +94,13 @@ class Quadrupel {
     uint32_t packets = 0;
     bool status_printed = false;
 
+    //Flash dump
+    uint32_t counter_fd = 1;
+    bool flash_dump_started = false;
+    uint16_t telemetry_divider_old = 0;
+    uint16_t flash_dump_divider = 10;
+    uint16_t flash_sequence_number = 0;
+
     // Private methods
     void receive();
 
@@ -140,5 +147,9 @@ public:
 
     void set_p_misc(MiscParameterData *data);
 
-    void dumpflash();
+    void start_flash_dump();
+
+    void stop_flash_dump();
+
+    void send_flash_dump_data();
 };

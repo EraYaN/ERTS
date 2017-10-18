@@ -304,6 +304,7 @@ void Quadrupel::tick() {
 
     counter_hb++;
 
+
     read_baro();
 
     if (_mode != Panic && _mode != Safe && _mode != Calibration) {
@@ -324,9 +325,16 @@ void Quadrupel::tick() {
 
     }
 
-    // print flash to UART
+    // Send all flash dump packets to PC over UART
     if (_mode == DumpFlash) {
-        dumpflash(); // blocking function, turns off heartbeats and sends a lot of messages
+        counter_fd++;
+        if (counter_fd == flash_dump_divider) {
+
+            counter_fd = 1;
+            send_flash_dump_data(); // non blocking function, send one message
+            
+        }
+        
     }
 
 
@@ -408,7 +416,9 @@ int Quadrupel::set_mode(flightMode_t new_mode) {
                     _initial_panic = true;
                 }
 
-                case DumpFlash:
+                case DumpFlash: {
+                    start_flash_dump();
+                }
                 case Calibration:
                 case Manual: {
                     result = MODE_SWITCH_OK;
@@ -692,25 +702,48 @@ void Quadrupel::set_current_state() {
 }
 
 
-void Quadrupel::dumpflash() {
-    uint16_t seqNumber = 0;
-    uint8_t dataFlash[DATA_SIZE];
-    auto packet = new Packet(FlashData);
-    uint16_t telemetry_divider_old = p_misc.telemetry_divider;
-
+void Quadrupel::start_flash_dump() {
+    telemetry_divider_old = p_misc.telemetry_divider;
+    if (telemetry_divider_old>0) {
+        flash_dump_divider = telemetry_divider_old;
+    }
     // Turn off heartbeats 
     // (interupts stay on, because of motor timers. GUI should just not send telemetry now)
     p_misc.telemetry_divider = 0;
+    flash_sequence_number = 0;
+    flash_dump_started = true;
+}
 
-    for (seqNumber = 0; seqNumber <= FLASH_PACKETS; seqNumber++) {
-        flash_read_bytes(seqNumber * FLASH_BYTES_PER_UART_PACKET, dataFlash, FLASH_BYTES_PER_UART_PACKET);
-        auto data = new FlashDumpData(seqNumber, dataFlash);
-        packet->set_data(data);
-        send(packet);
-    }
-
+void Quadrupel::stop_flash_dump() {
+    flash_dump_started = false;
     // Turn on heartbeats
     p_misc.telemetry_divider = telemetry_divider_old;
+    set_mode(Safe);
+}
+
+void Quadrupel::send_flash_dump_data() {
+    if (!flash_dump_started)
+        return;
+
+    uint8_t* flash_data = new uint8_t[DATA_SIZE];
+    if(flash_sequence_number < FLASH_PACKETS) {
+        flash_read_bytes(flash_sequence_number * FLASH_BYTES_PER_UART_PACKET, flash_data, FLASH_BYTES_PER_UART_PACKET);
+        
+    }
+    else if (flash_sequence_number == FLASH_PACKETS) {
+        flash_read_bytes(flash_sequence_number * FLASH_BYTES_PER_UART_PACKET, flash_data, FLASH_LAST_PACKET_SIZE);
+        stop_flash_dump();
+    }
+    else {
+        stop_flash_dump();
+    }
+    auto packet = new Packet(FlashData);
+    auto data = new FlashDumpData(flash_sequence_number, flash_data);
+    packet->set_data(data);
+    send(packet);
+
+    flash_sequence_number++;
 
     delete packet;
+    delete[] flash_data;
 }
