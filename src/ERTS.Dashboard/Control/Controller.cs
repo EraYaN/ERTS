@@ -71,7 +71,7 @@ namespace ERTS.Dashboard.Control
 
         BinaryWriter flashFile;
         int dumpPosition = 0;
-        //int counter=0;
+        int flashDumpTerminateCounter=0;
 
 
         public Controller()
@@ -176,11 +176,18 @@ namespace ERTS.Dashboard.Control
             Pressure = data.Pressure;
             RaisePropertyChanged("Pressure");
 
-            if (Mode != FlightMode.DumpFlash && FlashFileIsOpen)
+            if (Mode != FlightMode.DumpFlash && FlashFileIsOpen && flashDumpTerminateCounter>10)
             {
-                Debug.WriteLine("Got a mode that is not DumpFlash, while the flash dump was activated, stopping flash dump.");
-                EndFlashDump();
-            }
+                if (flashDumpTerminateCounter > 10)
+                {
+                    Debug.WriteLine("Got a mode that is not DumpFlash, while the flash dump was activated, stopping flash dump.");
+                    EndFlashDump();
+                }
+                else
+                {
+                    flashDumpTerminateCounter++;
+                }
+            } 
         }
 
         public void HandleFlashData(FlashData data)
@@ -246,6 +253,7 @@ namespace ERTS.Dashboard.Control
             fs.SetLength(FLASH_MAX_ADDRESS);
             flashFile = new BinaryWriter(fs);
 
+            flashDumpTerminateCounter = 0;
             dumpPosition = 0;
             RaisePropertyChanged("FlashPosition");
 

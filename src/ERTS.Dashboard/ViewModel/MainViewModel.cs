@@ -311,11 +311,11 @@ namespace ERTS.Dashboard.ViewModel
                 if (GlobalData.ctr != null)
                     if (GlobalData.ctr.FlashFileIsOpen)
                     {
-                        return "Flash Dump in Progess...";
+                        return String.Format("Flash Dump in Progess...\n{0}/{1}", GlobalData.ctr.FlashPosition, Controller.FLASH_MAX_ADDRESS);
                     }
                     else
                     {
-                        return "Idle.";
+                        return String.Format("Idle.\n{0}/{1}", GlobalData.ctr.FlashPosition, Controller.FLASH_MAX_ADDRESS);
                     }
                 else
                     return "ctr in null";
@@ -594,6 +594,8 @@ namespace ERTS.Dashboard.ViewModel
             else if (e.PropertyName == "FlashPosition")
             {
                 RaisePropertyChanged("FlashDumpValue");
+                RaisePropertyChanged("FlashDumpStatus");
+                return;
             }
             else if (e.PropertyName == "FlashFileIsOpen")
             {

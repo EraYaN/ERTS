@@ -132,7 +132,7 @@
                 <Grid>
                     
                     <StackPanel VerticalAlignment="Center">
-                        <Label Content="{Binding FlashDumpStatus}"/>
+                        <TextBlock Text="{Binding FlashDumpStatus, Mode=OneWay}" Margin="5,0"/>
                         <ProgressBar Maximum="{Binding FlashDumpMax, Mode=OneWay}" Value="{Binding FlashDumpValue, Mode=OneWay}" Width="150" Height="20" Margin="5,5"/>
 
                     </StackPanel>
