@@ -307,7 +307,7 @@ void Quadrupel::tick() {
 
     read_baro();
 
-    if (_mode != Panic && _mode != Safe && _mode != Calibration) {
+    if (_mode != Panic && _mode != Safe && _mode != Calibration && _mode != DumpFlash) {
         if ((get_time_us() - last_received) > (p_misc.comm_timeout >> 1)) {
             nrf_gpio_pin_clear(RED);
         }
@@ -356,7 +356,7 @@ void Quadrupel::tick() {
 
     if (counter_hb == p_misc.telemetry_divider) {
         adc_request_sample(); // Really only needed once per heartbeat
-        if (_mode != Panic && _mode != Safe) {
+        if (_mode != Panic && _mode != Safe && _mode != DumpFlash) {
             if (bat_volt < p_misc.battery_threshold) {
 #ifdef FAKE_DRIVERS
                 std::cout << "Battery low, entering panic mode." << std::endl;
