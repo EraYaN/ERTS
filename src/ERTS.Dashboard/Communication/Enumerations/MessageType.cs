@@ -18,7 +18,10 @@
         ControllerParameters = 0x41, ///Expects Acknowledgement.
         MiscParameters = 0x42, ///Expects Acknowledgement.
 
-        //Reserved for future use (0xA0-0xDF)
+        //Flash messages (0xA0-0xAF)
+        FlashData = 0xA0, ///Expects no Acknowledgement.
+
+        //Reserved for future use (0xB0-0xDF)
 
         //Exceptions, system commands and other failure mode related stuff (0xF0 - 0xFD)
         Reset = 0xFB, ///Expects Acknolegdement. Resets the Embedded System

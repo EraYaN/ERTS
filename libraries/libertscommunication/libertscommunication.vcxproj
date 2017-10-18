@@ -15,6 +15,7 @@
     <ClInclude Include="actuation_parameter_data.h" />
     <ClInclude Include="controller_parameter_data.h" />
     <ClInclude Include="exception_data.h" />
+    <ClInclude Include="flashdump_data.h" />
     <ClInclude Include="misc_parameter_data.h" />
     <ClInclude Include="mode_switch_data.h" />
     <ClInclude Include="packet.h" />
@@ -28,6 +29,7 @@
     <ClCompile Include="actuation_parameter_data.cpp" />
     <ClCompile Include="controller_parameter_data.cpp" />
     <ClCompile Include="exception_data.cpp" />
+    <ClCompile Include="flashdump_data.cpp" />
     <ClCompile Include="misc_parameter_data.cpp" />
     <ClCompile Include="mode_switch_data.cpp" />
     <ClCompile Include="packet.cpp" />

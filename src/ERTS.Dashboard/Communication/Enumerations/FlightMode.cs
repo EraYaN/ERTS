@@ -25,6 +25,8 @@ namespace ERTS.Dashboard.Communication.Enumerations
         Height = 0x7,
         [Description("Wireless control")]
         Wireless = 0x8,
+        [Description("Dump flash")]
+        DumpFlash = 0x9,
         [Description("No mode")]
         None = 0xF
     }

@@ -64,34 +64,34 @@ void Quadrupel::receive() {
             // Received 5 bytes, check message type.
             if (comm_buffer_index == 3) {
                 switch (comm_buffer[2]) {
-                case UnknownPacket:
-                case ModeSwitch:
-                case Acknowledge:
-                case Telemetry:
-                case RemoteControl:
-                case ActuationParameters:
-                case ControllerParameters:
-                case MiscParameters:
-                case Reset:
-                case Kill:
-                case Exception:
-                    // Message type OK.
-                    break;
-                default:
-                    // Message type unrecognized.
-                    exception(BadMessageTypeException, "Bad MessageT ");
+                    case UnknownPacket:
+                    case ModeSwitch:
+                    case Acknowledge:
+                    case Telemetry:
+                    case RemoteControl:
+                    case ActuationParameters:
+                    case ControllerParameters:
+                    case MiscParameters:
+                    case Reset:
+                    case Kill:
+                    case Exception:
+                        // Message type OK.
+                        break;
+                    default:
+                        // Message type unrecognized.
+                        exception(BadMessageTypeException, "Bad MessageT ");
 #ifdef FAKE_DRIVERS
-                    std::cout << "Exception: Unknown packet type " << std::hex << comm_buffer[2] << std::endl;
+                        std::cout << "Exception: Unknown packet type " << std::hex << comm_buffer[2] << std::endl;
 #endif
-                    _receiving = false;
-                    comm_buffer_index = 0;
-                    break;
+                        _receiving = false;
+                        comm_buffer_index = 0;
+                        break;
                 }
             }
             else if (comm_buffer_index == MAX_PACKET_SIZE) {
                 if (comm_buffer[MAX_PACKET_SIZE - 1] == END_SEQUENCE) {
-                    if (Packet::verify((byte *)comm_buffer)) {
-                        auto *packet = new Packet((byte *)comm_buffer);
+                    if (Packet::verify((byte *) comm_buffer)) {
+                        auto *packet = new Packet((byte *) comm_buffer);
 #ifdef FAKE_DRIVERS
                         std::cout << "RX:\t\t";
                         packet_print(comm_buffer);
@@ -126,7 +126,7 @@ void Quadrupel::receive() {
                     // TODO: handle this?
 #ifdef FAKE_DRIVERS
                     std::cout << "Exception: Last byte was " << std::hex << comm_buffer[MAX_PACKET_SIZE - 1]
-                        << std::endl;
+                              << std::endl;
 #endif
                     _receiving = false;
                     comm_buffer_index = 0;
@@ -198,11 +198,12 @@ void Quadrupel::heartbeat() {
     // Calculate loop time.
     /*if (_accum_loop_time > UINT16_MAX)
         printf("Loop time over run.\n");*/
-    auto loop_time = (uint16_t)_accum_loop_time;
+    auto loop_time = (uint16_t) _accum_loop_time;
 
     _accum_loop_time = 0;
     auto packet = new Packet(Telemetry);
-    auto data = new TelemetryData(bat_volt, current_state.roll, current_state.pitch, current_state.yaw, current_state.pressure, 0, loop_time, _mode);
+    auto data = new TelemetryData(bat_volt, current_state.roll, current_state.pitch, current_state.yaw,
+                                  current_state.pressure, 0, loop_time, _mode);
     packet->set_data(data);
 
     send(packet);
@@ -214,58 +215,58 @@ bool Quadrupel::handle_packet(Packet *packet) {
     // TODO: static_casts should suffice as we check for type already and are faster, but are potentially dangerous, replace?
 
     switch (packet->get_type()) {
-    case ModeSwitch: {
-        auto *data = dynamic_cast<ModeSwitchData *>(packet->get_data());
-        if (set_mode(data->get_new_mode()) != MODE_SWITCH_OK) {
-            // TODO: Send exception.
-            exception(InvalidModeException, "Bad Main Mode");
-            if (data->get_fallback_mode() != None) {
-                if (set_mode(data->get_fallback_mode()) != MODE_SWITCH_OK) {
-                    exception(InvalidModeException, "Bad Fallback.");
+        case ModeSwitch: {
+            auto *data = dynamic_cast<ModeSwitchData *>(packet->get_data());
+            if (set_mode(data->get_new_mode()) != MODE_SWITCH_OK) {
+                // TODO: Send exception.
+                exception(InvalidModeException, "Bad Main Mode");
+                if (data->get_fallback_mode() != None) {
+                    if (set_mode(data->get_fallback_mode()) != MODE_SWITCH_OK) {
+                        exception(InvalidModeException, "Bad Fallback.");
+                        return false;
+                    }
+                }
+                else {
                     return false;
                 }
             }
-            else {
-                return false;
-            }
+            break;
         }
-        break;
-    }
-    case RemoteControl: {
-        auto *data = dynamic_cast<RemoteControlData *>(packet->get_data());
+        case RemoteControl: {
+            auto *data = dynamic_cast<RemoteControlData *>(packet->get_data());
 
-        target_state.pressure = data->get_lift();
-        target_state.roll = data->get_roll();
-        target_state.pitch = data->get_pitch();
-        target_state.yaw = data->get_yaw();
+            target_state.pressure = data->get_lift();
+            target_state.roll = data->get_roll();
+            target_state.pitch = data->get_pitch();
+            target_state.yaw = data->get_yaw();
 
 
-        last_received = get_time_us();
-        break;
+            last_received = get_time_us();
+            break;
 
-    }
-    case Kill: {
-        kill();
-        break;
-    }
-    case ActuationParameters: {
-        auto *data = dynamic_cast<ActuationParameterData *>(packet->get_data());
-        set_p_act(data);
-        break;
-    }
-    case ControllerParameters: {
-        auto *data = dynamic_cast<ControllerParameterData *>(packet->get_data());
-        set_p_ctr(data);
-        break;
-    }
-    case MiscParameters: {
-        auto *data = dynamic_cast<MiscParameterData *>(packet->get_data());
-        set_p_misc(data);
-        break;
-    }
-    default:
-        // Could not handle packet.
-        return false;
+        }
+        case Kill: {
+            kill();
+            break;
+        }
+        case ActuationParameters: {
+            auto *data = dynamic_cast<ActuationParameterData *>(packet->get_data());
+            set_p_act(data);
+            break;
+        }
+        case ControllerParameters: {
+            auto *data = dynamic_cast<ControllerParameterData *>(packet->get_data());
+            set_p_ctr(data);
+            break;
+        }
+        case MiscParameters: {
+            auto *data = dynamic_cast<MiscParameterData *>(packet->get_data());
+            set_p_misc(data);
+            break;
+        }
+        default:
+            // Could not handle packet.
+            return false;
     }
 
     return true;
@@ -319,6 +320,11 @@ void Quadrupel::tick() {
 
         }
 
+    }
+
+    // print flash to UART
+    if (_mode == DumpFlash) {
+        dumpflash(); // blocking function, turns off heartbeats and sends a lot of messages
     }
 
     if (_mode == Height) {
@@ -395,6 +401,7 @@ int Quadrupel::set_mode(flightMode_t new_mode) {
                     || target_state.pitch != 0
                     || target_state.yaw != 0
                 )) {
+
                 result = MODE_SWITCH_NOT_ALLOWED;
                 break;
             }
@@ -537,6 +544,9 @@ void Quadrupel::control() {
     int32_t oo1, oo2, oo3, oo4;
     int16_t lift, roll, pitch, yaw, p_s, q_s;
 
+    flash_write_remote(get_time_us(), _mode, target_state.lift, target_state.roll, target_state.pitch,
+                       target_state.yaw);
+
     if (_mode == Panic) {
         if (_initial_panic) {
             // Set all motors equal to the current average value.
@@ -614,8 +624,8 @@ void Quadrupel::calibrate(bool finalize) {
 
     if (finalize) {
         _is_calibrated = true;
-        calibration_offsets.roll = (int16_t)(calibration_state.roll / calibration_state.steps);
-        calibration_offsets.pitch = (int16_t)(calibration_state.pitch / calibration_state.steps);
+        calibration_offsets.roll = (int16_t) (calibration_state.roll / calibration_state.steps);
+        calibration_offsets.pitch = (int16_t) (calibration_state.pitch / calibration_state.steps);
 
         // Reset.
         calibration_state.steps = 0;
@@ -627,9 +637,10 @@ void Quadrupel::calibrate(bool finalize) {
 void Quadrupel::init_divider() {
     uint32_t min = 0;
 
-    auto max = (uint32_t)(UINT16_MAX / (p_act.rate_lift) + INT16_MAX / p_act.rate_pitch_roll + INT16_MAX / p_act.rate_yaw);
+    auto max = (uint32_t) (UINT16_MAX / (p_act.rate_lift) + INT16_MAX / p_act.rate_pitch_roll +
+                           INT16_MAX / p_act.rate_yaw);
 
-    p_act.divider = (uint16_t)((max - min) / (p_act.motor_max - p_act.motor_min));
+    p_act.divider = (uint16_t) ((max - min) / (p_act.motor_max - p_act.motor_min));
 }
 
 uint16_t Quadrupel::scale_motor(int32_t value) {
@@ -644,7 +655,7 @@ uint16_t Quadrupel::scale_motor(int32_t value) {
     if (target_state.pressure < 100)
         return 0;
     else
-        return (uint16_t)value;
+        return (uint16_t) value;
 }
 
 void Quadrupel::set_p_act(ActuationParameterData *data) {
@@ -670,7 +681,7 @@ void Quadrupel::set_p_misc(MiscParameterData *data) {
     //TODO implement this: p_misc.telemetry_divider = data->get_telemetry_divider();
     p_misc.battery_threshold = data->get_battery_threshold();
     p_misc.target_loop_time = data->get_target_loop_time();
-    p_misc.comm_timeout = ((uint32_t)(p_misc.rc_interval) << 2) * 1000;
+    p_misc.comm_timeout = ((uint32_t) (p_misc.rc_interval) << 2) * 1000;
 }
 
 void Quadrupel::set_current_state() {
@@ -682,7 +693,8 @@ void Quadrupel::set_current_state() {
     current_state.yaw = sr;
 
     // Apply moving average filter.
-    current_state.pressure = static_cast<int16_t>((current_state.pressure * (BARO_WINDOW_SIZE - 1) + norm_pressure) / BARO_WINDOW_SIZE);
+    current_state.pressure = static_cast<int16_t>((current_state.pressure * (BARO_WINDOW_SIZE - 1) + norm_pressure) /
+                                                  BARO_WINDOW_SIZE);
 }
 
 
@@ -690,16 +702,21 @@ void Quadrupel::dumpflash() {
     uint16_t seqNumber = 0;
     uint8_t dataFlash[DATA_SIZE];
     auto packet = new Packet(FlashData);
+    uint16_t telemetry_divider_old = p_misc.telemetry_divider;
 
-    //TODO:Turn off heartbeats/interupts
+    // Turn off heartbeats 
+    // (interupts stay on, because of motor timers. GUI should just not send telemetry now)
+    p_misc.telemetry_divider = 0;
 
     for (seqNumber = 0; seqNumber <= FLASH_PACKETS; seqNumber++) {
-        flash_read_bytes(seqNumber*FLASH_BYTES_PER_UART_PACKET, dataFlash, FLASH_BYTES_PER_UART_PACKET);
+        flash_read_bytes(seqNumber * FLASH_BYTES_PER_UART_PACKET, dataFlash, FLASH_BYTES_PER_UART_PACKET);
         auto data = new FlashDumpData(seqNumber, dataFlash);
         packet->set_data(data);
         send(packet);
     }
-    //TODO:Turn off heartbeats/interupts
+
+    // Turn on heartbeats
+    p_misc.telemetry_divider = telemetry_divider_old;
 
     delete packet;
 }
