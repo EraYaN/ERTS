@@ -35,8 +35,11 @@ set(FAKE_SOURCE_FILES
         ../libraries/libertscommunication/controller_parameter_data.h
         ../libraries/libertscommunication/misc_parameter_data.cpp
         ../libraries/libertscommunication/misc_parameter_data.h
+        ../libraries/libertscommunication/flashdump_data.cpp
+        ../libraries/libertscommunication/flashdump_data.h
         ../libraries/libertscommunication/exception_data.cpp
-        ../libraries/libertscommunication/exception_data.h)
+        ../libraries/libertscommunication/exception_data.h
+        ERTS.Embedded/quad_config.h)
 
 add_executable(fake_quad ${FAKE_SOURCE_FILES})
 target_compile_definitions(fake_quad PUBLIC -DFAKE_DRIVERS)

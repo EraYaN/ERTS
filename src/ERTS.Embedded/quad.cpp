@@ -567,8 +567,9 @@ void Quadrupel::update_motors() {
 void Quadrupel::control() {
     // Equations to get desired lift, roll rate, pitch rate and yaw rate.
     int32_t oo1, oo2, oo3, oo4;
-    uint16_t lift;
-    int16_t roll, pitch, yaw, p_s, q_s;
+    uint32_t lift;
+    int32_t roll, pitch, yaw, p_s, q_s;
+
     if (func_state & FUNC_LOGGING) {
         flash_write_remote(get_time_us(), _mode, target_state.lift, target_state.roll, target_state.pitch,
             target_state.yaw);
@@ -680,12 +681,13 @@ void Quadrupel::calibrate(bool finalize) {
 void Quadrupel::init_divider() {
     /*auto max = (int32_t);*/
     //0xDD + 0x3F + 0x7F+
-    motor_divider = (uint32_t)((UINT16_MAX / RATE_LIFT + INT16_MAX / RATE_PITCH_ROLL + INT16_MAX / RATE_YAW) / (MOTOR_MAX - MOTOR_MIN));
+    motor_divider = (uint32_t)(DIVIDER_MAX / (MOTOR_MAX - MOTOR_MIN));
 }
 
 uint16_t Quadrupel::scale_motor(int32_t value) {
     // Clamp to zero if required.
     value = value < 0 ? 0 : value;
+    value = value > DIVIDER_MAX ? DIVIDER_MAX : value;
 
     // Scale
     value = value / motor_divider;
