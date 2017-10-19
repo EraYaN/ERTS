@@ -568,9 +568,10 @@ void Quadrupel::control() {
     // Equations to get desired lift, roll rate, pitch rate and yaw rate.
     int32_t oo1, oo2, oo3, oo4;
     int16_t lift, roll, pitch, yaw, p_s, q_s;
-
-    flash_write_remote(get_time_us(), _mode, target_state.lift, target_state.roll, target_state.pitch,
-        target_state.yaw);
+    if (func_state & FUNC_LOGGING) {
+        flash_write_remote(get_time_us(), _mode, target_state.lift, target_state.roll, target_state.pitch,
+            target_state.yaw);
+    }
 
     if (_mode == Panic) {
         if (_initial_panic) {

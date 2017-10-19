@@ -8,6 +8,8 @@ extern "C"
 
 uint32_t flashAddress = 0;
 
+//TODO move to quad.cpp and disable logging and reset address when flash is full.
+
 bool flash_write_test()
 {
     //FlashPacket_t type = flashTest;
