@@ -235,7 +235,7 @@ bool Quadrupel::handle_packet(Packet *packet) {
     case RemoteControl: {
         auto *data = dynamic_cast<RemoteControlData *>(packet->get_data());
 
-        target_state.pressure = data->get_lift();
+        target_state.lift = data->get_lift();
         target_state.roll = data->get_roll();
         target_state.pitch = data->get_pitch();
         target_state.yaw = data->get_yaw();
@@ -567,7 +567,8 @@ void Quadrupel::update_motors() {
 void Quadrupel::control() {
     // Equations to get desired lift, roll rate, pitch rate and yaw rate.
     int32_t oo1, oo2, oo3, oo4;
-    int16_t lift, roll, pitch, yaw, p_s, q_s;
+    uint16_t lift;
+    int16_t roll, pitch, yaw, p_s, q_s;
     if (func_state & FUNC_LOGGING) {
         flash_write_remote(get_time_us(), _mode, target_state.lift, target_state.roll, target_state.pitch,
             target_state.yaw);
@@ -605,7 +606,7 @@ void Quadrupel::control() {
             roll = p_ctr.p2_pitch_roll * (p_s - sp);
 
             q_s = p_ctr.p1_pitch_roll * (target_state.pitch - current_state.pitch);
-            pitch = p_ctr.p2_pitch_roll * (q_s - sq);
+            pitch = -p_ctr.p2_pitch_roll * (q_s - sq);
 
             yaw = p_ctr.p_yaw * (target_state.yaw - current_state.yaw);
 
@@ -677,9 +678,9 @@ void Quadrupel::calibrate(bool finalize) {
 }
 
 void Quadrupel::init_divider() {
-    auto max = (uint32_t)(UINT16_MAX / RATE_LIFT + INT16_MAX / RATE_PITCH_ROLL + INT16_MAX / RATE_YAW);
-
-    motor_divider = (uint16_t)(max / (MOTOR_MAX - MOTOR_MIN));
+    /*auto max = (int32_t);*/
+    //0xDD + 0x3F + 0x7F+
+    motor_divider = (uint32_t)((UINT16_MAX / RATE_LIFT + INT16_MAX / RATE_PITCH_ROLL + INT16_MAX / RATE_YAW) / (MOTOR_MAX - MOTOR_MIN));
 }
 
 uint16_t Quadrupel::scale_motor(int32_t value) {
@@ -691,7 +692,7 @@ uint16_t Quadrupel::scale_motor(int32_t value) {
 
     // Offset
     value += MOTOR_MIN;
-    if (target_state.pressure < 100)
+    if (target_state.lift < 100)
         return 0;
     else
         return (uint16_t)value;

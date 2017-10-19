@@ -85,7 +85,7 @@ class Quadrupel {
     bool status_printed = false;
 
     // Motors
-    uint16_t motor_divider = 1;
+    int32_t motor_divider = 1;
 
     //Flash dump    
     uint16_t telemetry_divider_old = 0;
