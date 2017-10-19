@@ -655,7 +655,7 @@ void Quadrupel::control_fast() {
 
     //e = phi - sphi;// compare to measured phi
 
-    //phi = phi – e / C1;// correct phi to some extent
+    //phi = phi â€“ e / C1;// correct phi to some extent
     //b = b + (e / P2PHI) / C2;// adjust bias term
     // TODO http://www.st.ewi.tudelft.nl/~koen/in4073/lect06-Integration.pdf slide 11
 }
