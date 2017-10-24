@@ -6,27 +6,24 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ERTS.Dashboard.Server;
 
 namespace ERTS.Dashboard.Input
 {
-    public class PatchBox
+    public class PatchBox : IDisposable
     {
         Guid keyboardGuid = new Guid("6f1d2b61-d5a0-11cf-bfc7-444553540000");        
-        Guid joystickGuid = new Guid("241e5050-93f0-11e7-8001-444553540000"); // Lab Joystick, ERWIN_LAPTOP
-        //Guid joystickGuid = new Guid("cc161970-b28e-11e7-8001-444553540000"); // Robin Joystick, ERWIN_PC
+        //Guid joystickGuid = new Guid("241e5050-93f0-11e7-8001-444553540000"); // Lab Joystick, ERWIN_LAPTOP
+        Guid joystickGuid = new Guid("cc161970-b28e-11e7-8001-444553540000"); // Robin Joystick, ERWIN_PC
         //Guid joystickGuid = new Guid("46be56e0-a3a5-11e7-8001-444553540000") // Robin Joystick, ROBIN_LAPTOP
         //Guid xboxPadGuid = new Guid("f211f8e0-8dc4-11e7-800f-444553540000"); // xboxPad 1, ERWIN_PC
         Guid xboxPadGuid = new Guid("c701ce90-a648-11e7-8002-444553540000"); // xboxPad 1, ERWIN_LAPTOP
         const int KeyThreshold = 64;
-        //axis
-        /*InputBinding LiftInputBinding;
-        InputBinding RollInputBinding;
-        InputBinding PitchInputBinding;
-        InputBinding YawInputBinding;*/
+        
+        InputControlServer ics;
 
-        //buttons
-        /*InputBinding AbortInputBinding;*/
-
+        bool _isHTTPEnabled = false;
+        
         //collection
         Dictionary<string, InputBinding> InputBindings = new Dictionary<string, InputBinding>();
 
@@ -35,7 +32,7 @@ namespace ERTS.Dashboard.Input
                 return InputBindings.Values.SelectMany(ca => ca.Controls).Select(control => control.DeviceGuid).Distinct();
             }
         }
-
+        
         public PatchBox()
         {
             
@@ -213,24 +210,59 @@ namespace ERTS.Dashboard.Input
             ModeFlashDumpBinding.BindingActuatedEvent += ModeFlashDumpBinding_BindingActuatedEvent;
             InputBindings.Add("ModeFlashDump", ModeFlashDumpBinding);
 
+            ics = new InputControlServer();
+            ics.ReceivedInput += Ics_ReceivedInput;
+            ics.ClientConnected += Ics_ClientConnected;
+            ics.ClientDisconnected += Ics_ClientDisconnected;
         }
+
+        private void Ics_ClientDisconnected(object sender, ClientDisconnectedEventArgs e)
+        {
+            _isHTTPEnabled = false;
+            GlobalData.ctr.SetLift(0);
+            GlobalData.ctr.SetPitch(0);
+            GlobalData.ctr.SetRoll(0);
+            GlobalData.ctr.SetYaw(0);
+        }
+
+        private void Ics_ClientConnected(object sender, ClientConnectedEventArgs e)
+        {
+            _isHTTPEnabled = true;
+        }
+
+        private void Ics_ReceivedInput(object sender, ReceivedInputEventArgs e)
+        {
+            _isHTTPEnabled = true;
+            if (GlobalData.ctr != null)
+            {
+                GlobalData.ctr.SetLift(e.Lift);
+                GlobalData.ctr.SetPitch(e.Pitch);
+                GlobalData.ctr.SetRoll(e.Roll);
+                GlobalData.ctr.SetYaw(e.Yaw);
+            }
+        }
+
         private void LiftInputBinding_BindingActuatedEvent(object sender, BindingActuatedEventArgs e)
         {
+            if (_isHTTPEnabled) return;
             GlobalData.ctr.SetLift((e.InnerEvent.StateUpdate.Value / 65536.0 - 0.5) * -1 + 0.5);
         }
 
         private void RollInputBinding_BindingActuatedEvent(object sender, BindingActuatedEventArgs e)
         {
+            if (_isHTTPEnabled) return;
             GlobalData.ctr.SetRoll((e.InnerEvent.StateUpdate.Value / 65536.0 - 0.5) * 2);
         }
 
         private void PitchInputBinding_BindingActuatedEvent(object sender, BindingActuatedEventArgs e)
         {
+            if (_isHTTPEnabled) return;
             GlobalData.ctr.SetPitch((e.InnerEvent.StateUpdate.Value / 65536.0 - 0.5) * 2);
         }
 
         private void YawInputBinding_BindingActuatedEvent(object sender, BindingActuatedEventArgs e)
         {
+            if (_isHTTPEnabled) return;
             GlobalData.ctr.SetYaw((e.InnerEvent.StateUpdate.Value / 65536.0 - 0.5) * 2);
         }
 
@@ -394,6 +426,12 @@ namespace ERTS.Dashboard.Input
             if (e.InnerEvent.StateUpdate.Value > KeyThreshold)
                 GlobalData.ctr.StartFlashDump();
         }
-        
+
+        #region IDisposable Support
+        public void Dispose()
+        {
+            ((IDisposable)ics).Dispose();
+        }
+        #endregion
     }
 }

@@ -33,7 +33,7 @@ namespace ERTS.Dashboard
                         Debug.WriteLine("Loaded configuration from disk.", "DATA");
                     }
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     Debug.WriteLine("Configuration could not be read. Restored default settings.", "DATA");
                     cfg = new Settings(true);
@@ -175,6 +175,7 @@ namespace ERTS.Dashboard
         public static void DisposeStageOne()
         {
             if (patchbox != null)
+                patchbox.Dispose();
                 patchbox = null;
             if (input != null)
             {

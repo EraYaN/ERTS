@@ -16,7 +16,7 @@ using System.Collections.Specialized;
 namespace ERTS.Dashboard.Server
 {
 
-    class SimpleHTTPServer
+    public class SimpleHTTPServer
     {
         private readonly string[] _endPoints = {
         "/",
@@ -24,25 +24,20 @@ namespace ERTS.Dashboard.Server
         "/script.js",
         "/input"
     };
-
-        private static IDictionary<string, string> _mimeTypeMappings = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase) {
-        #region extension to MIME type list
-        
-        {".css", "text/css"},        
-        {".htm", "text/html"},
-        {".html", "text/html"},
-        {".js", "application/x-javascript"},        
-        {".txt", "text/plain"}
-        #endregion
-    };
+                
         private Thread _serverThread;
-        private string _rootDirectory;
         private HttpListener _listener;
         private int _port;
 
-        public int Port {
+        protected int Port {
             get { return _port; }
             private set { }
+        }
+
+        protected bool IsAlive {
+            get {
+                return _listener.IsListening;
+            }
         }
 
         /// <summary>
@@ -70,10 +65,11 @@ namespace ERTS.Dashboard.Server
         /// <summary>
         /// Stop server and dispose all functions.
         /// </summary>
-        public void Stop()
+        protected void Stop()
         {
             _serverThread.Abort();
             _listener.Stop();
+            Debug.WriteLine("Stopped server.","HTTPSERVER");
         }
 
         private void Listen()
@@ -83,6 +79,7 @@ namespace ERTS.Dashboard.Server
             try
             {
                 _listener.Start();
+                Debug.WriteLine(String.Format("HTTP server started on port {0}.", _port), "HTTPSERVER");
                 while (true)
                 {
                     try
@@ -90,7 +87,7 @@ namespace ERTS.Dashboard.Server
                         HttpListenerContext context = _listener.GetContext();
                         Process(context);
                     }
-                    catch (Exception ex)
+                    catch
                     {
 
                     }
@@ -112,7 +109,7 @@ namespace ERTS.Dashboard.Server
         private void Process(HttpListenerContext context)
         {
             string endpoint = context.Request.Url.AbsolutePath;
-            Debug.WriteLine(endpoint,"HTTPSERVER");
+            //Debug.WriteLine(endpoint,"HTTPSERVER");
             if (!_endPoints.Contains(endpoint))
             {
                 context.Response.StatusCode = (int)HttpStatusCode.NotFound;
@@ -150,7 +147,8 @@ namespace ERTS.Dashboard.Server
 
                 if (inputData.AllKeys.Contains("lift") && inputData.AllKeys.Contains("pitch") && inputData.AllKeys.Contains("roll") && inputData.AllKeys.Contains("yaw"))
                 {
-                    Debug.WriteLine(String.Format("Got input: Lift {0:N2}; Pitch {1:N2}; Roll {2:N2}; Yaw {3:N2}", inputData["lift"], inputData["pitch"], inputData["roll"], inputData["yaw"]),"HTTPSERVER");
+                    
+                    Report(request.RemoteEndPoint,inputData);
                     OK(response);
                 }
                 else
@@ -162,6 +160,11 @@ namespace ERTS.Dashboard.Server
             {
                 response.StatusCode = (int)HttpStatusCode.MethodNotAllowed;
             }
+        }
+
+        protected virtual void Report(IPEndPoint remote, NameValueCollection inputData)
+        {
+            Debug.WriteLine(String.Format("Got input: Lift {0:N2}; Pitch {1:N2}; Roll {2:N2}; Yaw {3:N2}", inputData["lift"], inputData["pitch"], inputData["roll"], inputData["yaw"]), "HTTPSERVER");
         }
 
         void OK(HttpListenerResponse response)

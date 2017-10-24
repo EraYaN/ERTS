@@ -87,7 +87,6 @@ namespace ERTS.Dashboard.Communication {
                 case MessageType.Reset:                    
                 case MessageType.Kill:
                     throw new NotImplementedException();
-                    break;
                 case MessageType.Exception:
                     Data = new ExceptionData(dataSegment);
                     break;
