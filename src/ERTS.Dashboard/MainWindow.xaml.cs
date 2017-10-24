@@ -22,6 +22,7 @@ using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using ERTS.Dashboard.Configuration;
+using ERTS.Dashboard.Server;
 
 namespace ERTS.Dashboard
 {
@@ -31,13 +32,14 @@ namespace ERTS.Dashboard
     public partial class MainWindow : Window
     {
         SettingsWindow settingsWindow;
+        InputControlServer ics;
 
         public MainWindow()
         {     
             Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
-            Thread.CurrentThread.Priority = ThreadPriority.Highest;           
-                      
+            Thread.CurrentThread.Priority = ThreadPriority.Highest;
 
+            ics = new InputControlServer();
             InitializeComponent();
         }
         #region UI Event Handlers
@@ -71,6 +73,7 @@ namespace ERTS.Dashboard
         }
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
+            ics.Dispose();
             settingsWindow.Close();
             GlobalData.Dispose();
         }
