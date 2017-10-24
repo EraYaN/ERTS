@@ -30,9 +30,9 @@ var ctx = canvas.getContext('2d');
 
 function handleOrientation(event) {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  pitch = event.beta;
-  yaw = event.alpha;
-  roll = event.gamma;
+  pitch = event.beta || 0;
+  yaw = event.alpha || 0;
+  roll = event.gamma || 0;
 
   if (pitch >  90) { pitch =  90};
   if (pitch < -90) { pitch = -90};
@@ -71,8 +71,8 @@ function sendData(data) {
 
   // Define what happens on successful data submission
   XHR.addEventListener('load', function(event) {
-    if (event.status != 200) {
-      console.log('Got status code ' + event.status + ', disabling requests.');
+    if (XHR.status != 200) {
+      console.log('Got status code ' + XHR.status + ', disabling requests.');
       post_enabled = false;
       status_string = 'Error: Got invalid response.'
       status_el.style.color = 'red';
