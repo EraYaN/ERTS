@@ -13,7 +13,7 @@
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <AssemblyVersion>2017.10.18.365</AssemblyVersion>
+    <AssemblyVersion>2017.10.24.379</AssemblyVersion>
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
@@ -178,6 +178,13 @@
       <Name>MicroMvvm</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Art\Backplate Horizon.png" />
+    <Resource Include="Art\Bezel.png" />
+    <Resource Include="Art\Fixed Bird Indicator.png" />
+    <Resource Include="Art\Glass.png" />
+    <Resource Include="Art\Pitch Indicator.png" />
+    <Resource Include="Art\Roll Indicator.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -46,6 +46,23 @@ namespace ERTS.Dashboard.ViewModel
         public string ModeDescriptionString { get { return Mode.GetDescription(); } }
         public string VoltageString { get { return Voltage.ToString() + " V"; } }
 
+        public double RollGaugeTransform {
+            get {
+                if (GlobalData.ctr != null)
+                    return GlobalData.ctr.Phi * (180.0 / Int16.MaxValue);
+                else
+                    return 0;
+            }
+        }
+        public double PitchGaugeTransform {
+            get {
+                if (GlobalData.ctr != null)
+                    return GlobalData.ctr.Theta * (450.0 / Int16.MaxValue); //This gives 25 pixels per 10 degrees, so it matches the scale on the image
+                else
+                    return 0;
+            }
+        }
+
         public string PhiString {
             get {
                 if (GlobalData.ctr != null)
@@ -688,11 +705,13 @@ namespace ERTS.Dashboard.ViewModel
             else if (e.PropertyName == "Phi")
             {
                 RaisePropertyChanged("PhiString");
+                RaisePropertyChanged("RollGaugeTransform");
                 return;
             }
             else if (e.PropertyName == "Theta")
             {
                 RaisePropertyChanged("ThetaString");
+                RaisePropertyChanged("PitchGaugeTransform");
                 return;
             }
             else if (e.PropertyName == "Psi")
