@@ -205,6 +205,10 @@ void Quadrupel::heartbeat() {
     auto data = new TelemetryData(bat_volt, current_state.roll, current_state.pitch, current_state.yaw,
         current_state.pressure, func_state, loop_time, _mode);
     packet->set_data(data);
+    if (func_state & FUNC_LOGGING) {
+        flash_write_telemetry(get_time_us(), _mode, bat_volt, current_state.roll, current_state.pitch, current_state.yaw,
+        current_state.pressure, func_state, loop_time);
+    }
 
     send(packet);
 
@@ -289,6 +293,9 @@ void Quadrupel::busywork() {
     if (check_sensor_int_flag()) {
         get_dmp_data();
         set_current_state();
+        if (func_state & FUNC_LOGGING) {
+            flash_write_sensor(get_time_us(), _mode, sp, sq, sr, sax, say, saz);
+        }
     }
 }
 

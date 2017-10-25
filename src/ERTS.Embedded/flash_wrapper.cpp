@@ -44,7 +44,7 @@ bool flash_write_remote(uint32_t timestamp, uint8_t mode, uint16_t lift, int16_t
     return status;
 }
 
-bool flash_write_telemetry(uint32_t timestamp, uint8_t mode, uint16_t battery_voltage, int16_t phi, int16_t theta, int16_t p, int16_t q, int16_t r, uint16_t loop_time)
+bool flash_write_telemetry(uint32_t timestamp, uint8_t mode, uint16_t battery_voltage, int16_t phi, int16_t theta, int16_t psi, int16_t pressure, int16_t r, uint16_t loop_time)
 {
     flashPacket_t type = flashTelemetry;
     uint8_t data[FLASH_LENGTH_TELEMETRY];
@@ -54,8 +54,8 @@ bool flash_write_telemetry(uint32_t timestamp, uint8_t mode, uint16_t battery_vo
     *(reinterpret_cast<uint16_t*>(&data[6])) = battery_voltage;
     *(reinterpret_cast<uint16_t*>(&data[8])) = phi;
     *(reinterpret_cast<uint16_t*>(&data[10])) = theta;
-    *(reinterpret_cast<uint16_t*>(&data[12])) = p;
-    *(reinterpret_cast<uint16_t*>(&data[14])) = q;
+    *(reinterpret_cast<uint16_t*>(&data[12])) = psi;
+    *(reinterpret_cast<uint16_t*>(&data[14])) = pressure;
     *(reinterpret_cast<uint16_t*>(&data[16])) = r;
     *(reinterpret_cast<uint16_t*>(&data[18])) = loop_time;
 
