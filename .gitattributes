@@ -20,3 +20,6 @@
 
 *.cs eol=crlf
 *.xaml eol=crlf
+*.config eol=crlf
+*.settings eol=crlf
+*.resx eol=crlf

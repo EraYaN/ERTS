@@ -12,7 +12,7 @@ using System.Windows;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("ERTS Dashboard")]
-[assembly: AssemblyCopyright("Copyright © 2017 Erwin de Haan,. Robin Hes, Casper van Wezel")]
+[assembly: AssemblyCopyright("Copyright © 2017 Erwin de Haan, Robin Hes, Casper van Wezel")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -51,5 +51,5 @@ using System.Windows;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("2017.10.18.365")]
-[assembly: AssemblyFileVersion("2017.10.18.365")]
+[assembly: AssemblyVersion("2017.10.24.418")]
+[assembly: AssemblyFileVersion("2017.10.24.418")]

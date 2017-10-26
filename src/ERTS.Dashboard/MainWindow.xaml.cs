@@ -35,9 +35,9 @@ namespace ERTS.Dashboard
         public MainWindow()
         {     
             Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
-            Thread.CurrentThread.Priority = ThreadPriority.Highest;           
-                      
+            Thread.CurrentThread.Priority = ThreadPriority.Highest;
 
+            
             InitializeComponent();
         }
         #region UI Event Handlers
@@ -70,7 +70,7 @@ namespace ERTS.Dashboard
             aboutWindow.ShowDialog();
         }
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
+        {            
             settingsWindow.Close();
             GlobalData.Dispose();
         }

@@ -1,0 +1,31 @@
+<!-- Learn about this code on MDN: https://developer.mozilla.org/en-US/docs/Web/API/Detecting_device_orientation -->
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="style.css" media="screen" />
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/rangeslider.js/2.3.1/rangeslider.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/rangeslider.js/2.3.1/rangeslider.min.js"></script>
+</head>
+
+<body>
+	<div id="container">
+		<canvas id="canvas" width="800" height="800">
+		</canvas>
+		<div id="slider">
+			<input type="range" id="lift" min="0" max="1" step="0.01" value="0"/>
+		</div>
+
+		<div id="output">
+			<pre></pre>
+		</div>
+
+		<div id="status">
+			<pre></pre>
+		</div>
+	</div>
+
+<script src="script.js"></script>
+</body>
+</html>
+

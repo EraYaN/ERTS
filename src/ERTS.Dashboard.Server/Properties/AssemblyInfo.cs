@@ -1,15 +1,17 @@
 ﻿using System.Reflection;
+using System.Resources;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Windows;
 
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("CRCLib")]
+[assembly: AssemblyTitle("ERTS.Dashboard.Server")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("CRCLib")]
+[assembly: AssemblyProduct("ERTS.Dashboard.Server")]
 [assembly: AssemblyCopyright("Copyright ©  2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +22,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("514bdd5d-ffb9-4896-a04a-11f6595fec58")]
+[assembly: Guid("7fc659d7-02ca-42e1-a2ba-9a4d326cfd15")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -32,5 +34,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("2017.10.24.27")]
-[assembly: AssemblyFileVersion("2017.10.24.27")]
+[assembly: AssemblyVersion("2017.10.24.29")]
+[assembly: AssemblyFileVersion("2017.10.24.29")]

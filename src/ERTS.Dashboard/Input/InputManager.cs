@@ -13,6 +13,7 @@ namespace ERTS.Dashboard.Input
     {
         public event EventHandler<InputEventArgs> InputEvent;
 
+
         DirectInput directInput;
         object usedDeviceLock = new object();
         List<Device> UsedDevices = new List<Device>();
@@ -37,6 +38,8 @@ namespace ERTS.Dashboard.Input
             directInput = new DirectInput();
             RaisePropertyChanged("IsInputEngaged");
             RaisePropertyChanged("BoundDevices");
+
+            
         }
 
         public List<DeviceInstance> EnumerateControllers()
@@ -292,11 +295,11 @@ namespace ERTS.Dashboard.Input
 
                         }
                     }
-                    catch (SharpDXException e)
+                    catch (SharpDXException)
                     {
                         //shutdown artifact.
                     }
-                    catch (NullReferenceException e)
+                    catch (NullReferenceException)
                     {
                         //shutdown artifact.
                     }
@@ -352,10 +355,7 @@ namespace ERTS.Dashboard.Input
 
         protected virtual void OnInput(InputEventArgs e)
         {
-            if (InputEvent != null)
-            {
-                InputEvent(this, e);
-            }
+            InputEvent?.Invoke(this, e);
         }
         #endregion
     }
