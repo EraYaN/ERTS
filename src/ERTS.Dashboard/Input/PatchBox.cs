@@ -78,6 +78,9 @@ namespace ERTS.Dashboard.Input
             ControlActuator keyboardY = new ControlActuator() { DeviceGuid = keyboardGuid, ControlDisplayName = "Keyboard - Y", RawOffset = DirectInputRawOffsets.KB_Y };
             ControlActuator keyboardH = new ControlActuator() { DeviceGuid = keyboardGuid, ControlDisplayName = "Keyboard - H", RawOffset = DirectInputRawOffsets.KB_H };
 
+            ControlActuator keyboardT = new ControlActuator() { DeviceGuid = keyboardGuid, ControlDisplayName = "Keyboard - T", RawOffset = DirectInputRawOffsets.KB_T };
+            ControlActuator keyboardG = new ControlActuator() { DeviceGuid = keyboardGuid, ControlDisplayName = "Keyboard - G", RawOffset = DirectInputRawOffsets.KB_G };
+
             ControlActuator xboxPadX = new ControlActuator() { DeviceGuid = xboxPadGuid, ControlDisplayName = "Xbox 360 - X", RawOffset = DirectInputRawOffsets.XBOX_LEFTSTICK_X };
             ControlActuator xboxPadY = new ControlActuator() { DeviceGuid = xboxPadGuid, ControlDisplayName = "Xbox 360 - Y", RawOffset = DirectInputRawOffsets.XBOX_LEFTSTICK_Y };
             ControlActuator xboxPadRotX = new ControlActuator() { DeviceGuid = xboxPadGuid, ControlDisplayName = "Xbox 360 - RotationX", RawOffset = DirectInputRawOffsets.XBOX_RIGHTSTICK_X };
@@ -172,6 +175,14 @@ namespace ERTS.Dashboard.Input
             InputBinding PLiftDownBinding = new InputBinding(new ControlActuator[] { keyboardH }, "PLiftDown");
             PLiftDownBinding.BindingActuatedEvent += PLiftDownBinding_BindingActuatedEvent;
             InputBindings.Add("PLiftDown", PLiftDownBinding);
+
+            InputBinding PHeightUpBinding = new InputBinding(new ControlActuator[] { keyboardT }, "PHeightUp");
+            PHeightUpBinding.BindingActuatedEvent += PHeightUpBinding_BindingActuatedEvent;
+            InputBindings.Add("PHeightUp", PHeightUpBinding);
+
+            InputBinding PHeightDownBinding = new InputBinding(new ControlActuator[] { keyboardG }, "PHeightDown");
+            PHeightDownBinding.BindingActuatedEvent += PHeightDownBinding_BindingActuatedEvent;
+            InputBindings.Add("PHeightDown", PHeightDownBinding);
 
             InputBinding ModeSafeBinding = new InputBinding(new ControlActuator[] { keyboard0 }, "ModeSafe");
             ModeSafeBinding.BindingActuatedEvent += ModeSafeBinding_BindingActuatedEvent;
@@ -334,6 +345,18 @@ namespace ERTS.Dashboard.Input
         {
             if (e.InnerEvent.StateUpdate.Value > KeyThreshold)
                 GlobalData.ctr.AdjustPLift(false);
+        }
+
+        private void PHeightUpBinding_BindingActuatedEvent(object sender, BindingActuatedEventArgs e)
+        {
+            if (e.InnerEvent.StateUpdate.Value > KeyThreshold)
+                GlobalData.ctr.AdjustPHeight(true);
+        }
+
+        private void PHeightDownBinding_BindingActuatedEvent(object sender, BindingActuatedEventArgs e)
+        {
+            if (e.InnerEvent.StateUpdate.Value > KeyThreshold)
+                GlobalData.ctr.AdjustPHeight(false);
         }
 
         private void ModeSafeBinding_BindingActuatedEvent(object sender, BindingActuatedEventArgs e)
