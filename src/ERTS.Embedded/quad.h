@@ -125,6 +125,7 @@ public:
 
     void control();
 
+    void mix(uint32_t lift, int32_t roll, int32_t pitch, int32_t yaw)
     void control_fast();
 
     void calibrate(bool finalize = false);
