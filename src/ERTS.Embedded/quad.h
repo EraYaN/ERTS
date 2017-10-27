@@ -130,8 +130,6 @@ public:
 
     void calibrate(bool finalize = false);
 
-    //void set_p_act(ActuationParameterData *data);
-
     void set_p_ctr(ControllerParameterData *data);
 
     void set_p_misc(MiscParameterData *data);
