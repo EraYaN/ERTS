@@ -38,7 +38,7 @@ namespace ERTS.Dashboard.Configuration
         /// <summary>
         /// The decrement of motor value per loop time while in panic mode.
         /// </summary>
-        [DefaultValue(10)]
+        [DefaultValue(1)]
         public int PanicDecrement {
             get;
             set;
@@ -47,7 +47,7 @@ namespace ERTS.Dashboard.Configuration
         /// <summary>
         /// The interval in RC Control messages in milliseconds
         /// </summary>
-        [DefaultValue(20)]
+        [DefaultValue(40)]
         public int RCInterval {
             get;
             set;
@@ -114,7 +114,7 @@ namespace ERTS.Dashboard.Configuration
         /// <summary>
         /// The deadzone for the roll axis
         /// </summary>
-        [DefaultValue(1.0)]
+        [DefaultValue(5.0)]
         public double RollDeadzone {
             get;
             set;
@@ -123,7 +123,7 @@ namespace ERTS.Dashboard.Configuration
         /// <summary>
         /// The deadzone for the pitch axis
         /// </summary>
-        [DefaultValue(1.0)]
+        [DefaultValue(5.0)]
         public double PitchDeadzone {
             get;
             set;
@@ -132,7 +132,7 @@ namespace ERTS.Dashboard.Configuration
         /// <summary>
         /// The deadzone for the yaw axis
         /// </summary>
-        [DefaultValue(1.0)]
+        [DefaultValue(5.0)]
         public double YawDeadzone {
             get;
             set;
@@ -141,7 +141,7 @@ namespace ERTS.Dashboard.Configuration
         /// <summary>
         /// The start value for PYaw
         /// </summary>
-        [DefaultValue(1.0)]
+        [DefaultValue(20.0)]
         public double StartPYaw {
             get;
             set;
@@ -150,7 +150,7 @@ namespace ERTS.Dashboard.Configuration
         /// <summary>
         /// The start value for PHeight
         /// </summary>
-        [DefaultValue(1.0)]
+        [DefaultValue(3000.0)]
         public double StartPHeight {
             get;
             set;
@@ -159,7 +159,7 @@ namespace ERTS.Dashboard.Configuration
         /// <summary>
         /// The start value for P1RollPitch
         /// </summary>
-        [DefaultValue(1.0)]
+        [DefaultValue(33.0)]
         public double StartP1RollPitch {
             get;
             set;
@@ -168,7 +168,7 @@ namespace ERTS.Dashboard.Configuration
         /// <summary>
         /// The start value for P2RollPitch
         /// </summary>
-        [DefaultValue(1.0)]
+        [DefaultValue(21.0)]
         public double StartP2RollPitch {
             get;
             set;
