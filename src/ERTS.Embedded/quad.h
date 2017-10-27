@@ -48,9 +48,9 @@ typedef struct {
 } calibration_state_t;
 
 typedef struct {
-    uint16_t p_yaw = 50;
-    uint16_t p_height = 5;
-    uint16_t p1_pitch_roll = 50, p2_pitch_roll = 50;
+    uint16_t p_yaw = 1;
+    uint16_t p_height = 1;
+    uint16_t p1_pitch_roll = 1, p2_pitch_roll = 1;
 } controller_params_t;
 
 class Quadrupel {
@@ -83,10 +83,7 @@ class Quadrupel {
     uint32_t bytes = 0;
     uint32_t packets = 0;
     bool status_printed = false;
-
-    // Motors
-    int32_t motor_divider = 1;
-
+    
     //Flash dump    
     uint16_t telemetry_divider_old = 0;
     uint16_t flash_dump_divider = 10;
@@ -106,8 +103,6 @@ class Quadrupel {
     bool handle_packet(Packet *packet);
 
     void kill();
-
-    void init_divider();
 
     inline uint16_t scale_motor(int32_t value);
 

@@ -20,7 +20,7 @@ namespace ERTS.Dashboard.Control
 
         const double P_STEP = 1.0;
         const double P_MAX = 1000.0;
-        const double P_MIN = 1.0;
+        const double P_MIN = 0.0;
 
         public const int FLASH_MAX_ADDRESS = 0x01FFFF;
 

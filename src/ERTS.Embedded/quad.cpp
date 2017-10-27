@@ -25,7 +25,6 @@ Quadrupel::Quadrupel() {
     spi_flash_init();
     //ble_init();
 
-    init_divider();
     adc_request_sample();
     read_baro();
 
@@ -508,10 +507,26 @@ int Quadrupel::set_mode(flightMode_t new_mode) {
         }
         break;
     }
+    case Height:
+    {
+        switch (new_mode) {
+        case Safe:
+        case FullControl:
+        case Panic: {
+            result = MODE_SWITCH_OK;
+            break;
+        }
+
+        default: {
+            result = MODE_SWITCH_UNSUPPORTED;
+            break;
+        }
+        }
+        break;
+    }
     case Manual:
     case YawControl:
-    case Raw:
-    case Height:
+    case Raw:   
     case Wireless: {
         switch (new_mode) {
         case Safe:
@@ -599,20 +614,20 @@ void Quadrupel::control() {
             roll = target_state.roll;
             pitch = target_state.pitch;
 
-            yaw = p_ctr.p_yaw * (target_state.yaw - current_state.yaw);
+            yaw = -p_ctr.p_yaw * (target_state.yaw - current_state.yaw);
         }
         else if (_mode == FullControl || _mode == Height) {
 
-            p_s = p_ctr.p1_pitch_roll * (target_state.roll - current_state.roll);
-            roll = p_ctr.p2_pitch_roll * (p_s - sp);
+            p_s = p_ctr.p1_pitch_roll * ((target_state.roll / FULL_CONTROL_DIVIDER) - current_state.roll);
+            roll = (p_s - p_ctr.p2_pitch_roll * sp);
 
-            q_s = p_ctr.p1_pitch_roll * (target_state.pitch - current_state.pitch);
-            pitch = -p_ctr.p2_pitch_roll * (q_s - sq);
+            q_s = p_ctr.p1_pitch_roll * ((target_state.pitch / FULL_CONTROL_DIVIDER) - current_state.pitch);
+            pitch = (q_s - p_ctr.p2_pitch_roll * -sq);
 
-            yaw = p_ctr.p_yaw * (target_state.yaw - current_state.yaw);
+            yaw = -p_ctr.p_yaw * (target_state.yaw - current_state.yaw);
 
             if (_mode == Height)
-                lift = p_ctr.p_height * (target_state.pressure - current_state.pressure);
+                lift = target_state.lift - p_ctr.p_height * (target_state.pressure - current_state.pressure);
             else
                 lift = target_state.lift;
         }
@@ -678,19 +693,13 @@ void Quadrupel::calibrate(bool finalize) {
     }
 }
 
-void Quadrupel::init_divider() {
-    /*auto max = (int32_t);*/
-    //0xDD + 0x3F + 0x7F+
-    motor_divider = (uint32_t)(DIVIDER_MAX / (MOTOR_MAX - MOTOR_MIN));
-}
-
 uint16_t Quadrupel::scale_motor(int32_t value) {
     // Clamp to zero if required.
     value = value < 0 ? 0 : value;
-    value = value > DIVIDER_MAX ? DIVIDER_MAX : value;
+    value = value > SIGNAL_MAX ? SIGNAL_MAX : value;
 
     // Scale
-    value = value / motor_divider;
+    value = (int32_t)((float)value * MOTOR_SCALER);
 
     // Offset
     value += MOTOR_MIN;
