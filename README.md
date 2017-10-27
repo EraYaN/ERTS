@@ -66,11 +66,11 @@ a. Sane defaults are given in `src\ERTS.Dashboard\Settings\Settings.cs`
 
 ### Keyboard Input Map
 
-For full control input map see `src\ERTS.Dashboard\Input\PatchBox.cs`, one might need to change the Guid near the top to have a new joystick fully working.
+For full control input map see `src\ERTS.Dashboard\Input\PatchBox.cs` for the class constructor, one might need to change the Guid near the top to have a new joystick fully working. This Guid is printed to the Debug Console while running from Visual Studio in Debug mode, or in the input tab in the Settings window. The number of bound devices shows in the status bar of the Dashboard. 1 for the Keyboard, 2 for Joystick+Keyboard and 3 for Joystick+Keyboard+Gamepad. The input only gets processed when it does not say 'Disenganed' in the bottom status bar.
 
 ## Authoring information
 
-The Authoring information is contained in the header files where possible. Here follows a list of all files with Authoring annotations. `//Author: <name>`
+The Authoring information is contained in the header files where possible. Here follows a list of all files with Authoring annotations. `//IN4073 Authoring claimed by: <name>`
 
 - `libraries\libertscommunication\packet_data.h` (And all derived classes `*_data.h`)
 - `libraries\libertscommunication\packet.h`
@@ -96,15 +96,4 @@ These pieces of code are supporting pieces, but without them the project would n
 - `libraries\nRF51_SDK_10.0.0_dc26b5e\*`; External, Nordic Semi Conductors. The base SDk for the hardware platofrm that was used.
 - `src\MicroMvvm`; Extrernal jeremyellul. Some helper classes to make MVVM model programming a little easier on the Dashboard side.
 - `src\EraYaN.Serial\*`; Erwin de Haan from a previous project
-
-
-
-
-
-
-
-
-
-
-
 

@@ -46,7 +46,7 @@ extern "C" {
 bool running = false;
 int16_t motor[4], ae[4];
 
-//Author: Robin
+//IN4073 Authoring claimed by: Robin
 int main(int argc, char *argv[]) {
 #ifdef FAKE_DRIVERS
     if (argc > 1) {

@@ -11,11 +11,11 @@ class Packet {
     checksum_t checksum; //CRC-16
 
 public:
-    //Author: Erwin
+    //IN4073 Authoring claimed by: Erwin
     Packet();
-    //Author: Robin
+    //IN4073 Authoring claimed by: Robin
     explicit Packet(messageType_t type);
-    //Author: Erwin
+    //IN4073 Authoring claimed by: Erwin
     explicit Packet(const byte *packet);
 
     ~Packet();
@@ -25,9 +25,9 @@ public:
     PacketData *get_data() { return _data; }
     
     void set_data(PacketData *data) { _data = data; }
-    //Author: Erwin
+    //IN4073 Authoring claimed by: Erwin
     void to_buffer(uint8_t *buffer);
-    //Author: Erwin
+    //IN4073 Authoring claimed by: Erwin
     static bool verify(byte *packet);
 
 };

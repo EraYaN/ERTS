@@ -90,57 +90,57 @@ class Quadrupel {
     uint16_t flash_sequence_number = 0;
 
 #pragma region Private methods
-    //Author: Erwin
+    //IN4073 Authoring claimed by: Erwin
     void receive();
-    //Author: Erwin
+    //IN4073 Authoring claimed by: Erwin
     void send(Packet *packet);
-    //Author: Erwin
+    //IN4073 Authoring claimed by: Erwin
     void acknowledge(uint32_t ack_number);
-    //Author: Erwin
+    //IN4073 Authoring claimed by: Erwin
     void exception(exceptionType_t Type, const char* message);
-    //Author: Robin
+    //IN4073 Authoring claimed by: Robin
     void heartbeat();
-    //Author: Robin
+    //IN4073 Authoring claimed by: Robin
     bool handle_packet(Packet *packet);
-    //Author: Erwin
+    //IN4073 Authoring claimed by: Erwin
     void kill();
-    //Author: Robin
+    //IN4073 Authoring claimed by: Robin
     inline uint16_t scale_motor(int32_t value);
-    //Author: Robin
+    //IN4073 Authoring claimed by: Robin
     void set_current_state();
 #pragma endregion
 public:
     bool exit = false;
 #pragma region Public Methods
-    //Author: Robin
+    //IN4073 Authoring claimed by: Robin
     Quadrupel();
-    //Author: Erwin
+    //IN4073 Authoring claimed by: Erwin
     void busywork();
-    //Author: Erwin
+    //IN4073 Authoring claimed by: Erwin
     void tick();
-    //Author: Robin
+    //IN4073 Authoring claimed by: Robin
     flightMode_t get_mode() { return _mode; }
-    //Author: Robin
+    //IN4073 Authoring claimed by: Robin
     int set_mode(flightMode_t new_mode);
-    //Author: Robin
+    //IN4073 Authoring claimed by: Robin
     void update_motors();
-    //Author: Robin
+    //IN4073 Authoring claimed by: Robin
     void control();
-    //Author: Casper
+    //IN4073 Authoring claimed by: Casper
     void mix(uint32_t lift, int32_t roll, int32_t pitch, int32_t yaw);
-    //Author: Erwin
+    //IN4073 Authoring claimed by: Erwin
     void control_fast();
-    //Author: Robin
+    //IN4073 Authoring claimed by: Robin
     void calibrate(bool finalize = false);
-    //Author: Erwin
+    //IN4073 Authoring claimed by: Erwin
     void set_p_ctr(ControllerParameterData *data);
-    //Author: Erwin
+    //IN4073 Authoring claimed by: Erwin
     void set_p_misc(MiscParameterData *data);
-    //Author: Casper
+    //IN4073 Authoring claimed by: Casper
     void start_flash_dump();
-    //Author: Casper
+    //IN4073 Authoring claimed by: Casper
     void stop_flash_dump();
-    //Author: Casper
+    //IN4073 Authoring claimed by: Casper
     void send_flash_dump_data();
 #pragma endregion
 };
