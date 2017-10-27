@@ -30,4 +30,3 @@ bool flash_write_test();
 bool flash_write_remote(uint32_t, uint8_t, uint16_t, int16_t, int16_t, int16_t);
 bool flash_write_telemetry(uint32_t, uint8_t, uint16_t, int16_t, int16_t, int16_t, int16_t, int16_t, uint16_t);
 bool flash_write_sensor(uint32_t, uint8_t, int16_t, int16_t, int16_t, int16_t, int16_t, int16_t);
-// bool flash_read_packets(uint32_t , uint8_t*)
