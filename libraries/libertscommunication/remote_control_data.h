@@ -1,6 +1,6 @@
 #pragma once
-#include "packet_data.h"
 
+#include "packet_data.h"
 
 class RemoteControlData : public PacketData {
 	uint16_t _lift; //Throttle
