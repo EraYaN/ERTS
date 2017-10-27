@@ -1,6 +1,7 @@
 #pragma once
 #include "packet_data.h"
 
+//See base class for author info
 class AcknowledgeData : public PacketData {
 	uint32_t _ack_number;
 

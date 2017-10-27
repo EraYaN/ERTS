@@ -46,7 +46,7 @@ endif
 ifeq ($(shell uname),Darwin)
 GNU_INSTALL_ROOT :=
 else
-GNU_INSTALL_ROOT := $(realpath $(PROJECT_ROOT)/src/gcc-arm-none-eabi-x64/bin/)/
+GNU_INSTALL_ROOT := $(realpath $(PROJECT_ROOT)/src/gcc-arm-none-eabi/bin/)/
 endif
 
 printdebug:

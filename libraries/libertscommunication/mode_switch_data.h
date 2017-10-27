@@ -2,6 +2,7 @@
 
 #include "packet_data.h"
 
+//See base class for author info
 class ModeSwitchData : public PacketData {
 	flightMode_t _new_mode;
 	flightMode_t _fallback_mode; //No fallback if None (0xF) is specified)

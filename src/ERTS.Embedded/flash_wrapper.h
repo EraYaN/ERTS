@@ -25,8 +25,12 @@ enum flashPacket_t
     flashTest = 0x8,
     flashUnkown = 0xF
 };
-
+//Author: Casper
 bool flash_write_test();
+//Author: Casper
 bool flash_write_remote(uint32_t, uint8_t, uint16_t, int16_t, int16_t, int16_t);
+//Author: Casper
 bool flash_write_telemetry(uint32_t, uint8_t, uint16_t, int16_t, int16_t, int16_t, int16_t, int16_t, uint16_t);
+//Author: Casper
 bool flash_write_sensor(uint32_t, uint8_t, int16_t, int16_t, int16_t, int16_t, int16_t, int16_t);
+

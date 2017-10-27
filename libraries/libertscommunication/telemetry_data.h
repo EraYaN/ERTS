@@ -2,6 +2,7 @@
 
 #include "packet_data.h"
 
+//See base class for author info
 class TelemetryData : public PacketData {
 	uint16_t _battery_voltage;
 	flightMode_t _flight_mode;

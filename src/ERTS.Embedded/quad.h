@@ -89,54 +89,58 @@ class Quadrupel {
     uint16_t flash_dump_divider = 10;
     uint16_t flash_sequence_number = 0;
 
-    // Private methods
+#pragma region Private methods
+    //Author: Erwin
     void receive();
-
+    //Author: Erwin
     void send(Packet *packet);
-
+    //Author: Erwin
     void acknowledge(uint32_t ack_number);
-
+    //Author: Erwin
     void exception(exceptionType_t Type, const char* message);
-
+    //Author: Robin
     void heartbeat();
-
+    //Author: Robin
     bool handle_packet(Packet *packet);
-
+    //Author: Erwin
     void kill();
-
+    //Author: Robin
     inline uint16_t scale_motor(int32_t value);
-
+    //Author: Robin
     void set_current_state();
-
+#pragma endregion
 public:
     bool exit = false;
-
+#pragma region Public Methods
+    //Author: Robin
     Quadrupel();
-
+    //Author: Erwin
     void busywork();
-
+    //Author: Erwin
     void tick();
-
+    //Author: Robin
     flightMode_t get_mode() { return _mode; }
-
+    //Author: Robin
     int set_mode(flightMode_t new_mode);
-
+    //Author: Robin
     void update_motors();
-
+    //Author: Robin
     void control();
-
+    //Author: Casper
     void mix(uint32_t lift, int32_t roll, int32_t pitch, int32_t yaw);
+    //Author: Erwin
     void control_fast();
-
+    //Author: Robin
     void calibrate(bool finalize = false);
-
+    //Author: Erwin
     void set_p_ctr(ControllerParameterData *data);
-
+    //Author: Erwin
     void set_p_misc(MiscParameterData *data);
-
+    //Author: Casper
     void start_flash_dump();
-
+    //Author: Casper
     void stop_flash_dump();
-
+    //Author: Casper
     void send_flash_dump_data();
+#pragma endregion
 };

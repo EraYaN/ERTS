@@ -2,6 +2,7 @@
 
 #include "packet_data.h"
 
+//See base class for author info
 class FlashDumpData : public PacketData {
     uint16_t _seqNumber;
     uint8_t _data[DATA_SIZE-2];

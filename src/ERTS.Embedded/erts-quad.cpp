@@ -9,6 +9,7 @@ extern "C"
 
 #ifndef FAKE_DRIVERS
 extern "C" {
+    // Author: Erwin
     void HardFault_Handler(void)
     {
         nrf_gpio_pin_clear(RED);
@@ -45,6 +46,7 @@ extern "C" {
 bool running = false;
 int16_t motor[4], ae[4];
 
+//Author: Robin
 int main(int argc, char *argv[]) {
 #ifdef FAKE_DRIVERS
     if (argc > 1) {
