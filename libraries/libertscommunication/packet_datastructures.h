@@ -76,19 +76,5 @@ enum exceptionType_t : uint8_t {
     MessageValidationException = 0x05
 };
 
-#ifdef _MSC_VER
-__pragma(pack(push, 1))
-#endif
-
 #define MAX_MESSAGE_LENGTH 13
-// 14 bytes
-/*typedef struct PACK exceptionData_tag {
-    exceptionType_t exceptionType;
-    char message[MAX_MESSAGE_LENGTH];
-} exceptionData_t;*/
 
-//TODO all other data structures
-
-#ifdef _MSC_VER
-__pragma(pack(pop))
-#endif
