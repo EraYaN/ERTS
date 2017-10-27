@@ -581,7 +581,7 @@ void Quadrupel::update_motors() {
 
 void Quadrupel::control() {
     // Equations to get desired lift, roll rate, pitch rate and yaw rate.
-    int32_t oo1, oo2, oo3, oo4;
+   
     uint32_t lift;
     int32_t roll, pitch, yaw, p_s, q_s;
 
@@ -643,6 +643,8 @@ void Quadrupel::control() {
 }
 
 void Quadrupel::mix(uint32_t lift, int32_t roll, int32_t pitch, int32_t yaw) {
+    int32_t oo1, oo2, oo3, oo4;
+
     oo1 = lift / RATE_LIFT + pitch / RATE_PITCH_ROLL - yaw / RATE_YAW;
     oo2 = lift / RATE_LIFT - roll / RATE_PITCH_ROLL + yaw / RATE_YAW;
     oo3 = lift / RATE_LIFT - pitch / RATE_PITCH_ROLL - yaw / RATE_YAW;
