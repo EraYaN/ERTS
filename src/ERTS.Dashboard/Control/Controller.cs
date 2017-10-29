@@ -167,7 +167,7 @@ namespace ERTS.Dashboard.Control
             //Debug.WriteLine(data.ToString());
             BatteryVoltage = data.BatteryVoltage / 100.0;
             RaisePropertyChanged("BatteryVoltage");
-            LoopTime = data.LoopTime/1000;
+            LoopTime = data.LoopTime / 10.0;
             RaisePropertyChanged("LoopTime");
             Mode = data.FlightMode;
             RaisePropertyChanged("Mode");
@@ -467,11 +467,11 @@ namespace ERTS.Dashboard.Control
             }
             else if (Direction == true)
             {
-                PHeight = Math.Min(P_MAX, PHeight + P_STEP);
+                PHeight = Math.Min(P_MAX, PHeight + P_STEP*50);
             }
             else if (Direction == false)
             {
-                PHeight = Math.Max(P_MIN, PHeight - P_STEP);
+                PHeight = Math.Max(P_MIN, PHeight - P_STEP*50);
             }
             RaisePropertyChanged("PHeight");
             Debug.WriteLine(String.Format("Set PHeight to {0}", PHeight));

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewmodel="clr-namespace:ERTS.Dashboard.ViewModel"
         mc:Ignorable="d"
-        Title="{Binding WindowTitle}" MinWidth="850" MinHeight="650" Height="930" Width="900" PreviewKeyDown="Window_PreviewKeyDown" Initialized="Window_Initialized" Closing="Window_Closing">
+        Title="{Binding WindowTitle}" MinWidth="756" MinHeight="650" Height="774" Width="756" PreviewKeyDown="Window_PreviewKeyDown" Initialized="Window_Initialized" Closing="Window_Closing">
 
     <Window.DataContext>
         <viewmodel:MainViewModel/>
@@ -26,7 +26,11 @@
             <Button x:Name="StartAllButton" Content="Start Stage Two" Margin="10,5,5,5" VerticalAlignment="Top" Height="23" HorizontalAlignment="Left" Width="120" Command="{Binding StartStageTwo}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}"/>
             <Button x:Name="StopStageTwoButton" Content="Stop Stage Two" Margin="10,5,5,5" VerticalAlignment="Top" Height="23" HorizontalAlignment="Left" Width="120" Command="{Binding StopStageTwo}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}"/>
             <Button x:Name="SendAllParametersButton" Content="Send All Parameters" Margin="10,5,5,5" VerticalAlignment="Top" Height="23" HorizontalAlignment="Left" Width="120" Command="{Binding SendAllParameters}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}"/>
-
+            <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                <TextBlock Text="Flash dump: " Margin="5,0" Padding="0" VerticalAlignment="Center"/>
+                <ProgressBar Maximum="{Binding FlashDumpMax, Mode=OneWay}" Value="{Binding FlashDumpValue, Mode=OneWay}" Width="150" Height="20" Margin="5,5"/>
+                <TextBlock Text="{Binding FlashDumpStatus, Mode=OneWay}" Margin="5,5" Padding="0" VerticalAlignment="Center"/>
+            </StackPanel>
             <GroupBox Header="Status" HorizontalAlignment="Left" Height="100" VerticalAlignment="Top" Width="Auto" Margin="10,5">
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -62,106 +66,6 @@
                 </Grid>
             </GroupBox>
 
-            <GroupBox Header="Input" HorizontalAlignment="Left" VerticalAlignment="Top" Width="Auto" Margin="10,0,0,0">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="1*"/>
-                        <ColumnDefinition Width="1*"/>
-                        <ColumnDefinition Width="1*"/>
-                    </Grid.ColumnDefinitions>
-
-                    <!-- TODO: Bind all the stuff below when joystick data becomes available. -->
-                    <Canvas HorizontalAlignment="Left" Grid.Column="0" Height="100" Margin="10,10,10,10" VerticalAlignment="Top" Width="115">
-                        <Rectangle Height="100" StrokeThickness="1" Stroke="Black" Width="100"/>
-                        <Polyline 
-                          Points="10,10 0,20 10,30 20,20 10,10 10,0" 
-                          Stroke="Blue" StrokeThickness="2"
-                            Fill="Transparent"
-                          RenderTransformOrigin="0.5,0.66" Canvas.Left="{Binding Roll}" Canvas.Top="{Binding Pitch}">
-                            <Polyline.RenderTransform>
-                                <RotateTransform Angle="{Binding Yaw}" />
-                            </Polyline.RenderTransform>
-                        </Polyline>
-                        <Rectangle Stroke="Black" StrokeThickness="1" Fill="Transparent" Height="100" Width="7" Canvas.Left="109"/>
-                        <Rectangle Fill="Blue" Height="{Binding Lift}" Width="5" Canvas.Bottom="1" Canvas.Left="110"/>
-                        <Rectangle Fill="Red" Height="{Binding LiftTrimSize}" Width="5" Canvas.Bottom="{Binding LiftTrimOffset}" Canvas.Left="110"/>
-                    </Canvas>
-
-                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                        <Label Content="Roll:" Foreground="{Binding RollColor, Mode=OneWay}"/>
-                        <Label Content="Pitch:" Foreground="{Binding PitchColor, Mode=OneWay}"/>
-                        <Label Content="Yaw:" Foreground="{Binding YawColor, Mode=OneWay}"/>
-                        <Label Content="Lift:" Foreground="{Binding LiftColor, Mode=OneWay}"/>
-                    </StackPanel>
-
-                    <StackPanel Grid.Column="2" VerticalAlignment="Center">
-                        <Label Content="{Binding RollString}" Foreground="{Binding RollColor, Mode=OneWay}"/>
-                        <Label Content="{Binding PitchString}" Foreground="{Binding PitchColor, Mode=OneWay}"/>
-                        <Label Content="{Binding YawString}" Foreground="{Binding YawColor, Mode=OneWay}"/>
-                        <Label Content="{Binding LiftString}" Foreground="{Binding LiftColor, Mode=OneWay}"/>
-                    </StackPanel>
-                </Grid>
-
-            </GroupBox>
-
-            <GroupBox Header="Control" HorizontalAlignment="Left" VerticalAlignment="Top" Width="Auto" Margin="10,0,0,0">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="1*"/>
-                        <ColumnDefinition Width="1*"/>
-                    </Grid.ColumnDefinitions>
-
-                    <StackPanel Grid.Column="0" VerticalAlignment="Center">
-                        <Label Content="PYaw:"/>
-                        <Label Content="PHeight:"/>
-                        <Label Content="P1RollPitch:"/>
-                        <Label Content="P2RollPitch:"/>
-                        <Label Content="PLift:"/>
-                    </StackPanel>
-
-                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                        <Label Content="{Binding PYawString}"/>
-                        <Label Content="{Binding PHeightString}"/>
-                        <Label Content="{Binding P1RollPitchString}"/>
-                        <Label Content="{Binding P2RollPitchString}"/>
-                        <Label Content="{Binding PLiftString}"/>
-                    </StackPanel>
-                </Grid>
-
-            </GroupBox>
-            <GroupBox Header="Flash Dump" HorizontalAlignment="Left" VerticalAlignment="Top" Width="Auto" Margin="10,0,0,0">
-                <Grid>
-
-                    <StackPanel VerticalAlignment="Center">
-                        <TextBlock Text="{Binding FlashDumpStatus, Mode=OneWay}" Margin="5,0"/>
-                        <ProgressBar Maximum="{Binding FlashDumpMax, Mode=OneWay}" Value="{Binding FlashDumpValue, Mode=OneWay}" Width="150" Height="20" Margin="5,5"/>
-
-                    </StackPanel>
-
-
-                </Grid>
-
-            </GroupBox>
-            <GroupBox Header="Functions" HorizontalAlignment="Left" VerticalAlignment="Top" Width="Auto" Margin="10,0,0,0">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="1*"/>
-                        <ColumnDefinition Width="1*"/>
-                    </Grid.ColumnDefinitions>
-                    <StackPanel Grid.Column="0" VerticalAlignment="Center">
-                        <Label Content="Raw:" Margin="0,5"/>
-                        <Label Content="Logging:" Margin="0,5"/>
-                        <Label Content="Wireless:" Margin="0,5"/>
-                    </StackPanel>
-
-                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                        <Button Height="20" Width="40" Background="{Binding FuncRawColor, Mode=OneWay}" Margin="10,8" BorderBrush="DarkGray" BorderThickness="1" Command="{Binding ToggleRaw}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}"/>
-                        <Button Height="20" Width="40" Background="{Binding FuncLoggingColor, Mode=OneWay}" Margin="10,8" BorderBrush="DarkGray" BorderThickness="1" Command="{Binding ToggleLogging}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}"/>
-                        <Button Height="20" Width="40" Background="{Binding FuncWirelessColor, Mode=OneWay}" Margin="10,8" BorderBrush="DarkGray" BorderThickness="1" Command="{Binding ToggleWireless}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}"/>
-                    </StackPanel>
-                </Grid>
-
-            </GroupBox>
             <GroupBox Header="Attitude" HorizontalAlignment="Left" VerticalAlignment="Top" Width="Auto" Margin="10,0,0,0">
                 <Grid>
                     <Canvas Margin="5" Height="256" Width="256" ClipToBounds="True">
@@ -170,16 +74,16 @@
                         </Canvas.Clip>
                         <Image Name="BackplateHorizon" Source="Art/Backplate Horizon.png" Width="{Binding RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type Canvas}},Path=ActualWidth}" Height="{Binding RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type Canvas}},Path=Height}">
                             <Image.RenderTransform>
-                                <RotateTransform Angle="{Binding RollGaugeTransform}" CenterX="128" CenterY="128"/>      
+                                <RotateTransform Angle="{Binding RollGaugeTransform}" CenterX="128" CenterY="128"/>
                             </Image.RenderTransform>
                         </Image>
                         <Image Name="PitchIndicator" Source="Art/Pitch Indicator.png" Width="{Binding RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type Canvas}},Path=ActualWidth}" Height="{Binding RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type Canvas}},Path=Height}">
                             <Image.RenderTransform>
-                            <TransformGroup>
-                                <TranslateTransform X="0" Y="{Binding PitchGaugeTransform}"/>
-                                <RotateTransform Angle="{Binding RollGaugeTransform}" CenterX="128" CenterY="128"/>
-                            </TransformGroup>
-                            </Image.RenderTransform>                            
+                                <TransformGroup>
+                                    <TranslateTransform X="0" Y="{Binding PitchGaugeTransform}"/>
+                                    <RotateTransform Angle="{Binding RollGaugeTransform}" CenterX="128" CenterY="128"/>
+                                </TransformGroup>
+                            </Image.RenderTransform>
                         </Image>
                         <Image Name="RollIndicator" Source="Art/Roll Indicator.png" Width="{Binding RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type Canvas}},Path=ActualWidth}" Height="{Binding RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type Canvas}},Path=Height}">
                             <Image.RenderTransform>
@@ -189,11 +93,104 @@
                         <Image Name="FixedBirdIndicator" Source="Art/Fixed Bird Indicator.png" Width="{Binding RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type Canvas}},Path=ActualWidth}" Height="{Binding RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type Canvas}},Path=Height}"/>
                         <Image Name="Bezel" Source="Art/Bezel.png" Width="{Binding RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type Canvas}},Path=ActualWidth}" Height="{Binding RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type Canvas}},Path=Height}"/>
                         <Image Name="Glass" Source="Art/Glass.png" Width="{Binding RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type Canvas}},Path=ActualWidth}" Height="{Binding RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type Canvas}},Path=Height}"/>
-                        
+
                     </Canvas>
                 </Grid>
 
             </GroupBox>
+            <WrapPanel Width="420">
+                <GroupBox Header="Input" HorizontalAlignment="Left" VerticalAlignment="Top" Width="Auto" Margin="10,0,0,0">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="1*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- TODO: Bind all the stuff below when joystick data becomes available. -->
+                        <Canvas HorizontalAlignment="Left" Grid.Column="0" Height="100" Margin="10,10,10,10" VerticalAlignment="Top" Width="115">
+                            <Rectangle Height="100" StrokeThickness="1" Stroke="Black" Width="100"/>
+                            <Polyline 
+                          Points="10,10 0,20 10,30 20,20 10,10 10,0" 
+                          Stroke="Blue" StrokeThickness="2"
+                            Fill="Transparent"
+                          RenderTransformOrigin="0.5,0.66" Canvas.Left="{Binding Roll}" Canvas.Top="{Binding Pitch}">
+                                <Polyline.RenderTransform>
+                                    <RotateTransform Angle="{Binding Yaw}" />
+                                </Polyline.RenderTransform>
+                            </Polyline>
+                            <Rectangle Stroke="Black" StrokeThickness="1" Fill="Transparent" Height="100" Width="7" Canvas.Left="109"/>
+                            <Rectangle Fill="Blue" Height="{Binding Lift}" Width="5" Canvas.Bottom="1" Canvas.Left="110"/>
+                            <Rectangle Fill="Red" Height="{Binding LiftTrimSize}" Width="5" Canvas.Bottom="{Binding LiftTrimOffset}" Canvas.Left="110"/>
+                        </Canvas>
+
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                            <Label Content="Roll:" Foreground="{Binding RollColor, Mode=OneWay}"/>
+                            <Label Content="Pitch:" Foreground="{Binding PitchColor, Mode=OneWay}"/>
+                            <Label Content="Yaw:" Foreground="{Binding YawColor, Mode=OneWay}"/>
+                            <Label Content="Lift:" Foreground="{Binding LiftColor, Mode=OneWay}"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="2" VerticalAlignment="Center">
+                            <Label Content="{Binding RollString}" Foreground="{Binding RollColor, Mode=OneWay}"/>
+                            <Label Content="{Binding PitchString}" Foreground="{Binding PitchColor, Mode=OneWay}"/>
+                            <Label Content="{Binding YawString}" Foreground="{Binding YawColor, Mode=OneWay}"/>
+                            <Label Content="{Binding LiftString}" Foreground="{Binding LiftColor, Mode=OneWay}"/>
+                        </StackPanel>
+                    </Grid>
+
+                </GroupBox>
+                
+
+
+
+
+                <GroupBox Header="Control" HorizontalAlignment="Left" VerticalAlignment="Top" Width="Auto" Margin="10,0,0,0">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="1*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                            <Label Content="PYaw:"/>
+                            <Label Content="PHeight:"/>
+                            <Label Content="P1RollPitch:"/>
+                            <Label Content="P2RollPitch:"/>
+                            <Label Content="PLift:"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                            <Label Content="{Binding PYawString}"/>
+                            <Label Content="{Binding PHeightString}"/>
+                            <Label Content="{Binding P1RollPitchString}"/>
+                            <Label Content="{Binding P2RollPitchString}"/>
+                            <Label Content="{Binding PLiftString}"/>
+                        </StackPanel>
+                    </Grid>
+
+                </GroupBox>
+                <GroupBox Header="Functions" HorizontalAlignment="Left" VerticalAlignment="Top" Width="Auto" Margin="10,0,0,0">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="1*"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                            <Label Content="Raw:" Margin="0,0"/>
+                            <Label Content="Logging:" Margin="0,0"/>
+                            <Label Content="Wireless:" Margin="0,0"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                            <Button Height="20" Width="40" Background="{Binding FuncRawColor, Mode=OneWay}" Margin="10,3" BorderBrush="DarkGray" BorderThickness="1" Command="{Binding ToggleRaw}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}"/>
+                            <Button Height="20" Width="40" Background="{Binding FuncLoggingColor, Mode=OneWay}" Margin="10,3" BorderBrush="DarkGray" BorderThickness="1" Command="{Binding ToggleLogging}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}"/>
+                            <Button Height="20" Width="40" Background="{Binding FuncWirelessColor, Mode=OneWay}" Margin="10,3" BorderBrush="DarkGray" BorderThickness="1" Command="{Binding ToggleWireless}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}"/>
+                        </StackPanel>
+                    </Grid>
+
+                </GroupBox>
+            </WrapPanel>
         </WrapPanel>
         <TextBox Name="DebugTraceTextBox" TextWrapping="Wrap" Margin="10,0,10,31" Height="236" VerticalAlignment="Bottom" Text="{Binding DebugInfo, Mode=OneWay}" />
         <StatusBar Grid.ColumnSpan="3" Height="26" VerticalAlignment="Bottom" Grid.Row="1">

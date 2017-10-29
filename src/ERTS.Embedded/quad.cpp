@@ -279,11 +279,12 @@ void Quadrupel::kill() {
 
 void Quadrupel::busywork() {
     receive();
-    if (_mode != Panic && _mode != Safe && _mode != Calibration) {
-
-        /**/
-
-
+    if (_mode == DumpFlash && (func_state & FUNC_FLASH_DUMP)) {
+        // Send all of the flash to PC over UART        
+        if (tx_queue.count < TX_QUEUE_FLASH_DUMP_LIMIT) {
+            //counter_fd = 0;
+            send_flash_dump_data(); // non blocking function, sends one message   
+        }        
     }
     if (check_sensor_int_flag()) {
         get_dmp_data();
@@ -294,20 +295,9 @@ void Quadrupel::busywork() {
 void Quadrupel::tick() {
     uint32_t timestamp = get_time_us();
 
-
     if (_mode == DumpFlash && (func_state & FUNC_FLASH_DUMP)) {
-        // Send all of the flash to PC over UART
-        //if (counter_fd == DIVIDER_FLASH_DUMP) {
-        if (tx_queue.count < TX_QUEUE_FLASH_DUMP_LIMIT) {
-            //counter_fd = 0;
-            send_flash_dump_data(); // non blocking function, sends one message   
-        }
-        //}
-        //else {
-        //    counter_fd++;
-        //}
         return;
-    }
+    }   
 
     if (counter_dmp == DIVIDER_DMP_MODE) {
 
@@ -624,7 +614,7 @@ void Quadrupel::control() {
             q_s = p_ctr.p1_pitch_roll * ((target_state.pitch / FULL_CONTROL_DIVIDER) - current_state.pitch);
             pitch = (q_s - p_ctr.p2_pitch_roll * -sq);
 
-            yaw = -p_ctr.p_yaw * (target_state.yaw - current_state.yaw);
+            yaw = -p_ctr.p_yaw * (target_state.yaw / FULL_CONTROL_DIVIDER - current_state.yaw);
 
             if (_mode == Height)
                 lift = target_state.lift - p_ctr.p_height * (target_state.pressure - current_state.pressure);

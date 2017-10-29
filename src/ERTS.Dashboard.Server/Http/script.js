@@ -37,6 +37,9 @@ function handleOrientation(event) {
     if (pitch > 90) { pitch = 90 };
     if (pitch < -90) { pitch = -90 };
 
+    if (roll > 90) { roll = 90 };
+    if (roll < -90) { roll = -90 };
+
     if (yaw > 180) { yaw -= 360 }
 
     var x = maxX * (roll + 90) / 180;
@@ -99,7 +102,7 @@ function sendData(data) {
         status_el.style.color = 'red';
     });
 
-    XHR.timeout = TICK_INTERVAL*4;
+    XHR.timeout = TICK_INTERVAL*10;
 
     // Set up our request
     XHR.open('POST', window.location.origin + '/input');
@@ -121,7 +124,7 @@ function tick() {
         sendData({
             pitch: pitch / 90,
             yaw: -yaw / 180,
-            roll: roll / 180,
+            roll: roll / 90,
             lift: lift
         });
 };
