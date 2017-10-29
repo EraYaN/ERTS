@@ -89,55 +89,58 @@ class Quadrupel {
     uint16_t flash_dump_divider = 10;
     uint16_t flash_sequence_number = 0;
 
-    // Private methods
+#pragma region Private methods
+    //IN4073 Authoring claimed by: Erwin
     void receive();
-
+    //IN4073 Authoring claimed by: Erwin
     void send(Packet *packet);
-
+    //IN4073 Authoring claimed by: Erwin
     void acknowledge(uint32_t ack_number);
-
+    //IN4073 Authoring claimed by: Erwin
     void exception(exceptionType_t Type, const char* message);
-
+    //IN4073 Authoring claimed by: Robin
     void heartbeat();
-
+    //IN4073 Authoring claimed by: Robin
     bool handle_packet(Packet *packet);
-
+    //IN4073 Authoring claimed by: Erwin
     void kill();
-
+    //IN4073 Authoring claimed by: Robin
     inline uint16_t scale_motor(int32_t value);
-
+    //IN4073 Authoring claimed by: Robin
     void set_current_state();
-
+#pragma endregion
 public:
     bool exit = false;
-
+#pragma region Public Methods
+    //IN4073 Authoring claimed by: Robin
     Quadrupel();
-
+    //IN4073 Authoring claimed by: Erwin
     void busywork();
-
+    //IN4073 Authoring claimed by: Erwin
     void tick();
-
+    //IN4073 Authoring claimed by: Robin
     flightMode_t get_mode() { return _mode; }
-
+    //IN4073 Authoring claimed by: Robin
     int set_mode(flightMode_t new_mode);
-
+    //IN4073 Authoring claimed by: Robin
     void update_motors();
-
+    //IN4073 Authoring claimed by: Robin
     void control();
-
+    //IN4073 Authoring claimed by: Casper
+    void mix(uint32_t lift, int32_t roll, int32_t pitch, int32_t yaw);
+    //IN4073 Authoring claimed by: Erwin
     void control_fast();
-
+    //IN4073 Authoring claimed by: Robin
     void calibrate(bool finalize = false);
-
-    //void set_p_act(ActuationParameterData *data);
-
+    //IN4073 Authoring claimed by: Erwin
     void set_p_ctr(ControllerParameterData *data);
-
+    //IN4073 Authoring claimed by: Erwin
     void set_p_misc(MiscParameterData *data);
-
+    //IN4073 Authoring claimed by: Casper
     void start_flash_dump();
-
+    //IN4073 Authoring claimed by: Casper
     void stop_flash_dump();
-
+    //IN4073 Authoring claimed by: Casper
     void send_flash_dump_data();
+#pragma endregion
 };

@@ -2,6 +2,7 @@
 
 #include "packet_data.h"
 
+//See base class for author info
 class ControllerParameterData : public PacketData {
     uint16_t _p_yaw;
     uint16_t _p_height; // Divider for yaw.

@@ -2,6 +2,7 @@
 
 #include "packet_data.h"
 
+//See base class for author info
 class MiscParameterData : public PacketData {
     uint8_t _func_raw;
     uint8_t _func_logging;    

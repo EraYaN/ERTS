@@ -571,7 +571,7 @@ void Quadrupel::update_motors() {
 
 void Quadrupel::control() {
     // Equations to get desired lift, roll rate, pitch rate and yaw rate.
-    int32_t oo1, oo2, oo3, oo4;
+   
     uint32_t lift;
     int32_t roll, pitch, yaw, p_s, q_s;
 
@@ -627,28 +627,35 @@ void Quadrupel::control() {
             pitch = 0;
             yaw = 0;
         }
-
-        oo1 = lift / RATE_LIFT + pitch / RATE_PITCH_ROLL - yaw / RATE_YAW;
-        oo2 = lift / RATE_LIFT - roll / RATE_PITCH_ROLL + yaw / RATE_YAW;
-        oo3 = lift / RATE_LIFT - pitch / RATE_PITCH_ROLL - yaw / RATE_YAW;
-        oo4 = lift / RATE_LIFT + roll / RATE_PITCH_ROLL + yaw / RATE_YAW;
-        /*oo1 = (lift / p_act.rate_pitch_roll_lift + 2 * pitch / (2 * p_act.rate_pitch_roll_lift) - yaw / p_act.rate_yaw);
-        oo2 = (lift / p_act.rate_pitch_roll_lift - 2 * roll / (2 * p_act.rate_pitch_roll_lift) + yaw / p_act.rate_yaw);
-        oo3 = (lift / p_act.rate_pitch_roll_lift - 2 * pitch / (2 * p_act.rate_pitch_roll_lift) - yaw / p_act.rate_yaw);
-        oo4 = (lift / p_act.rate_pitch_roll_lift + 2 * roll / (2 * p_act.rate_pitch_roll_lift) + yaw / p_act.rate_yaw);*/
-
-        if (_mode == Safe || _mode == Calibration) {
-            ae[0] = ae[1] = ae[2] = ae[3] = 0;
-        }
-        else {
-            // TODO: Re-introduce square-root if required.
-            ae[0] = scale_motor(oo1);
-            ae[1] = scale_motor(oo2);
-            ae[2] = scale_motor(oo3);
-            ae[3] = scale_motor(oo4);
-        }
+        mix(lift, roll, pitch, yaw);
+        
     }
 }
+
+void Quadrupel::mix(uint32_t lift, int32_t roll, int32_t pitch, int32_t yaw) {
+    int32_t oo1, oo2, oo3, oo4;
+
+    oo1 = lift / RATE_LIFT + pitch / RATE_PITCH_ROLL - yaw / RATE_YAW;
+    oo2 = lift / RATE_LIFT - roll / RATE_PITCH_ROLL + yaw / RATE_YAW;
+    oo3 = lift / RATE_LIFT - pitch / RATE_PITCH_ROLL - yaw / RATE_YAW;
+    oo4 = lift / RATE_LIFT + roll / RATE_PITCH_ROLL + yaw / RATE_YAW;
+    /*oo1 = (lift / p_act.rate_pitch_roll_lift + 2 * pitch / (2 * p_act.rate_pitch_roll_lift) - yaw / p_act.rate_yaw);
+    oo2 = (lift / p_act.rate_pitch_roll_lift - 2 * roll / (2 * p_act.rate_pitch_roll_lift) + yaw / p_act.rate_yaw);
+    oo3 = (lift / p_act.rate_pitch_roll_lift - 2 * pitch / (2 * p_act.rate_pitch_roll_lift) - yaw / p_act.rate_yaw);
+    oo4 = (lift / p_act.rate_pitch_roll_lift + 2 * roll / (2 * p_act.rate_pitch_roll_lift) + yaw / p_act.rate_yaw);*/
+
+    if (_mode == Safe || _mode == Calibration) {
+        ae[0] = ae[1] = ae[2] = ae[3] = 0;
+    }
+    else {
+        // TODO: Re-introduce square-root if required.
+        ae[0] = scale_motor(oo1);
+        ae[1] = scale_motor(oo2);
+        ae[2] = scale_motor(oo3);
+        ae[3] = scale_motor(oo4);
+    }
+}
+
 
 void Quadrupel::control_fast() {
     //P2PHI depends on loop freq -> compute/measure

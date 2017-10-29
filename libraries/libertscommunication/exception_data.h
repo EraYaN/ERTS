@@ -1,7 +1,9 @@
 #pragma once
+
 #include "packet_data.h"
 #include <algorithm>
 
+//See base class for author info
 class ExceptionData : public PacketData {
     exceptionType_t _type;
     char _message[MAX_MESSAGE_LENGTH];

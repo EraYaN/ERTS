@@ -86,11 +86,3 @@ bool flash_write_sensor(uint32_t timestamp, uint8_t mode, int16_t sp, int16_t sq
     }
     return status;
 }
-
-/*bool flash_read_packets(uint32_t address, uint8_t* buffer)
-{
-    bool status;
-    status = flash_read_bytes(address, buffer, FLASH_BYTES_PER_UART_PACKET);
-    return status;
-}
-*/

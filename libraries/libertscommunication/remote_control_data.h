@@ -1,7 +1,8 @@
 #pragma once
+
 #include "packet_data.h"
 
-
+//See base class for author info
 class RemoteControlData : public PacketData {
 	uint16_t _lift; //Throttle
 	int16_t _roll; //Aileron

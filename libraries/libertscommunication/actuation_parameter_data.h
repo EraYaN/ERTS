@@ -2,7 +2,7 @@
 
 #include "packet_data.h"
 
-
+//See base class for author info
 class ActuationParameterData : public PacketData {
     uint16_t _rate_pitch_roll_lift; // Divider for lift, pitch and roll.
     uint16_t _rate_yaw; // Divider for yaw.

@@ -46,7 +46,7 @@ endif
 ifeq ($(shell uname),Darwin)
 GNU_INSTALL_ROOT :=
 else
-GNU_INSTALL_ROOT := $(realpath $(PROJECT_ROOT)/src/gcc-arm-none-eabi-x64/bin/)/
+GNU_INSTALL_ROOT := $(realpath $(PROJECT_ROOT)/src/gcc-arm-none-eabi/bin/)/
 endif
 
 printdebug:
@@ -130,7 +130,7 @@ COMMON_FLAGS += -Wall -Werror -O3
 COMMON_FLAGS += -mfloat-abi=soft # we don't want floats - no hardware fpu
 # keep every function in separate section. This will allow linker to dump unused functions
 COMMON_FLAGS += -ffunction-sections -fdata-sections -fno-strict-aliasing
-COMMON_FLAGS += -fno-builtin --short-enums -fshort-wchar
+COMMON_FLAGS += -fno-builtin --short-enums -fshort-wchar -Wno-unknown-pragmas
 
 # keep every function in separate section. This will allow linker to dump unused functions
 SHARED_LDFLAGS += -Xlinker -Map=$(LISTING_DIRECTORY)/$(OUTPUT_FILENAME).map
