@@ -48,6 +48,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimingDividerTests", "Timin
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ERTS.Dashboard.Server", "ERTS.Dashboard.Server\ERTS.Dashboard.Server.csproj", "{7FC659D7-02CA-42E1-A2BA-9A4D326CFD15}"
 EndProject
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "PyFlashParser", "PyFlashParser\PyFlashParser.pyproj", "{7F898B51-332B-468D-9EFA-E2CB8709ECAE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -129,22 +131,20 @@ Global
 		{0161E769-21BF-4BB5-8BD1-2EF8573A3FF4}.Release|Any CPU.ActiveCfg = Release|ARM
 		{0161E769-21BF-4BB5-8BD1-2EF8573A3FF4}.Release|Main.ActiveCfg = Release|ARM
 		{0161E769-21BF-4BB5-8BD1-2EF8573A3FF4}.Release|Main.Build.0 = Release|ARM
-		{5C5219A0-B4C0-441A-83ED-D7AE765D6A79}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5C5219A0-B4C0-441A-83ED-D7AE765D6A79}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5C5219A0-B4C0-441A-83ED-D7AE765D6A79}.Debug|Main.ActiveCfg = Debug|Any CPU
-		{5C5219A0-B4C0-441A-83ED-D7AE765D6A79}.Debug|Main.Build.0 = Debug|Any CPU
-		{5C5219A0-B4C0-441A-83ED-D7AE765D6A79}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5C5219A0-B4C0-441A-83ED-D7AE765D6A79}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5C5219A0-B4C0-441A-83ED-D7AE765D6A79}.Release|Main.ActiveCfg = Release|Any CPU
-		{5C5219A0-B4C0-441A-83ED-D7AE765D6A79}.Release|Main.Build.0 = Release|Any CPU
-		{7FC659D7-02CA-42E1-A2BA-9A4D326CFD15}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7FC659D7-02CA-42E1-A2BA-9A4D326CFD15}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7FC659D7-02CA-42E1-A2BA-9A4D326CFD15}.Debug|Main.ActiveCfg = Debug|Any CPU
-		{7FC659D7-02CA-42E1-A2BA-9A4D326CFD15}.Debug|Main.Build.0 = Debug|Any CPU
-		{7FC659D7-02CA-42E1-A2BA-9A4D326CFD15}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7FC659D7-02CA-42E1-A2BA-9A4D326CFD15}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7FC659D7-02CA-42E1-A2BA-9A4D326CFD15}.Release|Main.ActiveCfg = Release|Any CPU
-		{7FC659D7-02CA-42E1-A2BA-9A4D326CFD15}.Release|Main.Build.0 = Release|Any CPU
+		{5C5219A0-B4C0-441A-83ED-D7AE765D6A79}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{5C5219A0-B4C0-441A-83ED-D7AE765D6A79}.Debug|Main.ActiveCfg = Debug|x64
+		{5C5219A0-B4C0-441A-83ED-D7AE765D6A79}.Debug|Main.Build.0 = Debug|x64
+		{5C5219A0-B4C0-441A-83ED-D7AE765D6A79}.Release|Any CPU.ActiveCfg = Release|x64
+		{5C5219A0-B4C0-441A-83ED-D7AE765D6A79}.Release|Main.ActiveCfg = Release|x64
+		{7FC659D7-02CA-42E1-A2BA-9A4D326CFD15}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{7FC659D7-02CA-42E1-A2BA-9A4D326CFD15}.Debug|Main.ActiveCfg = Debug|x64
+		{7FC659D7-02CA-42E1-A2BA-9A4D326CFD15}.Debug|Main.Build.0 = Debug|x64
+		{7FC659D7-02CA-42E1-A2BA-9A4D326CFD15}.Release|Any CPU.ActiveCfg = Release|x64
+		{7FC659D7-02CA-42E1-A2BA-9A4D326CFD15}.Release|Main.ActiveCfg = Release|x64
+		{7F898B51-332B-468D-9EFA-E2CB8709ECAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F898B51-332B-468D-9EFA-E2CB8709ECAE}.Debug|Main.ActiveCfg = Debug|Any CPU
+		{7F898B51-332B-468D-9EFA-E2CB8709ECAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7F898B51-332B-468D-9EFA-E2CB8709ECAE}.Release|Main.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
