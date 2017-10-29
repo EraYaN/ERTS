@@ -1,0 +1,4 @@
+\begin{tikzpicture}
+    \node (start) {TODO: top level arch. joystick, keyb., gui, uart,drone,motor(?)};
+\end{tikzpicture}
+
