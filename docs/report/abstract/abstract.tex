@@ -7,4 +7,10 @@
 \begin{document}
 \section*{Abstract}
 %TODO[E]: Abstract
+The goal is to implement a controller system and a ground-station-like application for use with a quadcopter.
+The system should be fully stable and controllable from the ground-station.
+The system has at least three stabilized axes, with an optional fourth one, that being height.\\
+The resulting system has a cascaded P-controller for Roll and Pitch and a simple P-controller for the Yaw and Height axes.
+The system is stable at \SI{100}{\hertz} control frequency.
+A \SI{25}{\hertz} control input frequency plus negligible input lag makes the system very controllable.
 \end{document}

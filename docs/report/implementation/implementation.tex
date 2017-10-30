@@ -21,6 +21,7 @@ The receive function scans the input with a constant moving window for the heade
 If the type of packet requires an acknowledgement, the \texttt{ackNumber} field is copied and an acknowledgement packet is sent.
 
 \subsection{System}
+\label{ssec:implementation-system}
 The system is built using a continuous loop (\texttt{void busywork()}) that runs as fast as possible.
 And a timer that set a flag at \SI{100}{\hertz}, this triggers the \texttt{void tick()} function.
 A hardware interrupt triggers the retrieval of the DMP sensor values from the MPU, also at \SI{100}{\hertz}.
@@ -68,6 +69,11 @@ Creating a GUI and implementing the threads shown in \cref{ssec:architecture-das
 
 The smartphone control feature was implemented as a web application using the \texttt{DeviceOrientationEvent} JavaScript API that enables convenient access to the orientation in pitch, yaw and roll of a handheld device.
 The application is served by a simple web server built into the dashboard application.
+
+Joystick and keyboard input is acquired using DirectInput, which has a very nice API and has a very low input lag.
+All input axes except the Lift axis are scaled using an exponential curve, this way the control input near the middle is more fine grained, giving better control and making small adjustments easier.
+A little deadzone was added as well, and before any values will be sent all input values will have to pass through their deadzone to active the actual RC control commands.
+This because DirectInput does only report changes in joystick position so the throttle lever might be in a non-zero position after starting the application and the first movement will create a throttle spike to the motors.
 
 \begin{figure}[H]
     \begin{subfigure}[b]{0.6\textwidth}

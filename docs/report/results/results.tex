@@ -10,6 +10,7 @@ The system runs at a control speed of \SI{100}{\hertz}.
 The system has implemented all safety features required.
 The final system has all required modes plus height control (\cref{sec:requirements}).
 Additionally is allows for phone accelerometer and gyro based input as the RC control signals.\\
+The telemetry is send at \SI{10}{\hertz} as described in \cref{ssec:implementation-system}.
 The blue LED blinks with a frequency of \SI{1}{\hertz} as per the requirements, unless a hard fault occurs.
 The red LED blinks when the quad is in PANIC mode, it will also light up if the RC time-out has passed for more than half of its value, it will light up when a hard fault occurs.
 The green LED lights up when the transmit buffer if filled to more than one-fourth of it's capacity.
@@ -18,9 +19,35 @@ Both the green and yellow LED help give status in the case of a hard fault.
 When yellow lights up solid the sending of debug info over serial is done.
 Green will keep blinking.
 
+The final RC frequency is \SI{25}{\hertz}.
+The latency of the control signals is made up of about \SI{2.5}{\milli\second} for the DirectInput latency (worst-case).
+The transmission takes about \SI{2.0}{\milli\second} (worst-case).
+The receiving takes \SI{125.88}{\micro\second} as shown in \cref{tab:function-module-latency}.
+Due to the control loop speed of \SI{100}{\hertz} the worst-case extra added input lag is $\SI{10}{\milli\second} - \SI{4.63}{\milli\second} = \SI{5.37}{\milli\second}$.
+This is all with rounded-up values, and still the deciding factor is the control loop frequency, but the system should always have a delay less than one cycle.
+And even then \SI{10}{\milli\second} is still well within reasonable input lag.
+
+The final controller values are shown in \cref{tab:final-controller-values}.
+
 The dashboard is written in 6809 lines of C\# code, making for a total size of around \SI{276}{\kilo\byte}.
 All custom embedded code, including the protocol, but excluding drivers, which were largely unmodified, is some 1600 lines long, bringing the total file size to \SI{52}{\kilo\byte}.
 This code, the hardware drivers and relevant parts of the SDK results in a binary size of roughly \SI{50}{\kilo\byte}.
+
+\begin{table}[H]
+    \caption{Final controller values}
+    \label{tab:final-controller-values}
+    \centering
+    \begin{tabular}{lS[table-format=4.0]}
+    \toprule
+    Parameter                   & {Value} \\
+    \midrule
+    PYaw & 20 \\
+    PHeight & 3000 \\
+    P1RollPitch & 33 \\
+    P2RollPitch & 21 \\
+    \bottomrule
+    \end{tabular}
+\end{table}
 
 \subsection{Module Latency}
 \label{ssec:module-latency}
