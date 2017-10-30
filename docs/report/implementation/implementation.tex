@@ -43,6 +43,12 @@ If it's not, an exception packet is sent.
 
 \subsection{Logging}
 %TODO[E]: The flash dump and flash writing stuff and the PC side parsing (now in Python using struct package)
+All important information is written on a per-event basis, so telemetry data is written when telemetry is sent, sensor data is written when it is retrieved and so on.
+The packets are variable length and do not contain a checksum.
+The first thing written is a time stamp and then the packet type, this makes sure that parsing the binary back will be possible and straightforward.
+When the flash is full the logging automatically disengages, and became the function state is included in the telemetry packet to the PC the PC also knows this.
+When the dumping mode is activated the transmit buffer is filler to half, and the packets are put in the buffer as quickly as the transmission allows.
+This makes for a quick transmission of the full binary data.
 
 \subsection{Dashboard}
 %TODO[E]: For the PC side of things.
@@ -90,4 +96,41 @@ The main units are as follows.
     \item Debug threads
  \end{itemize}
 \end{itemize}
+\section{Work division}
+The authoring tags are written in the header files where possible.
+But due to the limited nuance allowed in said tags, a quick overview is given in \cref{tab:work-division}.
+
+\begin{table}[H]
+    \caption{Work division}
+    \label{tab:work-division}
+    \centering
+
+    \begin{tabular}{lp{10cm}}
+    \toprule
+    Module                   & Notes \\
+    \midrule
+    ES-side architecture & Provided or tweaked/written by Robin \\
+    ES-side control & Robin wrote most of the control code for full control, with Casper taking the mixing of the motors. \\
+    ES-side communication & Written in part by Erwin and Robin. Initial translation of the C\# classes done by Robin.\\
+    ES-side state handling & Initial design by Casper, written by Robin \\
+    ES-side logging & Written by Casper \\
+    ES-side Log dumping & Initial code by Casper, final finishing touches by Erwin \\
+    Other ES-side code & Either provided or tweaked/written by Robin and tweaks by Erwin \\
+    \midrule
+    PC-side architecture & Written by Erwin \\
+    PC-side control & Written by Erwin \\
+    PC-side communication & Written by Erwin \\
+    PC-side graphical user interface & Written by Erwin, Initial binding design and ViewModel by Robin \\
+    PC-side visualization & Written by Erwin \\
+    PC-side log dumping & Written by Erwin \\
+    PC-side http server & Written by Erwin \\
+    Other PC-side modules & Written by Erwin, tweaks by Robin \\
+    \midrule
+    Phone-side input & Written by Robin, tweaks by Erwin \\
+    SDL UI prototype & Written by Robin \\
+    Protocol prototypes & Written by Erwin \\
+    Flash binary parsing & Written by Erwin \\
+    \bottomrule
+    \end{tabular}
+\end{table}
 \end{document}
