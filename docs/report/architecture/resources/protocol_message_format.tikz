@@ -1,9 +1,9 @@
-\begin{tikzpicture}
-    \node (frame) {Frame};
-    \node (preamble) [byte_small, below = of frame, minimum height=1cm] {Preamble};
-    \node (type) [byte_small, below = of preamble] {Type};
-    \node (crc) [byte_small, below = of type, minimum height=1cm] {CRC16};
-    \node (data) [data_small, below = of crc] {Data};
-    \node (footer) [byte_small, below = of data] {Footer};
+\begin{tikzpicture}[scale=0.685, every node/.style={transform shape}]
+    \node (preamble) [byte_small, minimum width=\bytewidth] {0xFE};
+    \node (preamble2) [byte_small, right = of preamble, minimum width=\bytewidth] {0xFE};
+    \node (type) [byte_small, right = of preamble2, minimum width=\bytewidth] {Type};
+    \node (crc) [byte_small, right = of type, minimum width=2\bytewidth] {CRC16};
+    \node (data) [data_small, right = of crc, minimum width=14\bytewidth] {Data};
+    \node (footer) [byte_small, right = of data, minimum width=\bytewidth] {0xFF};
 \end{tikzpicture}
 
