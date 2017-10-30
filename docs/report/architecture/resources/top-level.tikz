@@ -1,4 +1,37 @@
-\begin{tikzpicture}
-    \node (start) {TODO: top level arch. joystick, keyb., gui, uart,drone,motor(?)};
-\end{tikzpicture}
+\tikzstyle{system}=[draw, fill=blue!20, minimum width=3.75cm,node distance=0.5cm, minimum height=3.75cm]
+\tikzstyle{system_lib}=[draw, fill=blue!20, minimum width=3.75cm,node distance=0.5cm, minimum height=2cm]
+\tikzstyle{part}=[draw, fill=red!20, minimum width=1.5cm,node distance=0.5cm, minimum height=1.5cm]
 
+
+\begin{tikzpicture}
+\tikzstyle{every path}=[draw, thick]
+    \node[system] (gui) {GUI};
+    \node[part,right = of gui] (uart) {UART};
+    \node[system,right = of uart] (quad) {Quad};
+
+    \node[part,above=of gui.north west, anchor=south west] (joystick) {JoyStick};
+    \node[part,above=of gui.north east, anchor=south east] (keyboard) {Keyboard};
+
+    \node[system_lib,below=1.5cm of uart] (libcomm) {LibERTSCommunication};
+
+    \node[part,above = of quad] (sensors) {Sensors};
+    \node[part,below = of quad] (motors) {Motors};
+    \node[part,right = of quad] (flash) {Flash};
+
+\coordinate[above=.25cm of uart.center] (uartup);
+\coordinate[below=.25cm of uart.center] (uartdown);
+
+\draw[thick] (gui.north -| joystick) -- (joystick);
+\draw[thick] (gui.north -| keyboard) -- (keyboard);
+
+\draw[thick] (uart.west |- uartup) -> (gui.east |- uartup);
+\draw[thick] (quad.west |- uartup) -> (uart.east |- uartup);
+
+\draw[thick] (gui.east |- uartdown) -> (uart.west |- uartdown);
+\draw[thick] (uart.east |- uartdown) -> (quad.west |- uartdown);
+
+\draw[double,thick] (uart) -- (libcomm);
+\draw[thick] (quad) -- (sensors);
+\draw[thick] (quad) -- (flash);
+\draw[thick] (quad) -- (motors);
+\end{tikzpicture}
