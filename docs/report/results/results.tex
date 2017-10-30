@@ -15,4 +15,56 @@ he control speed of the system (control frequency, the latencies of the various 
 
 %TODO[E]: Include the latencies here?
 %TODO[E]: Is this also the place for the sensor noise?
+
+\subsection{Module Latency}
+\label{ssec:module-latency}
+
+\begin{table}[H]
+    \caption{Function/Module latency}
+    \label{tab:function-module-latency}
+    \centering
+    \begin{tabular}{lS[table-format=4.1]s}
+    \toprule
+    Function/Module                   & {Latency} & \\
+    \midrule
+    Base & 196.299 & \micro\second \\
+    Manual & 8.767 & \micro\second \\
+    Yaw & 1.262 & \micro\second \\
+    Full & 4.011 & \micro\second \\
+    Height & 0.844 & \micro\second \\
+    MPU & 3346.344 & \micro\second \\
+    RX & 125.880 & \micro\second \\
+    Control Logging & 502.256 & \micro\second \\
+    Telemetry Logging & 704.864 & \micro\second \\
+    Sensor Logging & 640.184 & \micro\second \\
+    \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsection{Sensor Noise}
+\label{ssec:sensor-noise}
+
+\begin{table}[H]
+    \caption{Sensor noise, the measurement average was used to get the small signal noise.}
+    \label{tab:sensor-noise}
+    \centering
+    \begin{tabular}{lS[table-format=4.2]S[table-format=2.2]S[table-format=1.2]}
+    \toprule
+    Sensor & {Measurement Avg.} & {Std Dev} & {Peak Noise} \\
+    \midrule
+    Roll (DMP)      & 1.5880829015544042 & 2.4418125760057356 & 5.5880829015544045 \\
+    Pitch (DMP)      & 2.3031088082901556 & 2.1459301577746577 & 4.303108808290156 \\
+    Yaw (DMP)      & -0.45595854922279794 & 0.5184455026465902 & 1.544041450777202 \\
+    Pressure      & 1003.1891191709844 & 1.4153070489448907 & 4.810880829015559 \\
+    Gyro P      & -0.686299948105864 & 0.4651131174832689 & 1.313700051894136 \\
+    Gyro Q      & -0.8622210690192008 & 0.6875419292114237 & 2.137778930980799 \\
+    Gyro R      & -0.43072132848988065 & 0.5131894516265076 & 1.5692786715101192 \\
+    Accelerometer X      & -3314.4566683964713 & 12.573027608906932 & 53.54333160352871 \\
+    Accelerometer Y      & 1327.081992734821 & 12.339641781184723 & 46.918007265179085 \\
+    Accelerometer Z      & 14902.612869745719 & 20.946644364553567 & 76.61286974571885 \\
+    \bottomrule
+    \end{tabular}
+\end{table}
+
+
 \end{document}

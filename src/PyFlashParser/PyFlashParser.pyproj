@@ -12,7 +12,7 @@
     <Name>PyFlashParser</Name>
     <RootNamespace>PyFlashParser</RootNamespace>
     <LaunchProvider>Standard Python launcher</LaunchProvider>
-    <CommandLineArguments></CommandLineArguments>
+    <CommandLineArguments>-f ../ERTS.Dashboard/flash-636449135803489737.bin</CommandLineArguments>
     <EnableNativeCodeDebugging>False</EnableNativeCodeDebugging>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">

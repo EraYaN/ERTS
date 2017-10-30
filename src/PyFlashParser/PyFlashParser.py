@@ -3,6 +3,7 @@ import struct
 import argparse
 import numpy as np
 import scipy as sp
+import math
 
 LENGTH=131071
 
@@ -83,24 +84,25 @@ def process_file(file):
     np_say = np.array(l_say)
     np_saz = np.array(l_saz)
 
-    print_stats(np_roll,name='roll')
-    print_stats(np_pitch,name='pitch')
-    print_stats(np_yaw,name='yaw')
-    print_stats(np_pressure,name='pressure')
-    print_stats(np_sp,name='sp')
-    print_stats(np_sq,name='sq')
-    print_stats(np_sr,name='sr')
-    print_stats(np_sax,name='sax')
-    print_stats(np_say,name='say')
-    print_stats(np_saz,name='saz')
+    print_stats(np_roll,name='Roll (DMP)',range=65536/2)
+    print_stats(np_pitch,name='Pitch (DMP)',range=65536/2)
+    print_stats(np_yaw,name='Yaw (DMP)',range=65536/2)
+    print_stats(np_pressure,name='Pressure',range=200)
+    print_stats(np_sp,name='Gyro P',range=65536/2)
+    print_stats(np_sq,name='Gyro Q',range=65536/2)
+    print_stats(np_sr,name='Gyro R',range=65536/2)
+    print_stats(np_sax,name='Accelerometer X',range=65536/2)
+    print_stats(np_say,name='Accelerometer Y',range=65536/2)
+    print_stats(np_saz,name='Accelerometer Z',range=65536/2)
 
 
-def print_stats(nparray, name='data'):
-    average = np.average(nparray)
-    stdev = np.std(nparray)
+def print_stats(nparray, name='data',range=65536):
+    average = np.average(nparray)    
     smallsignal = nparray - average
+    stdev = np.std(nparray)
     p_p_max_noise = np.amax(np.abs(smallsignal))
-    print("{}; Average: {}. Stdev: {}. p-p max noise: {}".format(name,average,stdev,p_p_max_noise))
+    relnoise = 10*math.log(range/np.square(p_p_max_noise))
+    print("{0}      & {1} & {2} & {3} \\\\".format(name,average,stdev,p_p_max_noise, relnoise))    
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Process flash data.')
