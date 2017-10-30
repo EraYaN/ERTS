@@ -11,7 +11,7 @@
     <AssemblyName>ERTS.Dashboard.Server</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <AssemblyVersion>2017.10.29.32</AssemblyVersion>
+    <AssemblyVersion>2017.10.30.33</AssemblyVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>

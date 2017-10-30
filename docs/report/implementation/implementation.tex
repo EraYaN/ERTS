@@ -18,10 +18,25 @@ the individual contributions of each team member (no specification = no contribu
 %TODO[E]: Is this also the place for the sensor noise?
 
 \subsection{Communication}
-%TODO[E]: For the packets, receive(), handlepacket()
+%TODO[E]: For the packets, receive(), handlepacket() WIP
+The communication is based on \SI{20}{\byte} fixed length packets.
+This size was chosen to properly fit into Bluetooth Low Energy frames.
+The packet layout is as shown in \cref{}. %TODO[E]: Packet layout tikz image.
+The provided receive and transmit queues were used for the implementation, with a altered depth of \num{240} to fit an whole amount of \SI{20}{\byte} packets.
+The receive function scans the input with a constant moving window for the header bytes, and when found receives the packet and passes it to handle packet.
+If the type of packet requires an acknowledgement, the \texttt{ackNumber} field is copied and an acknowledgement packet is sent.
+
 
 \subsection{System}
-%TODO[E]: For the "glue" on the ES side (tick, busywork, the main loop, set_mode, timers etc.)
+%TODO[E]: For the "glue" on the ES side (tick, busywork, the main loop, set_mode, timers etc.) WIP
+The system is built using a continuous loop (\texttt{void busywork()}) that runs as fast as possible.
+And a timer that set a flag at \SI{100}{\hertz}, this triggers the \texttt{void tick()} function.
+A hardware interrupt triggers the retrieval of the DMP sensor values from the MPU, also at \SI{100}{\hertz}.
+This results in a near perfect \SI{100}{\hertz} execution rate of the tick function with a maximum delay of one DMP retrieval latency, as shown in \cref{}. %TODO[E]: Add latency table
+
+The main function that handles mode changes and check whenever they are valid is \texttt{void set\_mode(FlightMode)} where \texttt{FlightMode} is the type of the flight mode parameter.
+This function returns depending on the current mode the state of the inputs and/or calibration values whenever or not the mode switch is acceptable.
+If it's not, an exception packet is sent.
 
 \subsection{Control}
 %TODO[E]: The functions control (and possibily control_fast)
@@ -31,4 +46,48 @@ the individual contributions of each team member (no specification = no contribu
 
 \subsection{Dashboard}
 %TODO[E]: For the PC side of things.
+The Dashboard application is written in C\# for ease and speed of development, working with multiple thread is decidedly easier and more straightforward.
+The main units are as follows.
+%TODO[E]: Diagram?
+\begin{itemize}
+ \item UI/Main thread
+ \begin{itemize}
+    \item Configuration management
+    \item Global Data reference management
+    \item Controller
+ \end{itemize}
+ \item Input manager thread
+ \begin{itemize}
+    \item Polling of all acquired joystick and keyboard devices
+    \item Generalized Input Event generation
+    \item PatchBox to match generalised input event to application action/axis
+ \end{itemize}
+ \item Serial RX thread
+ \item Serial TX thread
+ \item Serial Event thread
+ \begin{itemize}
+    \item Generating generalized serial events
+    \item Handling and processing incoming packets
+    \item Serializing and sending outgoing packets
+ \end{itemize}
+ \item RC Timer thread
+ \begin{itemize}
+    \item Generating periodic RC value sending events
+ \end{itemize}
+ \item HTTP server thread
+ \begin{itemize}
+    \item Handling client connection for phone control
+    \item Handling incoming API requests with new control information from a phone
+ \end{itemize}
+ \item HTTP timeout timer event thread
+ \begin{itemize}
+    \item Monitor client request intervals to disassociate the client and return control to the joystick.
+ \end{itemize}
+ \item Framework and UI binding helper threads (many)
+ \begin{itemize}
+    \item Process UI bindings and animation
+    \item Helper thread for internal framework processes
+    \item Debug threads
+ \end{itemize}
+\end{itemize}
 \end{document}
