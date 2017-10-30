@@ -7,7 +7,9 @@
 \begin{document}
 \section{Conclusion}
 % Conclusion (evaluate design, team results, individual performance, learning experience)
-Conclusion (evaluate design, team results, individual performance, learning experience)
-%TODO[E]: Conclusion
-{ \color{red} Specific items that must be included are a functional block diagram of the overall system architecture, the size of the C code, the control speed of the system (control frequency, the latencies of the various blocks within the control loop), and the individual contributions of each team member (no specification = no contribution). The report should be complete but should also be as minimal as possible. In any case, the report must not exceed 10 pages (A4, 11 point), including figures and appendices. Reports that exceed this limit are NOT taken into consideration (i.e., desk-rejected)!}
+We managed to implement a design that passes all mandatory requirements with two extra features: height-control and control via a mobile device.
+It is unfortunate that we were not able to invest any more time in raw mode and wireless control due to the sheer amount of time it took to get the communication between PC and drone right.
+However, as the current code base has proved itself being both robust and quick, it provides a solid basis to continue building upon.
+Apart from communication we encountered fairly few big issues, the most notable we did encounter being integer under- and overflows and a conversion error due to careless mixing of signed and unsigned values.
+Finally, the addition of a graphical user interface allowed for more sophisticated control and debugging of the design.
 \end{document}
