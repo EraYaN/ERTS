@@ -21,7 +21,7 @@ the individual contributions of each team member (no specification = no contribu
 %TODO[E]: For the packets, receive(), handlepacket() WIP
 The communication is based on \SI{20}{\byte} fixed length packets.
 This size was chosen to properly fit into Bluetooth Low Energy frames.
-The packet layout is as shown in \cref{}. %TODO[E]: Packet layout tikz image.
+The packet layout is as shown in \cref{fig:packet-format} and some examples are shown here \cref{fig:packet-examples}. %TODO[E]: Packet layout tikz image.
 The provided receive and transmit queues were used for the implementation, with a altered depth of \num{240} to fit an whole amount of \SI{20}{\byte} packets.
 The receive function scans the input with a constant moving window for the header bytes, and when found receives the packet and passes it to handle packet.
 If the type of packet requires an acknowledgement, the \texttt{ackNumber} field is copied and an acknowledgement packet is sent.
@@ -34,7 +34,7 @@ And a timer that set a flag at \SI{100}{\hertz}, this triggers the \texttt{void 
 A hardware interrupt triggers the retrieval of the DMP sensor values from the MPU, also at \SI{100}{\hertz}.
 This results in a near perfect \SI{100}{\hertz} execution rate of the tick function with a maximum delay of one DMP retrieval latency, as shown in \cref{}. %TODO[E]: Add latency table
 
-The main function that handles mode changes and check whenever they are valid is \texttt{void set\_mode(FlightMode)} where \texttt{FlightMode} is the type of the flight mode parameter.
+The main function that handles mode changes and checks if they are valid is \texttt{void set\_mode(FlightMode)} where \texttt{FlightMode} is the type of the flight mode parameter.
 This function returns depending on the current mode the state of the inputs and/or calibration values whenever or not the mode switch is acceptable.
 If it's not, an exception packet is sent.
 
@@ -104,14 +104,13 @@ But due to the limited nuance allowed in said tags, a quick overview is given in
     \caption{Work division}
     \label{tab:work-division}
     \centering
-
-    \begin{tabular}{lp{10cm}}
+    \begin{tabular}{lp{12cm}}
     \toprule
     Module                   & Notes \\
     \midrule
     ES-side architecture & Provided or tweaked/written by Robin \\
-    ES-side control & Robin wrote most of the control code for full control, with Casper taking the mixing of the motors. \\
-    ES-side communication & Written in part by Erwin and Robin. Initial translation of the C\# classes done by Robin.\\
+    ES-side control & Robin wrote most of the control code for manual, yaw, full and height control, with Casper taking the mixing of the motors. \\
+    ES-side communication & Written in part by Erwin and Robin. Initial translation of C\# classes done by Robin.\\
     ES-side state handling & Initial design by Casper, written by Robin \\
     ES-side logging & Written by Casper \\
     ES-side Log dumping & Initial code by Casper, final finishing touches by Erwin \\
@@ -120,7 +119,7 @@ But due to the limited nuance allowed in said tags, a quick overview is given in
     PC-side architecture & Written by Erwin \\
     PC-side control & Written by Erwin \\
     PC-side communication & Written by Erwin \\
-    PC-side graphical user interface & Written by Erwin, Initial binding design and ViewModel by Robin \\
+    PC-side user interface & Written by Erwin, Initial binding design and ViewModel by Robin \\
     PC-side visualization & Written by Erwin \\
     PC-side log dumping & Written by Erwin \\
     PC-side http server & Written by Erwin \\
