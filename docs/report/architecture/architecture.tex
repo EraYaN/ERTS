@@ -16,20 +16,68 @@ The top level architecture shown in \autoref{fig:top-level} gives an overview of
     \label{fig:top-level}
 \end{figure}
 
-\subsection{PC-interface}
+\subsection{Dashboard}
+\label{ssec:architecture-dashboard}
+The ground station software or \emph{dashboard} is a GUI program that consists of a multitude of threads that each perform a different task.
+The main tasks of the dashboard program are processing input from keyboard, the GUI, the joystick and even a smartphone; handling communication between the PC and the drone; and visualising any heartbeat data coming from the drone so that the user is informed of its status at all times.
+A rough subdivision of the threads and the tasks they execute is shown below.
+
+\begin{itemize}
+    \item UI/Main thread
+    \begin{itemize}
+        \item Configuration management
+        \item Global Data reference management
+        \item Controller
+    \end{itemize}
+    \item Input manager thread
+    \begin{itemize}
+        \item Polling of all acquired joystick and keyboard devices
+        \item Generalized Input Event generation
+        \item PatchBox to match generalised input event to application action/axis
+    \end{itemize}
+    \item Serial RX thread
+    \item Serial TX thread
+    \item Serial Event thread
+    \begin{itemize}
+        \item Generating generalized serial events
+        \item Handling and processing incoming packets
+        \item Serializing and sending outgoing packets
+    \end{itemize}
+    \item RC Timer thread
+    \begin{itemize}
+        \item Generating periodic remote control value sending events
+    \end{itemize}
+    \item HTTP server thread
+    \begin{itemize}
+        \item Handling client connection for phone control
+        \item Handling incoming API requests with new control information from a phone
+    \end{itemize}
+    \item HTTP time-out timer event thread
+    \begin{itemize}
+        \item Monitor client request intervals to disassociate the client and return control to the joystick.
+    \end{itemize}
+    \item Framework and UI binding helper threads (many)
+        \begin{itemize}
+        \item Process UI bindings and animation
+        \item Helper thread for internal framework processes
+        \item Debug threads
+    \end{itemize}
+\end{itemize}
 
 \subsection{Embedded Software}
 In \autoref{fig:quad} a block diagram with the different functions is shown.
-The main loop of the embedded software just continuously executes \texttt{busywork()}, where it receives messages if any UART data has arrived and reads out the slow DMP values.
-Every time it also checks if the timer flag is set, which indicates that it is time to execute the \texttt{tick()} function.
+The main loop of the embedded software continuously executes \texttt{busywork()}, which receives messages if any UART data has arrived and reads out the slow DMP values.
+It also checks if the timer flag is set, which indicates that it is time to execute the \texttt{tick()} function.
 The internal flow diagram of this function is shown in \autoref{fig:quad-flow}.
-In short this function makes sure that the desired behaviour of the current mode is preformed.
-So based on the different modes it can for example send heartbeat messages, control the motors or send the data stored in the flash memory over UART to the PC.
+In short this function makes sure that the desired behaviour of the current mode is performed.
+Based on the current mode, it may for example send heartbeat messages, control the motors or send the data stored in the flash memory over UART to the PC.
+The entire system acts like a finite state machine (FSM), although it strictly is not.
+Any mode transition is performed using the \texttt{set\_mode()} function which makes sure that every transition is pre-defined, making sure that no invalid states occur.
 
 \begin{figure}[H]
 \centering
     \subimport{resources/}{quad.tikz}
-    \caption{Diagram showing different parts of the embedded software on the Quadruple}
+    \caption{Diagram showing different parts of the embedded software on the Quadrupel}
     \label{fig:quad}
 \end{figure}
 

@@ -6,13 +6,6 @@
 \addbibresource{../../.library/bibliography.bib}
 \begin{document}
 \section{Results}
-% Experimental results (list capabilities of your demonstrator)
-%Experimental results (list capabilities of your demonstrator)
-
-%the size of the C code
-
-%he control speed of the system (control frequency, the latencies of the various blocks within the control loop)
-
 The system runs at a control speed of \SI{100}{\hertz}.
 The system has implemented all safety features required.
 The final system has all required modes plus height control (\cref{sec:requirements}).
@@ -25,8 +18,9 @@ Both the green and yellow LED help give status in the case of a hard fault.
 When yellow lights up solid the sending of debug info over serial is done.
 Green will keep blinking.
 
-The final binary size is roughly \SI{50}{\kilo\byte}.
-
+The dashboard is written in 6809 lines of C\# code, making for a total size of around \SI{276}{\kilo\byte}.
+All custom embedded code, including the protocol, but excluding drivers, which were largely unmodified, is some 1600 lines long, bringing the total file size to \SI{52}{\kilo\byte}.
+This code, the hardware drivers and relevant parts of the SDK results in a binary size of roughly \SI{50}{\kilo\byte}.
 
 \subsection{Module Latency}
 \label{ssec:module-latency}

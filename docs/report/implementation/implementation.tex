@@ -6,29 +6,27 @@
 \addbibresource{../../.library/bibliography.bib}
 \begin{document}
 \section{Implementation}
-\label{sec:implmentation}
-% Implementation (how you did it, and who did what)
-%the size of the C code
-%the individual contributions of each team member (no specification = no contribution)
+\label{sec:implementation}
 
-
+All custom embedded systems side code was written in C++ in stead of C.
+Note that existing code like drivers and the software SDK was not rewritten to C++, but rather included as \texttt{extern "C"} to ensure compatibility.
 
 \subsection{Communication}
 %TODO[E]: For the packets, receive(), handlepacket() WIP
-The communication is based on \SI{20}{\byte} fixed length packets.
+The communication protocol is based on \SI{20}{\byte} fixed-length packets.
 This size was chosen to properly fit into Bluetooth Low Energy frames.
-The packet layout is as shown in \cref{fig:packet-format} and some examples are shown here \cref{fig:packet-examples}. %TODO[E]: Packet layout tikz image.
-The provided receive and transmit queues were used for the implementation, with a altered depth of \num{240} to fit an whole amount of \SI{20}{\byte} packets.
+The packet layout is as shown in \cref{fig:packet-format}
+Some examples are shown in \cref{fig:packet-examples}. %TODO[E]: Packet layout tikz image.
+The provided receive and transmit queues were used for the implementation, with an altered depth of \SI{240}{\byte} to fit an integer amount of \SI{20}{\byte} packets.
 The receive function scans the input with a constant moving window for the header bytes, and when found receives the packet and passes it to handle packet.
 If the type of packet requires an acknowledgement, the \texttt{ackNumber} field is copied and an acknowledgement packet is sent.
-
 
 \subsection{System}
 %TODO[E]: For the "glue" on the ES side (tick, busywork, the main loop, set_mode, timers etc.) WIP
 The system is built using a continuous loop (\texttt{void busywork()}) that runs as fast as possible.
 And a timer that set a flag at \SI{100}{\hertz}, this triggers the \texttt{void tick()} function.
 A hardware interrupt triggers the retrieval of the DMP sensor values from the MPU, also at \SI{100}{\hertz}.
-This results in a near perfect \SI{100}{\hertz} execution rate of the tick function with a maximum delay of one DMP retrieval latency, as shown in \cref{}. %TODO[E]: Add latency table
+This results in a near perfect \SI{100}{\hertz} execution rate of the tick function with a maximum delay of one DMP retrieval latency, as shown in \cref{ssec:module-latency}.
 All other interval function are implemented as a division of the main loops frequency, so telemetry runs at \SI{10}{\hertz}, and the blue LED runs at \SI{1}{\hertz}, with dividers of 10 en 100 respectively.
 
 The main function that handles mode changes and checks if they are valid is \texttt{void set\_mode(FlightMode)} where \texttt{FlightMode} is the type of the flight mode parameter.
@@ -39,19 +37,19 @@ If it's not, an exception packet is sent.
 %TODO[E]: The functions control (and possibily control_fast)
 
 \begin{equation}
-out = target_{lift} - P_{height} * (target_{pressure} - current_{pressure})
+out = target_{lift} - P_{height} \cdot (target_{pressure} - current_{pressure})
 \label{eq:control-height}
 \end{equation}
 %target is de setpoint, current is hier dat dus de baro waarde
 
 \begin{equation}
-out = P_{yaw} * (target_{yaw} - rate_{yaw})
+out = P_{yaw} \cdot (target_{yaw} - rate_{yaw})
 \label{eq:control-yaw}
 \end{equation}
 %target is de setpoint (rate), rate is hier dat dus de gyro waarde
 
 \begin{equation}
-out = P_1 * (target_{roll,pitch} - current_{roll,pitch}) - P_2 * rate_{roll,pitch}
+out = P_1 \cdot (target_{roll,pitch} - current_{roll,pitch}) - P_2 \cdot rate_{roll,pitch}
 \label{eq:control-roll-pitch}
 \end{equation}
 %target is de setpoint, current is hier dat dus de DMP waarde
@@ -68,57 +66,20 @@ When the dumping mode is activated the transmit buffer is filler to half, and th
 This makes for a quick transmission of the full binary data.
 
 \subsection{Dashboard}
-%TODO[E]: For the PC side of things.
-The Dashboard application is written in C\# for ease and speed of development, working with multiple thread is decidedly easier and more straightforward.
-The main units are as follows.
-%TODO[E]: Diagram?
-\begin{itemize}
- \item UI/Main thread
- \begin{itemize}
-    \item Configuration management
-    \item Global Data reference management
-    \item Controller
- \end{itemize}
- \item Input manager thread
- \begin{itemize}
-    \item Polling of all acquired joystick and keyboard devices
-    \item Generalized Input Event generation
-    \item PatchBox to match generalised input event to application action/axis
- \end{itemize}
- \item Serial RX thread
- \item Serial TX thread
- \item Serial Event thread
- \begin{itemize}
-    \item Generating generalized serial events
-    \item Handling and processing incoming packets
-    \item Serializing and sending outgoing packets
- \end{itemize}
- \item RC Timer thread
- \begin{itemize}
-    \item Generating periodic RC value sending events
- \end{itemize}
- \item HTTP server thread
- \begin{itemize}
-    \item Handling client connection for phone control
-    \item Handling incoming API requests with new control information from a phone
- \end{itemize}
- \item HTTP timeout timer event thread
- \begin{itemize}
-    \item Monitor client request intervals to disassociate the client and return control to the joystick.
- \end{itemize}
- \item Framework and UI binding helper threads (many)
- \begin{itemize}
-    \item Process UI bindings and animation
-    \item Helper thread for internal framework processes
-    \item Debug threads
- \end{itemize}
-\end{itemize}
-\section{Work division}
-The authoring tags are written in the header files where possible.
-But due to the limited nuance allowed in said tags, a quick overview is given in \cref{tab:work-division}.
+The Dashboard application is written in C\# for ease and speed of development.
+Creating a GUI and implementing the threads shown in \cref{ssec:architecture-dashboard} is decidedly easier and more straightforward using the .NET framework than it is using any native toolkit.
+
+The smartphone control feature was implemented as a web application using the \texttt{DeviceOrientationEvent} JavaScript API that enables convenient access to the orientation in pitch, yaw and roll of a handheld device.
+The application is served by a simple web server built into the dashboard application.
+
+%TODO[E]: screenshots hier
+
+\section{Division of work}
+The authoring tags are written in the header files where possible as required.
+Due to the limited nuance allowed in said tags, a quick overview is given in \cref{tab:work-division}.
 
 \begin{table}[H]
-    \caption{Work division}
+    \caption{Coarse division of work during the project}
     \label{tab:work-division}
     \centering
     \begin{tabular}{lp{12cm}}
