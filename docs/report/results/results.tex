@@ -18,15 +18,14 @@ The system has implemented all safety features required.
 The final system has all required modes plus height control (\cref{sec:requirements}).
 Additionally is allows for phone accelerometer and gyro based input as the RC control signals.\\
 The blue LED blinks with a frequency of \SI{1}{\hertz} as per the requirements, unless a hard fault occurs.
-The red LED blinks when the quad is in PANIC mode, it will also light up if the RC timeout has passed for more than half of its value, it will light up when a hard fault occurs.
+The red LED blinks when the quad is in PANIC mode, it will also light up if the RC time-out has passed for more than half of its value, it will light up when a hard fault occurs.
 The green LED lights up when the transmit buffer if filled to more than one-fourth of it's capacity.
 The yellow LED does the same for the receive buffer.
 Both the green and yellow LED help give status in the case of a hard fault.
 When yellow lights up solid the sending of debug info over serial is done.
 Green will keep blinking.
 
-The final code size is roughly \SI{50}{\kilo\byte}.
-
+The final binary size is roughly \SI{50}{\kilo\byte}.
 
 
 \subsection{Module Latency}
