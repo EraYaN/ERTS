@@ -46,7 +46,7 @@ If it's not, an exception packet is sent.
 All important information is written on a per-event basis, so telemetry data is written when telemetry is sent, sensor data is written when it is retrieved and so on.
 The packets are variable length and do not contain a checksum.
 The first thing written is a time stamp and then the packet type, this makes sure that parsing the binary back will be possible and straightforward.
-When the flash is full the logging automatically disengages, and became the function state is included in the telemetry packet to the PC the PC also knows this.
+When the flash is full the logging automatically disengages, and because the function state is included in the telemetry packet to the PC the PC also knows this.
 When the dumping mode is activated the transmit buffer is filler to half, and the packets are put in the buffer as quickly as the transmission allows.
 This makes for a quick transmission of the full binary data.
 
