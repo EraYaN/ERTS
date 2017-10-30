@@ -34,17 +34,14 @@ All custom embedded code, including the protocol, but excluding drivers, which w
 This code, the hardware drivers and relevant parts of the SDK results in a binary size of roughly \SI{50}{\kilo\byte}.
 
 \begin{table}[H]
-    \caption{Final controller values}
+    \caption{Final controller and communication parameters}
     \label{tab:final-controller-values}
     \centering
-    \begin{tabular}{lS[table-format=4.0]}
+    \begin{tabular}{llllllll}
     \toprule
-    Parameter                   & {Value} \\
+    PYaw                   & PHeight & P1RollPitch & P2RollPitch & RC timeout & Motor Min & Motor Max & Mixer Scaler \\
     \midrule
-    PYaw & 20 \\
-    PHeight & 3000 \\
-    P1RollPitch & 33 \\
-    P2RollPitch & 21 \\
+    \num{20} & \num{3000} & \num{33} & \num{21} & \SI{500}{\milli\second} & \num{200} & \num{712} & \num{0.6} \\
     \bottomrule
     \end{tabular}
 \end{table}
@@ -58,6 +55,8 @@ The main time sink is in retrieving the DMP sensor values.
 The sampling of the barometer is spread across three loop iterations and is in the base time.
 
 \begin{table}[H]
+\caption{}
+\begin{subtable}[b]{0.38\linewidth}
     \caption{Function/Module latency}
     \label{tab:function-module-latency}
     \centering
@@ -77,15 +76,8 @@ The sampling of the barometer is spread across three loop iterations and is in t
     Sensor Logging & 640.184 & \micro\second \\
     \bottomrule
     \end{tabular}
-\end{table}
-
-\subsection{Sensor Noise}
-\label{ssec:sensor-noise}
-The sensor values were measured over roughly \SI{20}{\second}.
-Then the flash was dumped to the PC and the values analysed to get an idea of the constant noise on the sensors.
-The measurement was done with the embedded system newly programmed, after the warm-up period and in a fixed position.
-The resulting values are shown in \cref{tab:sensor-noise}.
-\begin{table}[H]
+    \end{subtable}
+\begin{subtable}[b]{0.62\linewidth}
     \caption{Sensor noise, the measurement average was used to get the small signal noise.}
     \label{tab:sensor-noise}
     \centering
@@ -105,7 +97,15 @@ The resulting values are shown in \cref{tab:sensor-noise}.
     Accelerometer Z      & 14902.612869745719 & 20.946644364553567 & 76.61286974571885 \\
     \bottomrule
     \end{tabular}
+\end{subtable}
 \end{table}
+
+\subsection{Sensor Noise}
+\label{ssec:sensor-noise}
+The sensor values were measured over roughly \SI{20}{\second}.
+Then the flash was dumped to the PC and the values analysed to get an idea of the constant noise on the sensors.
+The measurement was done with the embedded system newly programmed, after the warm-up period and in a fixed position.
+The resulting values are shown in \cref{tab:sensor-noise}.
 
 
 \end{document}
