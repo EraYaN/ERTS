@@ -7,19 +7,20 @@
 \begin{document}
 \section{Results}
 % Experimental results (list capabilities of your demonstrator)
-Experimental results (list capabilities of your demonstrator)
+%Experimental results (list capabilities of your demonstrator)
 
-the size of the C code
+%the size of the C code
 
-he control speed of the system (control frequency, the latencies of the various blocks within the control loop)
+%he control speed of the system (control frequency, the latencies of the various blocks within the control loop)
 
 %TODO[E]: Include the latencies here?
 %TODO[E]: Is this also the place for the sensor noise?
 
 The system runs at a control speed of \SI{100}{\hertz}.
-The final system has a full control and height control.
+The final system has all required modes plus height control (\cref{sec:requirements}).
+And additionally phone accelerometer and gyro based input as the RC control signals.\\
 The LEDs are programmed as follows.
-The blue LED blinks with a frequency of \SI{1}{\hertz} as per the requirements, unless a hard fault occurs.
+The blue LED blinks with a frequency of \SI{1}{\hertz} as per the requirements , unless a hard fault occurs.
 The red LED blinks when the quad is in PANIC mode, it will also light up if the RC timeout has passed for more than half of it's value, it will light up when a hard fault occurs.
 The green LED lights up when the transmit buffer if filled to more than one-fourth of it's capacity.
 The yellow LED does the same for the receive buffer.
@@ -27,7 +28,7 @@ Both the green and yellow LED help give status in the case of a hard fault.
 When yellow lights up solid the sending of debug info over serial is done.
 Green will keep blinking.
 
-The final code size is roughly \SI{50}{\kilobyte}.
+The final code size is roughly \SI{50}{\kilo\byte}.
 
 
 
