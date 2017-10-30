@@ -12,7 +12,6 @@ All custom embedded systems side code was written in C++ in stead of C.
 Note that existing code like drivers and the software SDK was not rewritten to C++, but rather included as \texttt{extern "C"} to ensure compatibility.
 
 \subsection{Communication}
-%TODO[E]: For the packets, receive(), handlepacket() WIP
 The communication protocol is based on \SI{20}{\byte} fixed-length packets.
 This size was chosen to properly fit into Bluetooth Low Energy frames.
 The packet layout is as shown in \cref{fig:packet-format}
@@ -22,7 +21,6 @@ The receive function scans the input with a constant moving window for the heade
 If the type of packet requires an acknowledgement, the \texttt{ackNumber} field is copied and an acknowledgement packet is sent.
 
 \subsection{System}
-%TODO[E]: For the "glue" on the ES side (tick, busywork, the main loop, set_mode, timers etc.) WIP
 The system is built using a continuous loop (\texttt{void busywork()}) that runs as fast as possible.
 And a timer that set a flag at \SI{100}{\hertz}, this triggers the \texttt{void tick()} function.
 A hardware interrupt triggers the retrieval of the DMP sensor values from the MPU, also at \SI{100}{\hertz}.
@@ -57,7 +55,6 @@ out = P_1 \cdot (target_{roll,pitch} - current_{roll,pitch}) - P_2 \cdot rate_{r
 
 
 \subsection{Logging}
-%TODO[E]: The flash dump and flash writing stuff and the PC side parsing (now in Python using struct package)
 All important information is written on a per-event basis, so telemetry data is written when telemetry is sent, sensor data is written when it is retrieved and so on.
 The packets are variable length and do not contain a checksum.
 The first thing written is a time stamp and then the packet type, this makes sure that parsing the binary back will be possible and straightforward.
@@ -72,7 +69,23 @@ Creating a GUI and implementing the threads shown in \cref{ssec:architecture-das
 The smartphone control feature was implemented as a web application using the \texttt{DeviceOrientationEvent} JavaScript API that enables convenient access to the orientation in pitch, yaw and roll of a handheld device.
 The application is served by a simple web server built into the dashboard application.
 
-%TODO[E]: screenshots hier
+\begin{figure}[H]
+    \begin{subfigure}[b]{0.6\textwidth}
+    \centering
+        \includegraphics[height=10cm]{resources/dashboard-gui.png}
+        \caption{The computer side dashboard UI.}
+        \label{fig:pc-dashboard-gui}
+    \end{subfigure}
+    ~
+    \begin{subfigure}[b]{0.4\textwidth}
+    \centering
+        \includegraphics[height=10cm]{resources/phone-gui.PNG}
+        \caption{The phone control UI.}
+        \label{fig:phone-control-gui}
+    \end{subfigure}
+    \caption{The system UIs.}
+    \label{fig:system-guis}
+\end{figure}
 
 \section{Division of work}
 The authoring tags are written in the header files where possible as required.
