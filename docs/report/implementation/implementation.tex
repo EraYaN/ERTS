@@ -41,6 +41,26 @@ If it's not, an exception packet is sent.
 \subsection{Control}
 %TODO[E]: The functions control (and possibily control_fast)
 
+\begin{equation}
+out = target_{lift} - P_{height} * (target_{pressure} - current_{pressure})
+\label{eq:control-height}
+\end{equation}
+%target is de setpoint, current is hier dat dus de baro waarde
+
+\begin{equation}
+out = P_{yaw} * (target_{yaw} - rate_{yaw})
+\label{eq:control-yaw}
+\end{equation}
+%target is de setpoint (rate), rate is hier dat dus de gyro waarde
+
+\begin{equation}
+out = P_1 * (target_{roll,pitch} - current_{roll,pitch}) - P_2 * rate_{roll,pitch}
+\label{eq:control-roll-pitch}
+\end{equation}
+%target is de setpoint, current is hier dat dus de DMP waarde
+%rate is de gyro rate (sp,sq)
+
+
 \subsection{Logging}
 %TODO[E]: The flash dump and flash writing stuff and the PC side parsing (now in Python using struct package)
 All important information is written on a per-event basis, so telemetry data is written when telemetry is sent, sensor data is written when it is retrieved and so on.
