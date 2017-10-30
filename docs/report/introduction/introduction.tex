@@ -13,11 +13,32 @@ To provide the drone with input, e.g. the desired attitude set-points, mode of o
 The ground station should run a user interface that provides some visual feedback about the status of the drone, and be able to receive input from at least a joystick and keyboard to provide the drone with commands over the so-called \emph{PC link}.
 This PC link will consist of a USB cable at first, providing a direct serial link to the drone, but might later be replaced by the drone's built-in Bluetooth capabilities for wireless flight.
 
+\subsection{Specifications}
+As noted, the drone is an affordable, custom built platform, which uses a custom flight controller board consisting of three separate circuit boards, each of which houses part of the required hardware.
+A summary of the hardware components is listed below for completeness.
+
+\begin{description}
+	\item[Frame] Turnigy Talon V2.0 (550mm)
+	\item[Motors] 4x Sunnysky X2212-13 980kV
+	\item[ESC] Flycolor 20A BCHeli 204S Opto
+	\item[Sensor module] GY-86 (10 DOF)
+	\begin{description}
+	  	\item[Three-axis gyroscope + triaxial accelerometer] MPU6050
+	  	\item[Compass] HMC5883L
+	  	\item[Barometer] MS5611
+	\end{description}
+	\item[RF SoC] nRF51822
+	\begin{description}
+		\item[Wireless] Bluetooth Low Energy (BLE)
+		\item[Microcontroller] ARM Cortex M0 CPU with \SI{128}{kB} flash + \SI{16}{kB} RAM
+	\end{description}
+\end{description}
+
 \subsection{Requirements}
 As has been stated, the controller shall be able to control 3D angular body attitude ($\phi$, $\theta$, $\psi$) and rotation ($p$, $q$, $r$), according to a set-point defined by the joystick connected to the PC and its user interface.
 A more extensive specification may be found in the project assignment \cite[3-6]{langendoen2017in4073}, but the most important requirements are listed below for the sake of completeness.
 
-\subsubsection{General}
+\subsubsection{General requirements}
 
 \begin{description}
 	\item[Safety] The drone shall have a \emph{safe state}, which is the default mode in which the drone should start as well as end in both normal operation and in case of a failure. The safe state should preclude the drone from being actuated at all times.

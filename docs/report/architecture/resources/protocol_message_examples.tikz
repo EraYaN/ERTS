@@ -17,6 +17,7 @@
     \node (footer) [byte, below = of data, text centered] {\texttt{0xFF}};
 \end{tikzpicture}
 \end{minipage}
+\quad
 \begin{minipage}[t]{.2\textwidth}
 \vspace{0pt}
 \begin{tikzpicture}[scale=0.6, every node/.style={transform shape}]
@@ -32,6 +33,7 @@
     \node (footer) [byte, below = of data, text centered] {\texttt{0xFF}};
 \end{tikzpicture}
 \end{minipage}
+\quad
 \begin{minipage}[t]{.2\textwidth}
 \vspace{0pt}
 \begin{tikzpicture}[scale=0.6, every node/.style={transform shape}]
@@ -46,6 +48,7 @@
     \node (footer) [byte, below = of data, text centered] {\texttt{0xFF}};
 \end{tikzpicture}
 \end{minipage}
+\quad
 \begin{minipage}[t]{.2\textwidth}
 \vspace{0pt}
 \begin{tikzpicture}[scale=0.6, every node/.style={transform shape}]
