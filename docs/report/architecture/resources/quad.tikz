@@ -1,4 +1,56 @@
-\begin{tikzpicture}
-    \node (start) {TODO:diagram with quad internals};
-\end{tikzpicture}
+\tikzstyle{system}=[draw, fill=blue!20, minimum width=5cm,node distance=0.5cm, minimum height=5cm,text width=5cm, text centered]
+\tikzstyle{part}=[draw, fill=blue!20, minimum width=2cm,text width=2cm,node distance=0.5cm, minimum height=2cm,text centered]
+\tikzstyle{external}=[draw, fill=red!20, minimum width=2cm,text width=2cm,node distance=0.5cm, minimum height=2cm,text centered]
+\tikzstyle{lib}=[draw, fill=blue!20, minimum width=2cm,node distance=0.5cm, minimum height=4.5cm]
+\tikzstyle{partempty}=[part, draw=none, fill=none]
+\tikzstyle{every path}=[->]
 
+\begin{tikzpicture}
+    \node[part] (busywork) {\texttt{BusyWork()}};
+    \coordinate[right=.75cm of busywork.east] (middle);
+    \node[part,right=.75cm of middle] (tick) {\texttt{tick()}};
+
+    \node[part,below = of busywork] (dmp) {\texttt{getDMPData()}};
+    \node[part,below = of tick] (control) {\texttt{control()}};
+
+    \node[partempty,below = of dmp] (empty) {};
+    \node[external,below = of empty] (sensors) {Sensors};
+    \node[part,below = of control] (updatemotors) {update\_\\motors()};
+    \node[external,below = of updatemotors] (motors) {Motors};
+
+    \node[partempty,left = of busywork] (empty2) {};
+    \node[part,left = of empty2] (rx) {rx};
+    % \node[part,above=of gui.north west, anchor=south west] (joystick) {JoyStick};
+    \node[lib,left = of rx.north west, anchor=north east] (lib) {LibERTSCommunication};
+    \node[part,below = of rx] (tx) {tx};
+
+    \node[part,below = of tx] (flashdump) {\texttt{FlashDump()}};
+    \node[external,below = of flashdump] (flash) {Flash};
+    \node[part,right = of tx] (heartbeat) {\texttt{hearbeat}};
+
+\coordinate[above=.5cm of tick.north] (tickup);
+
+\draw[thick,double] (busywork) -- (middle) -- (tick);
+\draw[thick,double] (middle) -- (middle |- tickup) -| (busywork.north);
+
+\draw[thick,double] (tick.north |- tickup) -| (busywork);
+\draw[thick,double] (tick) -- (tick.north |- tickup) -| (busywork);
+
+\draw (rx) -- (lib.east |- rx);
+\draw (tx) -- (lib.east |- tx);
+\draw (heartbeat) -- (tx);
+\draw (flashdump) -- (tx);
+\draw (flash) -- (flashdump);
+
+\draw (sensors) -- (dmp);
+\draw (updatemotors) -- (motors);
+\draw (control) -- (updatemotors);
+\draw (tick) -- (control);
+
+\draw (busywork) -- (dmp);
+\draw (busywork) -- (rx);
+
+\node[above=0.5cm of busywork] (busyup) {\texttt{while(1)}};
+\node[below=0.3cm of middle,text width=0.5cm,text centered] (middledown) {\texttt{ if(\\timer\\flag)}};
+
+\end{tikzpicture}
