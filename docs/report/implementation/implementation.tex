@@ -33,19 +33,28 @@ This function returns depending on the current mode the state of the inputs and/
 If it's not, an exception packet is sent.
 
 \subsection{Control}
-%TODO[E]: The functions control (and possibily control_fast)
+The control system used to keep the drone level consists of multiple parts.
+The first controller controls the height of the Quadrupel with a simple P controller which can be described by \autoref{eq:control-height}.
+As can be seen, this control loop changes the lift of the drone based on the reading from the barometer.
+Similarly, a regular P controller is used to control the yaw of the drone, see \autoref{eq:control-yaw}.
+This controller is given a yaw rate as a setpoint and the error is thus calculated using the rate from the gyroscope.
 
 \begin{equation}
 out = target_{lift} - P_{height} \cdot (target_{pressure} - current_{pressure})
 \label{eq:control-height}
 \end{equation}
 %target is de setpoint, current is hier dat dus de baro waarde
-
 \begin{equation}
 out = P_{yaw} \cdot (target_{yaw} - rate_{yaw})
 \label{eq:control-yaw}
 \end{equation}
 %target is de setpoint (rate), rate is hier dat dus de gyro waarde
+
+To control the roll and pitch, a regular P controller cannot be used due to the instability caused by the double integration of the DMP.
+This can be solved by having two cascaded P controllers.
+The inner P controller controls the rate (with $P_2$) to a stable value, and the outer controller uses $P_1$ to control the desired angle based on the values from the DMP.
+Because the system always has to be stable, $P_2$ should be larger than $P_1$.
+It should also be noted that the speed at which the inner P controller is run should be sufficiently faster in order for the rate to be effectively stabilized before it is used in the outer loop again.
 
 \begin{equation}
 out = P_1 \cdot (target_{roll,pitch} - current_{roll,pitch}) - P_2 \cdot rate_{roll,pitch}
@@ -53,7 +62,6 @@ out = P_1 \cdot (target_{roll,pitch} - current_{roll,pitch}) - P_2 \cdot rate_{r
 \end{equation}
 %target is de setpoint, current is hier dat dus de DMP waarde
 %rate is de gyro rate (sp,sq)
-
 
 \subsection{Logging}
 All important information is written on a per-event basis, so telemetry data is written when telemetry is sent, sensor data is written when it is retrieved and so on.
