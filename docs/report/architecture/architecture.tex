@@ -7,7 +7,53 @@
 \begin{document}
 \section{Architecture}
 % Architecture (all software components + interfaces)
-Architecture (all software components + interfaces)
+The top level architecture shown in \autoref{fig:top-level} gives an overview of how the different parts of the system are connected to each other. In the following sections, each part is explained in more detail.
 
-a functional block diagram of the overall system architecture,
+\begin{figure}[H]
+\centering
+    \subimport{resources/}{top-level.tikz}
+    \caption{Top level overview of the system}
+    \label{fig:top-level}
+\end{figure}
+
+\subsection{PC-interface}
+
+\subsection{Embedded Software}
+In \autoref{fig:quad} a block diagram with the different functions is shown.
+The main loop of the embedded software just continuously executes \texttt{busywork()}, where it receives messages if any UART data has arrived and reads out the slow DMP values.
+Every time it also checks if the timer flag is set, which indicates that it is time to execute the \texttt{tick()} function.
+The internal flow diagram of this function is shown in \autoref{fig:quad-flow}.
+In short this function makes sure that the desired behaviour of the current mode is preformed.
+So based on the different modes it can for example send heartbeat messages, control the motors or send the data stored in the flash memory over UART to the PC.
+
+\begin{figure}[H]
+\centering
+    \subimport{resources/}{quad.tikz}
+    \caption{Diagram showing different parts of the embedded software on the Quadruple}
+    \label{fig:quad}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+    \subimport{resources/}{quad-flow.tikz}
+    \caption{Diagram showing the execution path of the \texttt{tick()} function}
+    \label{fig:quad-flow}
+\end{figure}
+
+
+\subsection{Communication Library}
+
+\begin{figure}[H]
+\centering
+    \subimport{resources/}{protocol_message_format.tikz}
+    \caption{Generic packet structure}
+    \label{fig:packet_format}
+\end{figure}
+\begin{figure}[H]
+\centering
+    \subimport{resources/}{protocol_message_examples.tikz}
+    \caption{Packet format for 4 of the 11 different \texttt{messageType\_t}'s}
+    \label{fig:packet_example}
+\end{figure}
+
 \end{document}

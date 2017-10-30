@@ -6,7 +6,8 @@
 \addbibresource{../../.library/bibliography.bib}
 \begin{document}
 \section{Introduction}
-The goal of this project is to obtain a piece of firmware that allows a quad-rotor drone (the \emph{Quadrupel}) to be controlled in terms of its attitude, rotation and possibly height.
+The goal of the Embedded Real Time Systems course is to get familiar with skills and tasks that are often involved in designing an embedded system.
+In order to achieve this, the project goal is to obtain a piece of firmware that allows a quad-rotor drone (the \emph{Quadrupel}) to be controlled in terms of its attitude, rotation and possibly height.
 The platform on which this goal is to be achieved is a relatively cheap drone with a custom flight controller board containing several chips, such as a processor and a multitude of sensors.
 To provide the drone with input, e.g. the desired attitude set-points, mode of operation, etcetera, a PC (the \emph{ground station} is to be connected with it at all times.
 The ground station should run a user interface that provides some visual feedback about the status of the drone, and be able to receive input from at least a joystick and keyboard to provide the drone with commands over the so-called \emph{PC link}.
@@ -23,7 +24,7 @@ A more extensive specification may be found in the project assignment \cite[3-6]
 	\item[Emergency stop] The drone shall have a \emph{panic state}, which it should reach whenever the system is aborted. During this state, motor RPM should be reduced to a level at which the motors are unlikely to cause any damage, but that still allows for a relatively soft touchdown, preventing damage to the drone itself.
 	\item[Battery health] The drone's battery voltage shall be monitored at all times and should never drop below \SI{10.5}{\volt}. When this level is reached, the drone shall enter panic mode.
 	\item[Robust to noise] Sensor data shall be processed in such a way that they allow robust control of the drone. At first the drone's digital motion processor (DMP), will take care of this, but in the final stage of the project this shall be programmed on the microcontroller itself.
-	\item[Reliable communication] The PC link shall provide a reliable means of communicating with the drone at all times.
+	\item[Reliable communication] The PC link shall provide a reliable means of communicating with the drone at all times. The communication protocol should be designed to ensure this is the case.
 	\item[Dependability] The embedded system itself shall be reliable as well to ensure safe operation at all times. Whenever erratic behaviour might occur in either the communication link or the drone itself, the system shall detect this and enter panic mode.
 	\item[Robustness] Special care must be taken to make the system robust with respect to any possible edge case present in the system that may cause erratic behaviour, e.g. loss of precision due to integer arithmetic, overflows etcetera.
 \end{description}
@@ -50,4 +51,5 @@ A more extensive specification may be found in the project assignment \cite[3-6]
 	\item[Profiling] Accurate and robust control demand a certain amount of steps per second to function properly. Code should therefore be profiled to determine if this is feasible.
 	\item[Logging] The system shall include facilities to write relevant data to the on-board flash chip, which can be downloaded at the end of flight, so that its contents may be analysed after the fact.
 \end{description}
+
 \end{document}

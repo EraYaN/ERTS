@@ -1,5 +1,4 @@
 #include "quad.h"
-//#include "drivers/flash_wrapper.h"
 
 #ifdef FAKE_DRIVERS
 
@@ -7,11 +6,6 @@
 #include <driver.h>
 
 #endif
-
-// TODO: Perhaps make the drone (almost) entirely interrupt-driven.
-// TODO: Tick on interrupt.
-// TODO: Implement exceptions.
-// TODO: Implement flash write/dump.
 
 Quadrupel::Quadrupel() {
     // Initialize all drivers.
@@ -201,9 +195,15 @@ void Quadrupel::heartbeat() {
 
     _accum_loop_time = 0;
     auto packet = new Packet(Telemetry);
-    auto data = new TelemetryData(bat_volt, current_state.roll, current_state.pitch, current_state.yaw,
-        current_state.pressure, func_state, loop_time, _mode);
+    auto data = new TelemetryData(bat_volt, current_state.roll, current_state.pitch, current_state.yaw, current_state.pressure, func_state, loop_time, _mode);
     packet->set_data(data);
+
+    if (func_state & FUNC_LOGGING) {
+        
+        if (!flash_write_telemetry(get_time_us(), _mode, bat_volt, current_state.roll, current_state.pitch, current_state.yaw, current_state.pressure, func_state, loop_time)) {
+            func_state &= ~FUNC_LOGGING;
+        }
+    }
 
     send(packet);
 
@@ -279,14 +279,20 @@ void Quadrupel::kill() {
 
 void Quadrupel::busywork() {
     receive();
-    if (_mode != Panic && _mode != Safe && _mode != Calibration) {
-
-        /**/
-
-
+    if (_mode == DumpFlash && (func_state & FUNC_FLASH_DUMP)) {
+        // Send all of the flash to PC over UART        
+        if (tx_queue.count < TX_QUEUE_FLASH_DUMP_LIMIT) {
+            //counter_fd = 0;
+            send_flash_dump_data(); // non blocking function, sends one message   
+        }
     }
     if (check_sensor_int_flag()) {
         get_dmp_data();
+        if (func_state & FUNC_LOGGING) {
+            if (!flash_write_sensor(get_time_us(), _mode, sp, sq, sr, sax, say, saz)) {
+                func_state &= ~FUNC_LOGGING;
+            }
+        }
         set_current_state();
     }
 }
@@ -294,18 +300,7 @@ void Quadrupel::busywork() {
 void Quadrupel::tick() {
     uint32_t timestamp = get_time_us();
 
-
     if (_mode == DumpFlash && (func_state & FUNC_FLASH_DUMP)) {
-        // Send all of the flash to PC over UART
-        //if (counter_fd == DIVIDER_FLASH_DUMP) {
-        if (tx_queue.count < TX_QUEUE_FLASH_DUMP_LIMIT) {
-            //counter_fd = 0;
-            send_flash_dump_data(); // non blocking function, sends one message   
-        }
-        //}
-        //else {
-        //    counter_fd++;
-        //}
         return;
     }
 
@@ -526,7 +521,7 @@ int Quadrupel::set_mode(flightMode_t new_mode) {
     }
     case Manual:
     case YawControl:
-    case Raw:   
+    case Raw:
     case Wireless: {
         switch (new_mode) {
         case Safe:
@@ -555,7 +550,7 @@ int Quadrupel::set_mode(flightMode_t new_mode) {
         }
         }
         break;
-    }
+        }
     default: {
         result = MODE_SWITCH_UNSUPPORTED;
         break;
@@ -570,7 +565,7 @@ int Quadrupel::set_mode(flightMode_t new_mode) {
     }
 
     return result;
-}
+    }
 
 void Quadrupel::update_motors() {
     motor[0] = ae[0];
@@ -581,13 +576,14 @@ void Quadrupel::update_motors() {
 
 void Quadrupel::control() {
     // Equations to get desired lift, roll rate, pitch rate and yaw rate.
-   
+
     uint32_t lift;
     int32_t roll, pitch, yaw, p_s, q_s;
 
     if (func_state & FUNC_LOGGING) {
-        flash_write_remote(get_time_us(), _mode, target_state.lift, target_state.roll, target_state.pitch,
-            target_state.yaw);
+        if (!flash_write_remote(get_time_us(), _mode, target_state.lift, target_state.roll, target_state.pitch, target_state.yaw)) {
+            func_state &= ~FUNC_LOGGING;
+        }
     }
 
     if (_mode == Panic) {
@@ -624,7 +620,7 @@ void Quadrupel::control() {
             q_s = p_ctr.p1_pitch_roll * ((target_state.pitch / FULL_CONTROL_DIVIDER) - current_state.pitch);
             pitch = (q_s - p_ctr.p2_pitch_roll * -sq);
 
-            yaw = -p_ctr.p_yaw * (target_state.yaw - current_state.yaw);
+            yaw = -p_ctr.p_yaw * (target_state.yaw / FULL_CONTROL_DIVIDER - current_state.yaw);
 
             if (_mode == Height)
                 lift = target_state.lift - p_ctr.p_height * (target_state.pressure - current_state.pressure);
@@ -638,7 +634,7 @@ void Quadrupel::control() {
             yaw = 0;
         }
         mix(lift, roll, pitch, yaw);
-        
+
     }
 }
 

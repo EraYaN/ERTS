@@ -4,7 +4,7 @@ RemoteControlData::RemoteControlData(uint16_t lift,int16_t roll,int16_t pitch,in
 	_lift = lift;
 	_roll = roll;
 	_pitch = pitch;
-	_yaw = yaw;    
+	_yaw = yaw;
 }
 RemoteControlData::RemoteControlData(const uint8_t *data) {
 	_lift = *(reinterpret_cast<const uint16_t*>(&data[0]));

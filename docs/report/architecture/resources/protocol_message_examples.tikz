@@ -1,0 +1,64 @@
+\begin{minipage}[t]{.2\textwidth}
+\vspace{0pt}
+\begin{tikzpicture}[scale=0.6, every node/.style={transform shape}]
+    \node (packet) {Telemetry Packet};
+    \node (preamble) [byte, below = of packet, text centered] {\texttt{0xFE}};
+    \node (preamble2) [byte, below = of preamble, text centered] {\texttt{0xFF}};
+    \node (type) [byte, below = of preamble2] {\texttt{messageType\_t Telemetry}};
+    \node (crc) [byte, below = of type, minimum height=1cm, text centered] {CRC16};
+    \node (1) [data, below = of crc, minimum height=1cm] {\texttt{uint16\_t \_battery\_voltage}};
+    \node (2) [data, below = of 1] {\texttt{flightMode\_t \_flight\_mode}};
+    \node (3) [data, below = of 2, minimum height=1cm] {\texttt{int16\_t \_phi}};
+    \node (4) [data, below = of 3, minimum height=1cm] {\texttt{int16\_t \_theta}};
+    \node (5) [data, below = of 4, minimum height=1cm] {\texttt{int16\_t \_psi}};
+    \node (6) [data, below = of 5, minimum height=1cm] {\texttt{int16\_t \_pressure}};
+    \node (7) [data, below = of 6, minimum height=1cm] {\texttt{int16\_t \_r}};
+    \node (data) [data, below = of 7, minimum height=1cm] {\texttt{uint16\_t \_loop\_time}};
+    \node (footer) [byte, below = of data, text centered] {\texttt{0xFF}};
+\end{tikzpicture}
+\end{minipage}
+\begin{minipage}[t]{.2\textwidth}
+\vspace{0pt}
+\begin{tikzpicture}[scale=0.6, every node/.style={transform shape}]
+    \node (packet) {Remote Control Packet};
+    \node (preamble) [byte, below = of packet, text centered] {\texttt{0xFE}};
+    \node (preamble2) [byte, below = of preamble, text centered] {\texttt{0xFF}};
+    \node (type) [byte, below = of preamble2] {\texttt{messageType\_t RemoteControl}};
+    \node (crc) [byte, below = of type, minimum height=1cm, text centered] {CRC16};
+    \node (1) [data, below = of crc, minimum height=1cm] {\texttt{uint16\_t \_lift}};
+    \node (2) [data, below = of 1] {\texttt{int16\_t \_roll}};
+    \node (3) [data, below = of 2, minimum height=1cm] {\texttt{int16\_t \_pitch}};
+    \node (data) [data, below = of 3, minimum height=1cm] {\texttt{int16\_t \_yaw}};
+    \node (footer) [byte, below = of data, text centered] {\texttt{0xFF}};
+\end{tikzpicture}
+\end{minipage}
+\begin{minipage}[t]{.2\textwidth}
+\vspace{0pt}
+\begin{tikzpicture}[scale=0.6, every node/.style={transform shape}]
+    \node (packet) {Mode Switch Packet};
+    \node (preamble) [byte, below = of packet, text centered] {\texttt{0xFE}};
+    \node (preamble2) [byte, below = of preamble, text centered] {\texttt{0xFF}};
+    \node (type) [byte, below = of preamble2] {\texttt{messageType\_t ModeSwitch}};
+    \node (crc) [byte, below = of type, minimum height=1cm, text centered] {CRC16};
+    \node (1) [data, below = of crc] {\texttt{flightMode\_t \_new\_mode}};
+    \node (2) [data, below = of 1] {\texttt{flightMode\_t \_fallback\_mode}};
+    \node (data) [data, below = of 2, minimum height=2cm] {\texttt{uint32\_t \_ack\_number}};
+    \node (footer) [byte, below = of data, text centered] {\texttt{0xFF}};
+\end{tikzpicture}
+\end{minipage}
+\begin{minipage}[t]{.2\textwidth}
+\vspace{0pt}
+\begin{tikzpicture}[scale=0.6, every node/.style={transform shape}]
+    \node (packet) {Controller Parameters Packet};
+    \node (preamble) [byte, below = of packet, text centered] {\texttt{0xFE}};
+    \node (preamble2) [byte, below = of preamble, text centered] {\texttt{0xFF}};
+    \node (type) [byte, below = of preamble2] {\texttt{messageType\_t ControllerParameters}};
+    \node (crc) [byte, below = of type, minimum height=1cm, text centered] {CRC16};
+    \node (1) [data, below = of crc, minimum height=1cm] {\texttt{uint16\_t \_p\_yaw}};
+    \node (2) [data, below = of 1, minimum height=1cm] {\texttt{uint16\_t \_p\_height}};
+    \node (3) [data, below = of 2, minimum height=1cm] {\texttt{uint16\_t \_p1\_pitch\_roll}};
+    \node (4) [data, below = of 3, minimum height=1cm] {\texttt{uint16\_t \_p2\_pitch\_roll}};
+    \node (data) [data, below = of 4, minimum height=2cm] {\texttt{uint32\_t \_ack\_number}};
+    \node (footer) [byte, below = of data, text centered] {\texttt{0xFF}};
+\end{tikzpicture}
+\end{minipage}

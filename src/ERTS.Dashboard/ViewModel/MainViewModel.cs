@@ -66,7 +66,7 @@ namespace ERTS.Dashboard.ViewModel
         public string PhiString {
             get {
                 if (GlobalData.ctr != null)
-                    return String.Format("{0}", GlobalData.ctr.Phi);
+                    return String.Format("{0:N1}°", GlobalData.ctr.Phi * (180.0 / Int16.MaxValue));
                 else
                     return "-";
             }
@@ -75,7 +75,7 @@ namespace ERTS.Dashboard.ViewModel
         public string ThetaString {
             get {
                 if (GlobalData.ctr != null)
-                    return String.Format("{0}", GlobalData.ctr.Theta);
+                    return String.Format("{0:N1}°", GlobalData.ctr.Theta * (180.0 / Int16.MaxValue));
                 else
                     return "-";
             }
@@ -84,7 +84,7 @@ namespace ERTS.Dashboard.ViewModel
         public string PsiString {
             get {
                 if (GlobalData.ctr != null)
-                    return String.Format("{0}", GlobalData.ctr.Psi);
+                    return String.Format("{0:N1}°", GlobalData.ctr.Psi * (180.0 / Int16.MaxValue));
                 else
                     return "-";
             }
@@ -95,7 +95,7 @@ namespace ERTS.Dashboard.ViewModel
             get
             {
                 if (GlobalData.ctr != null)
-                    return String.Format("{0}", GlobalData.ctr.Pressure);
+                    return String.Format("{0} Pa", GlobalData.ctr.Pressure);
                 else
                     return "-";
             }
@@ -374,11 +374,11 @@ namespace ERTS.Dashboard.ViewModel
                 if (GlobalData.ctr != null)
                     if (GlobalData.ctr.FlashFileIsOpen)
                     {
-                        return String.Format("Flash Dump in Progess...\n{0}/{1}", GlobalData.ctr.FlashPosition, Controller.FLASH_MAX_ADDRESS);
+                        return String.Format("{0}/{1}", GlobalData.ctr.FlashPosition, Controller.FLASH_MAX_ADDRESS);
                     }
                     else
                     {
-                        return String.Format("Idle.\n{0}/{1}", GlobalData.ctr.FlashPosition, Controller.FLASH_MAX_ADDRESS);
+                        return String.Format("Idle", GlobalData.ctr.FlashPosition, Controller.FLASH_MAX_ADDRESS);
                     }
                 else
                     return "ctr in null";
@@ -523,9 +523,9 @@ namespace ERTS.Dashboard.ViewModel
                 if (GlobalData.ctr != null)
                 {
                     if (GlobalData.ctr.LoopTime == -1)
-                        return "xx ms";
+                        return "xx us";
                     else
-                        return string.Format("{0:f1} ms", GlobalData.ctr.LoopTime);
+                        return string.Format("{0:f2} us", GlobalData.ctr.LoopTime);
                 }
                 else
                 {

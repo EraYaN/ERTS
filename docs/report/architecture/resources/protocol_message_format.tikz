@@ -1,0 +1,9 @@
+\begin{tikzpicture}
+    \node (frame) {Frame};
+    \node (preamble) [byte_small, below = of frame, minimum height=1cm] {Preamble};
+    \node (type) [byte_small, below = of preamble] {Type};
+    \node (crc) [byte_small, below = of type, minimum height=1cm] {CRC16};
+    \node (data) [data_small, below = of crc] {Data};
+    \node (footer) [byte_small, below = of data] {Footer};
+\end{tikzpicture}
+

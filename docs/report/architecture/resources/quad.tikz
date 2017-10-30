@@ -1,0 +1,4 @@
+\begin{tikzpicture}
+    \node (start) {TODO:diagram with quad internals};
+\end{tikzpicture}
+

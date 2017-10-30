@@ -386,3 +386,4 @@ fabric.properties
 src/gcc-arm-none-eabi/
 src/gcc-arm-none-eabi-x64/
 *.gz
+*.xdv
