@@ -33,6 +33,7 @@ The system is built using a continuous loop (\texttt{void busywork()}) that runs
 And a timer that set a flag at \SI{100}{\hertz}, this triggers the \texttt{void tick()} function.
 A hardware interrupt triggers the retrieval of the DMP sensor values from the MPU, also at \SI{100}{\hertz}.
 This results in a near perfect \SI{100}{\hertz} execution rate of the tick function with a maximum delay of one DMP retrieval latency, as shown in \cref{}. %TODO[E]: Add latency table
+All other interval function are implemented as a division of the main loops frequency, so telemetry runs at \SI{10}{\hertz}, and the blue LED runs at \SI{1}{\hertz}, with dividers of 10 en 100 respectively.
 
 The main function that handles mode changes and checks if they are valid is \texttt{void set\_mode(FlightMode)} where \texttt{FlightMode} is the type of the flight mode parameter.
 This function returns depending on the current mode the state of the inputs and/or calibration values whenever or not the mode switch is acceptable.
