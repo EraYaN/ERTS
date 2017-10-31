@@ -11,9 +11,8 @@
 	]
 {
 |[decision]|{\_mode==\\DumpFlash}				&|[action]|\texttt{send\_flash\_dump()}	\\
-|[decision]|{counter\_cmp==\\DIVIDER\_DMP}		&|[decision]|\_mode==Raw				\\
-|[action]|\texttt{read\_baro()}					&|[action]|control\_fast()				\\
-|[decision]|{check comm timout}					&|[action]|Panic						\\
+|[action]|\texttt{read\_baro()}					&										\\
+|[decision]|{check comm timout}					&|[action]|\texttt{switch\_mode(Panic)}	\\
 |[decision]|{counter\_hb==\\DIVIDER\_TELEMETRY}	&|[action]|\texttt{MeasureBattery()}	\\
 												&|[action]|\texttt{heartbeat()}			\\
 |[decision]|{\_mode==CALIBRATE}					&|[action]|\texttt{calibrate()}			\\
@@ -24,18 +23,15 @@
 % |[start]|\texttt{tick():}			&											\\
 \draw[->] (chart-1-1) -- node[above] {1} (chart-1-2);
 \draw[->] (chart-1-1) -- (chart-2-1); %down
-\draw[->] (chart-2-1) -- (chart-2-2);
-\draw[->] (chart-2-1) -- node[left] {1} (chart-3-1); %down
-\draw[->] (chart-2-2) -- node[left] {1} (chart-3-2); %down2
-\draw[->] (chart-3-1) -- (chart-4-1); %down
-\draw[->] (chart-4-1) -- node[left] {1} (chart-5-1); %down
-\draw[->] (chart-4-1) -- (chart-4-2);
-\draw[->] (chart-5-1) -- (chart-7-1); %down
-\draw[->] (chart-5-1) -- node[above] {1} (chart-5-2);
-\draw[->] (chart-5-2) -- (chart-6-2); %down2
-\draw[->] (chart-6-2) -| (chart-7-1);
-\draw[->] (chart-7-1) -- node[left] {1} (chart-8-1); %down
-\draw[->] (chart-7-1) -- (chart-7-2);
-\draw[->] (chart-8-1) -- (chart-9-1); %down
+\draw[->] (chart-2-1) -- (chart-3-1); %down
+\draw[->] (chart-3-1) -- node[left] {1} (chart-4-1); %down
+\draw[->] (chart-3-1) -- (chart-3-2);
+\draw[->] (chart-4-1) -- (chart-6-1); %down
+\draw[->] (chart-4-1) -- node[above] {1} (chart-4-2);
+\draw[->] (chart-4-2) -- (chart-5-2); %down2
+\draw[->] (chart-5-2) -| (chart-6-1);
+\draw[->] (chart-6-1) -- node[left] {1} (chart-7-1); %down
+\draw[->] (chart-6-1) -- (chart-6-2);
+\draw[->] (chart-7-1) -- (chart-8-1); %down
 
 \end{tikzpicture}
