@@ -12,10 +12,6 @@ All custom embedded systems side code was written in C++ in stead of C.
 Note that existing code like drivers and the software SDK was not rewritten to C++, but rather included as \texttt{extern "C"} to ensure compatibility.
 
 \subsection{Communication}
-The communication protocol is based on \SI{20}{\byte} fixed-length packets.
-This size was chosen to properly fit into Bluetooth Low Energy frames.
-The packet layout is as shown in \cref{fig:packet-format}
-Some examples are shown in \cref{fig:packet-examples}.
 The provided receive and transmit queues were used for the implementation, with an altered depth of \SI{240}{\byte} to fit an integer amount of \SI{20}{\byte} packets.
 The receive function scans the input with a constant moving window for the header bytes, and when found receives the packet and passes it to handle packet.
 If the type of packet requires an acknowledgement, the \texttt{ackNumber} field is copied and an acknowledgement packet is sent.

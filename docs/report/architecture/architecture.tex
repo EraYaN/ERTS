@@ -91,7 +91,10 @@ Any mode transition is performed using the \texttt{set\_mode()} function which m
 
 
 \subsection{Communication Library}
-
+The communication protocol is based on \SI{20}{\byte} fixed-length packets.
+This size was chosen to properly fit into \SI{24}{\byte} Bluetooth Low Energy frames.
+The packet layout is as shown in \cref{fig:packet-format}
+Some examples are shown in \cref{fig:packet-examples}.
 \begin{figure}[H]
 \centering
     \subimport{resources/}{protocol_message_format.tikz}
