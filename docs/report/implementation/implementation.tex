@@ -55,6 +55,10 @@ This can be solved by having two cascaded P controllers.
 The inner P controller controls the rate (with $P_2$) to a stable value, and the outer controller uses $P_1$ to control the desired angle based on the values from the DMP.
 Because the system always has to be stable, $P_2$ should be larger than $P_1$.
 It should also be noted that the speed at which the inner P controller is run should be sufficiently faster in order for the rate to be effectively stabilized before it is used in the outer loop again.
+In order to tune the parameters easily, the multiplications with the scalars $P$ have to be decoupled.
+In the basic cascaded P controller topology, the outerloop contains both scalars $P_1$ and $P_2$.
+So after tuning the inner loop with $P_2$, also a new $P_1$ has to be found.
+This can be solved by moving $P_2$ into the feedback part of the inner loop (and thus removing it from the outer loop).
 
 \begin{equation}
 out = P_1 \cdot (target_{roll,pitch} - current_{roll,pitch}) - P_2 \cdot rate_{roll,pitch}
